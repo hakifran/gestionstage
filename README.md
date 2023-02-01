@@ -25,12 +25,12 @@ Cette application web a pour but de gérer l'attribution des tuteurs pour la sui
 
 ### Mise en place de l'environnement
 #### Installation de php, mysql et apache
-- Sous windows: https://www.ionos.fr/digitalguide/serveur/outils/tutoriel-xampp-creer-un-serveur-de-test-local/
-- Sous Linux: https://www.cherryservers.com/blog/how-to-install-linux-apache-mysql-and-php-lamp-stack-on-ubuntu-20-04
-- Sous MacOS: https://vinodpandey.com/installing-apache-php-mysql-phpmyadmin-mac-os-x/
+- Sous windows: `https://www.ionos.fr/digitalguide/serveur/outils/tutoriel-xampp-creer-un-serveur-de-test-local/`
+- Sous Linux: `https://www.cherryservers.com/blog/how-to-install-linux-apache-mysql-and-php-lamp-stack-on-ubuntu-20-04`
+- Sous MacOS: `https://vinodpandey.com/installing-apache-php-mysql-phpmyadmin-mac-os-x/`
 
 #### Installation de composer
-- À la fois sur linux, windows et macOS: https://www.hostinger.com/tutorials/how-to-install-composer
+- À la fois sur linux, windows et macOS: `https://www.hostinger.com/tutorials/how-to-install-composer`
 
 ### Installation de l'application dans le dossier web
 - Se déplacer dans le dossier web(du serveur web) sur la machine
@@ -46,3 +46,4 @@ Cette application web a pour but de gérer l'attribution des tuteurs pour la sui
         'driver' => 'pdo_mysql',
     ];
     ```
+- Lancer les migrations: `./vendor/bin/doctrine-migrations migrate`
