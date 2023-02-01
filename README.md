@@ -30,4 +30,4 @@ Cette application web a pour but de gérer l'attribution des tuteurs pour la sui
 
 ### Installation de l'application dans le dossier web
 - Trouver le dossier web(du serveur web) sur la machine
-- Clone le projet avec git(version control system): * git clone https://github.com/nomUtilisateur/gestionstage.git *
+- Clone le projet avec git(version control system): `git clone https://github.com/hakifran/gestionstage.git`
