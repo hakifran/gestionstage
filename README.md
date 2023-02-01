@@ -29,6 +29,20 @@ Cette application web a pour but de gérer l'attribution des tuteurs pour la sui
 - Sous Linux: https://www.cherryservers.com/blog/how-to-install-linux-apache-mysql-and-php-lamp-stack-on-ubuntu-20-04
 - Sous MacOS: https://vinodpandey.com/installing-apache-php-mysql-phpmyadmin-mac-os-x/
 
+#### Installation de composer
+- À la fois sur linux, windows et macOS: https://www.hostinger.com/tutorials/how-to-install-composer
+
 ### Installation de l'application dans le dossier web
-- Trouver le dossier web(du serveur web) sur la machine
-- Clone le projet avec git(version control system): `git clone https://github.com/hakifran/gestionstage.git`
+- Se déplacer dans le dossier web(du serveur web) sur la machine
+- Cloner le projet avec git(version control system): `git clone https://github.com/hakifran/gestionstage.git`
+- Créer une base de donnée dans mysql: `CREATE DATABASE nom_de_la_base_de_donnee`
+- Modifier le fichier `migrations-db.php`
+    ```
+    return [
+        'dbname' => 'nom_de_la_base_de_donnee',
+        'user' => 'nom_utilisateur',
+        'password' => 'mot_de_pass',
+        'host' => 'adresse_de_la_machine_qui_heberge_la_BD',
+        'driver' => 'pdo_mysql',
+    ];
+    ```
