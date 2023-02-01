@@ -47,3 +47,8 @@ Cette application web a pour but de gérer l'attribution des tuteurs pour la sui
     ];
     ```
 - Lancer les migrations: `./vendor/bin/doctrine-migrations migrate`
+
+### Lancer l'application
+- Ouvrir le navigateur
+- Mettre l'addresse suivant dans la barre d'addresse du navigateur: `http://localhost/gestionstage`
+
