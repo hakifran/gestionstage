@@ -8,7 +8,7 @@ Affecter les tuteurs aux suivies des stages pour les étudiants
 ```
 ### Frontend
 ```
-  XHTML + Javascript
+  HTML5 + Javascript
   Navigateur <-> API(backend)
 ```
 ## Description
