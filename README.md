@@ -24,6 +24,7 @@ Cette application web a pour but de gérer l'attribution des tuteurs pour la sui
 ## Installation
 
 ### Mise en place de l'environnement
+#### Installation de php, mysql et apache
 - Sous windows: https://www.ionos.fr/digitalguide/serveur/outils/tutoriel-xampp-creer-un-serveur-de-test-local/
 - Sous Linux: https://www.cherryservers.com/blog/how-to-install-linux-apache-mysql-and-php-lamp-stack-on-ubuntu-20-04
 - Sous MacOS: https://vinodpandey.com/installing-apache-php-mysql-phpmyadmin-mac-os-x/
