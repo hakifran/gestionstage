@@ -5,22 +5,13 @@ class Personne
     protected $idPersonne;
     protected $nom;
     protected $prenom;
+    protected $identifiant;
     protected $email;
     private $password;
     private $admin;
 
-    function __construct($idPersonne, $nom, $prenom, $email, $password, $admin) 
-    {
-        $this->idPersonnePrimary = $idPersonne;
-        $this->nom = $nom;
-        $this->prenom = $prenom;
-        $this->email = $email;
-        $this->password = $password;
-        $this->admin = $admin;
-    }
-
-    // Setters
-    public function getIdPersonne()
+    // getters
+    private function getIdPersonne()
     {
         return $this->idPersonne;
     }
@@ -42,11 +33,47 @@ class Personne
 
     public function getPassword()
     {
-        
+        return $this->password;
     }
 
     public function getAdmin()
     {
-        
+        return $this->admin;
+    }
+
+    // setters
+    private function setIdPersonne()
+    {
+        $this->idPersonne = $idPersonne;
+    }
+
+    public function setNom($nom)
+    {
+        $this->nom = $nom;
+    }
+
+    public function setIdentifiant($identifiant)
+    {
+        $this->identifiant = $identifiant;
+    }
+
+    public function setPrenom($prenom)
+    {
+        $this->prenom = $prenom;
+    }
+
+    public function setEmail($email)
+    {
+        $this->email = $email;
+    }
+
+    public function setPassword($password)
+    {
+        $this->password = $password;
+    }
+
+    public function setAdmin($admin)
+    {
+        $this->admin = $admin;
     }
 }
