@@ -34,10 +34,6 @@ class EnseignantModel extends Personne
         $this->idEnseignant = $idEnseignant;
     }
 
-    public function setIdentifiant($identifiant)
-    {
-        $this->identifiant = $identifiant;
-    }
 
     public function setTitre($titre)
     {
