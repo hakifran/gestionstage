@@ -1,5 +1,5 @@
 <?php
-
+require_once '../app/db/dao/enseignantDao.php';
 class EnseignantModel extends Personne
 {
     protected $idEnseignant;
@@ -34,7 +34,6 @@ class EnseignantModel extends Personne
         $this->idEnseignant = $idEnseignant;
     }
 
-
     public function setTitre($titre)
     {
         $this->titre = $titre;
@@ -48,6 +47,12 @@ class EnseignantModel extends Personne
     public function setIdPersonne($idPersonne)
     {
         $this->idPersonne = $idPersonne;
+    }
+
+    public function create()
+    {
+        $enseignantDao = new EnseignantDao();
+        return $enseignantDao->create($this);
     }
 
 }

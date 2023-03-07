@@ -1,5 +1,5 @@
 <?php
-
+require_once '../app/db/dao/personneDao.php';
 class Personne
 {
     protected $idPersonne;
@@ -75,5 +75,11 @@ class Personne
     public function setAdmin($admin)
     {
         $this->admin = $admin;
+    }
+
+    public function create()
+    {
+        $personneDao = new PersonneDao();
+        return $personneDao->create($this);
     }
 }

@@ -1,23 +1,40 @@
 <?php
-
-class Etudiant extends Personne
+require_once '../app/db/dao/etudiantDao.php';
+class EtudiantModel extends Personne
 {
     private $idEtudiant;
     private $numeroEtudiant;
     private $numeroNational;
     private $parcours;
-    private $idPersonne;
+    protected $idPersonne;
 
-    function __construct($idEtudiant, $numeroEtudiant, $numeroNational, $parcours, $idPersonne) 
+    // Setters
+    public function setIdEtudiant($idEtudiant)
     {
         $this->idEtudiant = $idEtudiant;
+    }
+
+    public function setNumeroEtudiant($numeroEtudiant)
+    {
         $this->numeroEtudiant = $numeroEtudiant;
+    }
+
+    public function setNumeroNational($numeroNational)
+    {
         $this->numeroNational = $numeroNational;
+    }
+
+    public function setParcours($parcours)
+    {
         $this->parcours = $parcours;
+    }
+
+    public function setIdPersonne($idPersonne)
+    {
         $this->idPersonne = $idPersonne;
     }
 
-    // Setters
+    // Getters
     public function getIdEtudiant()
     {
         return $this->idEtudiant;
@@ -41,6 +58,12 @@ class Etudiant extends Personne
     public function getIdPersonne()
     {
         return $this->idPersonne;
+    }
+
+    public function create()
+    {
+        $etudiantDao = new EtudiantDao();
+        return $etudiantDao->create($this);
     }
 
 }
