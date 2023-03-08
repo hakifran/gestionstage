@@ -1,4 +1,5 @@
 <?php
+require_once "../app/services/utils.php";
 if (!isset($_SERVER["PHP_AUTH_USER"])) {
     header("WWW-Authenticate: Basic realm=\"Private Area\"");
     header("HTTP/1.0 401 Unauthorized");
@@ -18,23 +19,16 @@ if (!isset($_SERVER["PHP_AUTH_USER"])) {
                 if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     // Les données provenant de la requette
                     $params = json_decode(file_get_contents('php://input'));
-
+                    $utils = new Utils();
+                    $utils->verifier_les_parametres($params, $this->parametre_obligatoire());
                     $personne = $this->model('Personne');
                     $etudiant = $this->model('EtudiantModel');
                     // allouer de valeur à l'objet personne
-                    $personne->setNom($params->nom);
-                    $personne->setPrenom($params->prenom);
-                    $personne->setIdentifiant($params->identifiant);
-                    $personne->setEmail($params->email);
-                    $personne->setPassword($params->password);
+                    $personne = $this->get_personne($personne, $params);
                     // créer la personne et retourne son identifiant
                     $personneId = (int) $personne->create();
                     // allouer des valeurs à l'objet personne
-                    $etudiant->setIdPersonne($personneId);
-                    $etudiant->setNumeroEtudiant($params->numeroEtudiant);
-                    $etudiant->setNumeroNational($params->numeroNational);
-                    $etudiant->setParcours($params->parcours);
-
+                    $etudiant = $this->get_etudiant($etudiant, $personneId, $params);
                     $etudiantId = $etudiant->create();
 
                     header("Content-type: application/json");
@@ -55,6 +49,31 @@ if (!isset($_SERVER["PHP_AUTH_USER"])) {
                 }
 
             }
+
+            function parametre_obligatoire()
+            {
+                return array("nom", "prenom", "identifiant", "email", "password", "numeroEtudiant", "numeroNational", "parcours");
+            }
+
+            function get_personne($personne, $params)
+            {
+                $personne->setNom($params->nom);
+                $personne->setPrenom($params->prenom);
+                $personne->setIdentifiant($params->identifiant);
+                $personne->setEmail($params->email);
+                $personne->setPassword($params->password);
+                return $personne;
+            }
+
+            function get_etudiant($etudiant, $personneId, $params)
+            {
+                $etudiant->setIdPersonne($personneId);
+                $etudiant->setNumeroEtudiant($params->numeroEtudiant);
+                $etudiant->setNumeroNational($params->numeroNational);
+                $etudiant->setParcours($params->parcours);
+                return $etudiant;
+            }
+
         }
     } else {
         header("WWW-Authenticate: Basic realm=\"Private Area\"");
