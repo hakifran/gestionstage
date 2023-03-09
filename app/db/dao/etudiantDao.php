@@ -13,4 +13,12 @@ class EtudiantDao
         $connexion->prepare($sql)->execute([$etudiant->getNumeroEtudiant(), $etudiant->getNumeroNational(), $etudiant->getParcours(), $etudiant->getIdPersonne()]);
         return $connexion->lastInsertId();
     }
+
+    function list() {
+        $bd = new Basededonnee();
+        $connexion = $bd->connexion();
+
+        $sql = "SELECT * FROM personne INNER JOIN etudiant on(personne.idPersonne=etudiant.idPersonne)";
+        return $connexion->query($sql);
+    }
 }

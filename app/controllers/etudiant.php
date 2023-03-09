@@ -9,9 +9,16 @@ if (!isset($_SERVER["PHP_AUTH_USER"])) {
     if (($_SERVER["PHP_AUTH_USER"] == 'admin' && $_SERVER["PHP_AUTH_PW"] == "@admin")) {
         class Etudiant extends Controller
         {
-            public function index($name = '')
-            {
-                echo $name;
+
+            function list() {
+                if ($_SERVER["REQUEST_METHOD"] == "GET") {
+                    $etudiant = $this->model('EtudiantModel');
+                    header("Content-type: application/json");
+                    echo json_encode(array("data" => $etudiant->list(), "status" => "ok"));
+                } else {
+                    print "L'opération n'est pas autorisé";
+                    exit;
+                }
             }
 
             function create()

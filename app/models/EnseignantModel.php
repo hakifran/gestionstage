@@ -1,5 +1,7 @@
 <?php
 require_once '../app/db/dao/enseignantDao.php';
+require_once '../app/models/Personne.php';
+
 class EnseignantModel extends Personne
 {
     protected $idEnseignant;
@@ -48,11 +50,21 @@ class EnseignantModel extends Personne
     {
         $this->idPersonne = $idPersonne;
     }
-
+    // Créer un enseignant
     public function create()
     {
         $enseignantDao = new EnseignantDao();
         return $enseignantDao->create($this);
+    }
+
+    // list des enseignants
+    function list() {
+        $enseignantDao = new EnseignantDao();
+        $enseignants = [];
+        foreach ($enseignantDao->list() as $enseignant) {
+            array_push($enseignants, ["idEnseignant" => $enseignant["idEnseignant"], "nom" => $enseignant["nom"], "prenom" => $enseignant["prenom"], "email" => $enseignant["email"], "titre" => $enseignant["titre"], "specialisation" => $enseignant["specialisation"]]);
+        }
+        return $enseignants;
     }
 
 }

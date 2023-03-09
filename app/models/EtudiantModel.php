@@ -1,4 +1,5 @@
 <?php
+require_once '../app/models/Personne.php';
 require_once '../app/db/dao/etudiantDao.php';
 class EtudiantModel extends Personne
 {
@@ -64,6 +65,16 @@ class EtudiantModel extends Personne
     {
         $etudiantDao = new EtudiantDao();
         return $etudiantDao->create($this);
+    }
+
+    // list des etudiants
+    function list() {
+        $etudiantDao = new EtudiantDao();
+        $etudiants = [];
+        foreach ($etudiantDao->list() as $etudiant) {
+            array_push($etudiants, ["idEtudiant" => $etudiant["idEtudiant"], "nom" => $etudiant["nom"], "prenom" => $etudiant["prenom"], "email" => $etudiant["email"], "numeroEtudiant" => $etudiant["numeroEtudiant"], "numeroNational" => $etudiant["numeroNational"], "parcours" => $etudiant["parcours"]]);
+        }
+        return $etudiants;
     }
 
 }
