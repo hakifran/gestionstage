@@ -67,4 +67,17 @@ class EnseignantModel extends Personne
         return $enseignants;
     }
 
+    // trouver un enseignant par son identifiant
+    public function get($id)
+    {
+        $enseignantDao = new EnseignantDao();
+        $enseignant = $enseignantDao->get($id);
+        if ($enseignant) {
+            return ["idEnseignant" => $enseignant["idEnseignant"], "nom" => $enseignant["nom"], "prenom" => $enseignant["prenom"], "email" => $enseignant["email"], "titre" => $enseignant["titre"], "specialisation" => $enseignant["specialisation"]];
+        } else {
+            return [];
+        }
+
+    }
+
 }

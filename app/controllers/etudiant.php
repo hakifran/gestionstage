@@ -21,6 +21,24 @@ if (!isset($_SERVER["PHP_AUTH_USER"])) {
                 }
             }
 
+            function get()
+            {
+                header("Content-type: application/json");
+                if ($_SERVER["REQUEST_METHOD"] == "GET") {
+                    if (isset($_GET["id"])) {
+                        $etudiant = $this->model('EtudiantModel');
+                        echo json_encode(array("data" => $etudiant->get($_GET["id"]), "status" => "ok"));
+                    } else {
+                        print "L'identifiant doit être fournis";
+                        exit;
+                    }
+                } else {
+                    print "L'opération n'est pas autorisé";
+                    exit;
+                }
+
+            }
+
             function create()
             {
                 if ($_SERVER["REQUEST_METHOD"] == "POST") {

@@ -21,4 +21,14 @@ class EnseignantDao
         $sql = "SELECT * FROM personne INNER JOIN enseignant on(personne.idPersonne=enseignant.idPersonne)";
         return $connexion->query($sql);
     }
+
+    public function get($id)
+    {
+        $bd = new Basededonnee();
+        $connexion = $bd->connexion();
+
+        $stmt = $connexion->prepare("SELECT * FROM personne INNER JOIN enseignant on(personne.idPersonne=enseignant.idPersonne) where idEnseignant=:id");
+        $stmt->execute(['id' => $id]);
+        return $stmt->fetch();
+    }
 }

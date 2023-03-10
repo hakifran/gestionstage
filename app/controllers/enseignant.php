@@ -15,6 +15,7 @@ if (!isset($_SERVER["PHP_AUTH_USER"])) {
                 if ($_SERVER["REQUEST_METHOD"] == "GET") {
                     $enseignant = $this->model('EnseignantModel');
                     header("Content-type: application/json");
+
                     echo json_encode(array("data" => $enseignant->list(), "status" => "ok"));
                 } else {
                     print "L'opération n'est pas autorisé";
@@ -52,6 +53,24 @@ if (!isset($_SERVER["PHP_AUTH_USER"])) {
                         );
                     }
 
+                } else {
+                    print "L'opération n'est pas autorisé";
+                    exit;
+                }
+
+            }
+
+            function get()
+            {
+                header("Content-type: application/json");
+                if ($_SERVER["REQUEST_METHOD"] == "GET") {
+                    if (isset($_GET["id"])) {
+                        $enseignant = $this->model('EnseignantModel');
+                        echo json_encode(array("data" => $enseignant->get($_GET["id"]), "status" => "ok"));
+                    } else {
+                        print "L'identifiant doit être fournis";
+                        exit;
+                    }
                 } else {
                     print "L'opération n'est pas autorisé";
                     exit;

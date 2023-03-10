@@ -77,4 +77,17 @@ class EtudiantModel extends Personne
         return $etudiants;
     }
 
+    // trouver un étudiant par son identifiant
+    public function get($id)
+    {
+        $etudiantDao = new EtudiantDao();
+        $etudiant = $etudiantDao->get($id);
+        if ($etudiant) {
+            return ["idEtudiant" => $etudiant["idEtudiant"], "nom" => $etudiant["nom"], "prenom" => $etudiant["prenom"], "email" => $etudiant["email"], "numeroEtudiant" => $etudiant["numeroEtudiant"], "numeroNational" => $etudiant["numeroNational"], "parcours" => $etudiant["parcours"]];
+        } else {
+            return [];
+        }
+
+    }
+
 }
