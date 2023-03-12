@@ -75,9 +75,36 @@ if (!isset($_SERVER["PHP_AUTH_USER"])) {
 
             }
 
+            function valider()
+            {
+                if ($_SERVER["REQUEST_METHOD"] == "PATCH") {
+                    $params = json_decode(file_get_contents('php://input'));
+                    $utils = new Utils();
+                    $utils->verifier_les_parametres($params, $this->parametre_valide());
+                    $etudiant = $this->model('EtudiantModel');
+                    $personne = $this->model("Personne");
+                    $etudian = $etudiant->get($params->id);
+                    header("Content-type: application/json");
+                    if (count($etudian) > 0 && (int) $etudian["idPersonne"] > 0) {
+                        $count = $personne->valider($etudian["idPersonne"], $this->boolean_valide($params->valide));
+                        echo json_encode(array("count" => $count, "status" => "ok"));
+                    } else {
+                        echo json_encode(array("message" => "Paramètre incorrectes", "status" => "error"));
+                    }
+                } else {
+                    print "L'opération n'est pas autorisé";
+                    exit;
+                }
+            }
+
             function parametre_obligatoire()
             {
                 return array("nom", "prenom", "identifiant", "email", "password", "numeroEtudiant", "numeroNational", "parcours");
+            }
+
+            function parametre_valide()
+            {
+                return array("id", "valide");
             }
 
             function get_personne($personne, $params)
@@ -97,6 +124,16 @@ if (!isset($_SERVER["PHP_AUTH_USER"])) {
                 $etudiant->setNumeroNational($params->numeroNational);
                 $etudiant->setParcours($params->parcours);
                 return $etudiant;
+            }
+
+            function boolean_valide($boolean)
+            {
+                if ($boolean == "false") {
+                    return 0;
+                }
+                if ($boolean == "true") {
+                    return 1;
+                }
             }
 
         }

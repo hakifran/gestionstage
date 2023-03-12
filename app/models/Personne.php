@@ -82,4 +82,13 @@ class Personne
         $personneDao = new PersonneDao();
         return $personneDao->create($this);
     }
+
+    // valider l'inscription d'un utilisateur
+    public function valider($idPersonne, $valide)
+    {
+        $personneDao = new PersonneDao();
+        $count = $personneDao->valider($idPersonne, $valide);
+        return $count;
+    }
+
 }

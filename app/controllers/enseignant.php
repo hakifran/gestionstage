@@ -60,6 +60,28 @@ if (!isset($_SERVER["PHP_AUTH_USER"])) {
 
             }
 
+            function valider()
+            {
+                if ($_SERVER["REQUEST_METHOD"] == "PATCH") {
+                    $params = json_decode(file_get_contents('php://input'));
+                    $utils = new Utils();
+                    $utils->verifier_les_parametres($params, $this->parametre_valide());
+                    $enseignant = $this->model('EnseignantModel');
+                    $personne = $this->model("Personne");
+                    $enseignan = $enseignant->get($params->id);
+                    header("Content-type: application/json");
+                    if (count($enseignan) > 0 && (int) $enseignan["idPersonne"] > 0) {
+                        $count = $personne->valider($enseignan["idPersonne"], $this->boolean_valide($params->valide));
+                        echo json_encode(array("count" => $count, "status" => "ok"));
+                    } else {
+                        echo json_encode(array("message" => "Paramètre incorrectes", "status" => "error"));
+                    }
+                } else {
+                    print "L'opération n'est pas autorisé";
+                    exit;
+                }
+            }
+
             function get()
             {
                 header("Content-type: application/json");
@@ -83,6 +105,11 @@ if (!isset($_SERVER["PHP_AUTH_USER"])) {
                 return array("nom", "prenom", "identifiant", "email", "password", "titre", "specialisation");
             }
 
+            function parametre_valide()
+            {
+                return array("id", "valide");
+            }
+
             function get_personne($personne, $params)
             {
                 $personne->setNom($params->nom);
@@ -99,6 +126,16 @@ if (!isset($_SERVER["PHP_AUTH_USER"])) {
                 $enseignant->setTitre($params->titre);
                 $enseignant->setSpecialisation($params->specialisation);
                 return $enseignant;
+            }
+
+            function boolean_valide($boolean)
+            {
+                if ($boolean == "false") {
+                    return 0;
+                }
+                if ($boolean == "true") {
+                    return 1;
+                }
             }
 
         }

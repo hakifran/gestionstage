@@ -72,7 +72,7 @@ class EtudiantModel extends Personne
         $etudiantDao = new EtudiantDao();
         $etudiants = [];
         foreach ($etudiantDao->list() as $etudiant) {
-            array_push($etudiants, ["idEtudiant" => $etudiant["idEtudiant"], "nom" => $etudiant["nom"], "prenom" => $etudiant["prenom"], "email" => $etudiant["email"], "numeroEtudiant" => $etudiant["numeroEtudiant"], "numeroNational" => $etudiant["numeroNational"], "parcours" => $etudiant["parcours"]]);
+            array_push($etudiants, ["idEtudiant" => $etudiant["idEtudiant"], "nom" => $etudiant["nom"], "prenom" => $etudiant["prenom"], "email" => $etudiant["email"], "numeroEtudiant" => $etudiant["numeroEtudiant"], "numeroNational" => $etudiant["numeroNational"], "parcours" => $etudiant["parcours"], "idPersonne" => $etudiant["idPersonne"], "valide" => $etudiant["valide"]]);
         }
         return $etudiants;
     }
@@ -83,7 +83,7 @@ class EtudiantModel extends Personne
         $etudiantDao = new EtudiantDao();
         $etudiant = $etudiantDao->get($id);
         if ($etudiant) {
-            return ["idEtudiant" => $etudiant["idEtudiant"], "nom" => $etudiant["nom"], "prenom" => $etudiant["prenom"], "email" => $etudiant["email"], "numeroEtudiant" => $etudiant["numeroEtudiant"], "numeroNational" => $etudiant["numeroNational"], "parcours" => $etudiant["parcours"]];
+            return ["idEtudiant" => $etudiant["idEtudiant"], "nom" => $etudiant["nom"], "prenom" => $etudiant["prenom"], "email" => $etudiant["email"], "numeroEtudiant" => $etudiant["numeroEtudiant"], "numeroNational" => $etudiant["numeroNational"], "parcours" => $etudiant["parcours"], "idPersonne" => $etudiant["idPersonne"], "valide" => $etudiant["valide"]];
         } else {
             return [];
         }

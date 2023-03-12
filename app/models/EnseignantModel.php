@@ -62,7 +62,7 @@ class EnseignantModel extends Personne
         $enseignantDao = new EnseignantDao();
         $enseignants = [];
         foreach ($enseignantDao->list() as $enseignant) {
-            array_push($enseignants, ["idEnseignant" => $enseignant["idEnseignant"], "nom" => $enseignant["nom"], "prenom" => $enseignant["prenom"], "email" => $enseignant["email"], "titre" => $enseignant["titre"], "specialisation" => $enseignant["specialisation"]]);
+            array_push($enseignants, ["idEnseignant" => $enseignant["idEnseignant"], "nom" => $enseignant["nom"], "prenom" => $enseignant["prenom"], "email" => $enseignant["email"], "titre" => $enseignant["titre"], "specialisation" => $enseignant["specialisation"], "idPersonne" => $enseignant["idPersonne"], "valide" => $enseignant["valide"]]);
         }
         return $enseignants;
     }
@@ -73,11 +73,10 @@ class EnseignantModel extends Personne
         $enseignantDao = new EnseignantDao();
         $enseignant = $enseignantDao->get($id);
         if ($enseignant) {
-            return ["idEnseignant" => $enseignant["idEnseignant"], "nom" => $enseignant["nom"], "prenom" => $enseignant["prenom"], "email" => $enseignant["email"], "titre" => $enseignant["titre"], "specialisation" => $enseignant["specialisation"]];
+            return ["idEnseignant" => $enseignant["idEnseignant"], "nom" => $enseignant["nom"], "prenom" => $enseignant["prenom"], "email" => $enseignant["email"], "titre" => $enseignant["titre"], "specialisation" => $enseignant["specialisation"], "idPersonne" => $enseignant["idPersonne"], "valide" => $enseignant["valide"]];
         } else {
             return [];
         }
 
     }
-
 }
