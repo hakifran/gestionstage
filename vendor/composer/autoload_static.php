@@ -47,6 +47,10 @@ class ComposerStaticInit07d4e885a7edf4145f675c8d3206348b
         array (
             'Laminas\\Code\\' => 13,
         ),
+        'F' => 
+        array (
+            'Firebase\\JWT\\' => 13,
+        ),
         'D' => 
         array (
             'Doctrine\\Migrations\\' => 20,
@@ -127,6 +131,10 @@ class ComposerStaticInit07d4e885a7edf4145f675c8d3206348b
         'Laminas\\Code\\' => 
         array (
             0 => __DIR__ . '/..' . '/laminas/laminas-code/src',
+        ),
+        'Firebase\\JWT\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/firebase/php-jwt/src',
         ),
         'Doctrine\\Migrations\\' => 
         array (

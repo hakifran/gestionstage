@@ -79,4 +79,16 @@ class EnseignantModel extends Personne
         }
 
     }
+
+    // trouver un enseignant par son email
+    public function recherche_par_email($email)
+    {
+        $enseignantDao = new EnseignantDao();
+        $enseignant = $enseignantDao->recherche_par_email($email);
+        if ($enseignant) {
+            return ["idEnseignant" => $enseignant["idEnseignant"], "nom" => $enseignant["nom"], "prenom" => $enseignant["prenom"], "email" => $enseignant["email"], "password" => $enseignant["password"], "titre" => $enseignant["titre"], "specialisation" => $enseignant["specialisation"], "idPersonne" => $enseignant["idPersonne"], "valide" => $enseignant["valide"]];
+        } else {
+            return [];
+        }
+    }
 }

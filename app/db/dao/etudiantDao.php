@@ -31,4 +31,14 @@ class EtudiantDao
         $stmt->execute(['id' => $id]);
         return $stmt->fetch();
     }
+
+    public function recherche_par_email($email)
+    {
+        $bd = new Basededonnee();
+        $connexion = $bd->connexion();
+
+        $stmt = $connexion->prepare("SELECT * FROM personne INNER JOIN etudiant on(personne.idPersonne=etudiant.idPersonne) where personne.email=:email");
+        $stmt->execute(['email' => $email]);
+        return $stmt->fetch();
+    }
 }

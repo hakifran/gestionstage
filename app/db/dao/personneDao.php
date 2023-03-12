@@ -10,7 +10,8 @@ class PersonneDao
         $connexion = $bd->connexion();
 
         $sql = "INSERT INTO personne (nom, prenom, email, password) VALUES (?,?,?,?)";
-        $connexion->prepare($sql)->execute([$personne->getNom(), $personne->getPrenom(), $personne->getEmail(), $personne->getPassword()]);
+        $passwrd_hash = password_hash($personne->getPassword(), PASSWORD_DEFAULT);
+        $connexion->prepare($sql)->execute([$personne->getNom(), $personne->getPrenom(), $personne->getEmail(), $passwrd_hash]);
         return $connexion->lastInsertId();
     }
 
@@ -23,5 +24,15 @@ class PersonneDao
         $updated = $connexion->prepare($sql);
         $updated->execute([$valide, $idPersonne]);
         return $updated->rowCount();
+    }
+
+    public function recherche_admin($email)
+    {
+        $bd = new Basededonnee();
+        $connexion = $bd->connexion();
+
+        $stmt = $connexion->prepare("SELECT * FROM personne where email=:email AND admin=1");
+        $stmt->execute(['email' => $email]);
+        return $stmt->fetch();
     }
 }

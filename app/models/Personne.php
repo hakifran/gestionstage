@@ -91,4 +91,16 @@ class Personne
         return $count;
     }
 
+    // trouver un admin par son email
+    public function recherche_admin($email)
+    {
+        $personneDao = new PersonneDao();
+        $personne = $personneDao->recherche_admin($email);
+        if ($personne) {
+            return ["idPersonne" => $personne["idPersonne"], "nom" => $personne["nom"], "prenom" => $personne["prenom"], "email" => $personne["email"], "admin" => $personne["admin"], "valide" => $personne["valide"]];
+        } else {
+            return [];
+        }
+    }
+
 }

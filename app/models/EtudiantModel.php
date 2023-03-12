@@ -90,4 +90,16 @@ class EtudiantModel extends Personne
 
     }
 
+    // trouver un etudiant par son email
+    public function recherche_par_email($email)
+    {
+        $etudiantDao = new EtudiantDao();
+        $etudiant = $etudiantDao->recherche_par_email($email);
+        if ($etudiant) {
+            return ["idEtudiant" => $etudiant["idEtudiant"], "nom" => $etudiant["nom"], "prenom" => $etudiant["prenom"], "email" => $etudiant["email"], "password" => $etudiant["password"], "numeroEtudiant" => $etudiant["numeroEtudiant"], "numeroNational" => $etudiant["numeroNational"], "parcours" => $etudiant["parcours"], "idPersonne" => $etudiant["idPersonne"], "valide" => $etudiant["valide"]];
+        } else {
+            return [];
+        }
+    }
+
 }
