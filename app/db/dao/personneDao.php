@@ -11,7 +11,14 @@ class PersonneDao
 
         $sql = "INSERT INTO personne (nom, prenom, email, password) VALUES (?,?,?,?)";
         $passwrd_hash = password_hash($personne->getPassword(), PASSWORD_DEFAULT);
-        $connexion->prepare($sql)->execute([$personne->getNom(), $personne->getPrenom(), $personne->getEmail(), $passwrd_hash]);
+        try {
+            $connexion->prepare($sql)->execute([$personne->getNom(), $personne->getPrenom(), $personne->getEmail(), $passwrd_hash]);
+        } catch (Exception $e) {
+            echo json_encode(
+                array("message" => $e->getMessage(), "status" => "error")
+            );
+            exit;
+        }
         return $connexion->lastInsertId();
     }
 
