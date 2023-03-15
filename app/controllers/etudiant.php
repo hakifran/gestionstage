@@ -67,13 +67,13 @@ class Etudiant extends Controller
                 );
             } else {
                 echo json_encode(
-                    array("message" => "Une erreur s'est produite", "status" => "error")
+                    array("message" => "Une erreur s'est produite", "status" => "erreur")
                 );
             }
 
         } else {
             echo json_encode(
-                array("message" => "L'operation n'est pas autorise", "status" => "error")
+                array("message" => "L'operation n'est pas autorise", "status" => "erreur")
             );
             exit;
         }
@@ -97,7 +97,7 @@ class Etudiant extends Controller
                 $count = $personne->valider($etudian["idPersonne"], $this->boolean_valide($params->valide));
                 echo json_encode(array("count" => $count, "status" => "ok"));
             } else {
-                echo json_encode(array("message" => "Paramètre incorrectes", "status" => "error"));
+                echo json_encode(array("message" => "Paramètre incorrectes", "status" => "erreur"));
             }
         } else {
             print "L'operation n'est pas autorise";

@@ -42,7 +42,7 @@ if (!isset($_SERVER["PHP_AUTH_USER"])) {
                             break;
                     }
                     if ($utilisateur == null || count($utilisateur) < 1) {
-                        echo json_encode(array("status" => "error", "message" => "L'addresse email ou le mot de password n'est pas correcte"));
+                        echo json_encode(array("status" => "erreur", "message" => "L'addresse email ou le mot de password n'est pas correcte"));
                         exit;
                     } else {
                         $emailUtilisateur = $utilisateur["email"];
@@ -53,7 +53,7 @@ if (!isset($_SERVER["PHP_AUTH_USER"])) {
                         $idUtilisateur = $id;
                         if (password_verify($password, $passwordUtilisateur)) {
                             if ($valideUtilisateur != 1) {
-                                echo json_encode(array("status" => "error", "message" => "L'utilisateur non encore valide par l'admin"));
+                                echo json_encode(array("status" => "erreur", "message" => "L'utilisateur non encore valide par l'admin"));
                                 exit;
                             }
                             $payload = [
@@ -70,7 +70,6 @@ if (!isset($_SERVER["PHP_AUTH_USER"])) {
                             ];
                             $secret_key = "etude thematique";
                             $jwt = JWT::encode($payload, $secret_key, 'HS256');
-                            session_start();
                             $_SESSION['user_info'] = $payload;
                             echo json_encode([
                                 'statu' => 'ok',

@@ -15,7 +15,7 @@ class PersonneDao
             $connexion->prepare($sql)->execute([$personne->getNom(), $personne->getPrenom(), $personne->getEmail(), $passwrd_hash]);
         } catch (Exception $e) {
             echo json_encode(
-                array("message" => $e->getMessage(), "status" => "error")
+                array("message" => $e->getMessage(), "status" => "erreur")
             );
             exit;
         }
