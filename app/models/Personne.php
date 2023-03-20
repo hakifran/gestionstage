@@ -5,10 +5,10 @@ class Personne
     protected $idPersonne;
     protected $nom;
     protected $prenom;
-    protected $identifiant;
     protected $email;
     private $password;
     private $admin;
+    private $valide;
 
     // getters
     private function getIdPersonne()
@@ -41,6 +41,11 @@ class Personne
         return $this->admin;
     }
 
+    public function getValide()
+    {
+        return $this->valide;
+    }
+
     // setters
     private function setIdPersonne()
     {
@@ -50,11 +55,6 @@ class Personne
     public function setNom($nom)
     {
         $this->nom = $nom;
-    }
-
-    public function setIdentifiant($identifiant)
-    {
-        $this->identifiant = $identifiant;
     }
 
     public function setPrenom($prenom)
@@ -77,10 +77,21 @@ class Personne
         $this->admin = $admin;
     }
 
+    public function setValide($valide)
+    {
+        $this->valide = $valide;
+    }
+
     public function create()
     {
         $personneDao = new PersonneDao();
         return $personneDao->create($this);
+    }
+
+    public function create_admin()
+    {
+        $personneDao = new PersonneDao();
+        return $personneDao->create_admin($this);
     }
 
     // valider l'inscription d'un utilisateur
@@ -97,7 +108,7 @@ class Personne
         $personneDao = new PersonneDao();
         $personne = $personneDao->recherche_admin($email);
         if ($personne) {
-            return ["idPersonne" => $personne["idPersonne"], "nom" => $personne["nom"], "prenom" => $personne["prenom"], "email" => $personne["email"], "admin" => $personne["admin"], "valide" => $personne["valide"]];
+            return ["idPersonne" => $personne["idPersonne"], "nom" => $personne["nom"], "prenom" => $personne["prenom"], "email" => $personne["email"], "password" => $personne["password"], "admin" => $personne["admin"], "valide" => $personne["valide"]];
         } else {
             return [];
         }

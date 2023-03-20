@@ -107,7 +107,7 @@ class Etudiant extends Controller
 
     private function parametre_obligatoire()
     {
-        return array("nom", "prenom", "identifiant", "email", "password", "numeroEtudiant", "numeroNational", "parcours");
+        return array("nom", "prenom", "email", "password", "numeroEtudiant", "numeroNational", "parcours");
     }
 
     private function parametre_valide()
@@ -119,7 +119,6 @@ class Etudiant extends Controller
     {
         $personne->setNom($params->nom);
         $personne->setPrenom($params->prenom);
-        $personne->setIdentifiant($params->identifiant);
         $personne->setEmail($params->email);
         $personne->setPassword($params->password);
         return $personne;
