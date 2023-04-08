@@ -14,7 +14,8 @@ class connexion extends Controller
             print "Désolé, vous devez vous authentifier en donnant votre nom d'utilisateur et mot de passe";
             exit;
         } else {
-            if (($_SERVER["PHP_AUTH_USER"] == 'admin' && $_SERVER["PHP_AUTH_PW"] == "@admin")) {
+            $password_config = require '../userpassword.php';
+            if (($_SERVER["PHP_AUTH_USER"] == $password_config["USER_NAME"] && $_SERVER["PHP_AUTH_PW"] == $password_config["USER_PASSWORD"])) {
                 if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     $params = json_decode(file_get_contents('php://input'));
                     $utils = new Utils();
@@ -109,7 +110,8 @@ class connexion extends Controller
             print "Désolé, vous devez vous authentifier en donnant votre nom d'utilisateur et mot de passe";
             exit;
         } else {
-            if (($_SERVER["PHP_AUTH_USER"] == 'adminadmin' && $_SERVER["PHP_AUTH_PW"] == "@admin")) {
+            $password_config = require '../userpassword.php';
+            if (($_SERVER["PHP_AUTH_USER"] == $password_config["ADMIN_NAME"] && $_SERVER["PHP_AUTH_PW"] == $password_config["ADMIN_PASSWORD"])) {
                 if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     header("Content-type: application/json");
                     $utils = new Utils();
@@ -145,7 +147,9 @@ class connexion extends Controller
             } else {
                 header("WWW-Authenticate: Basic realm=\"Private Area\"");
                 header("HTTP/1.0 401 Unauthorized");
-                print "Veuillez verifier vos identifiants";
+                echo json_encode(
+                    array("message" => "Veuillez verifier vos identifiants", "status" => "erreur")
+                );
                 exit;
             }
         }

@@ -11,7 +11,12 @@ class Stage extends Controller
             $utils->verifier_authentification_utilisateur();
             $stage = $this->model('StageModel');
             header("Content-type: application/json");
-            echo json_encode(array("data" => $stage->list(), "status" => "ok"));
+            if (isset($_GET["idUtilisateur"]) && isset($_GET["typeUtilisateur"]) && $_SESSION['user_info']["data"]["type"] == $_GET["typeUtilisateur"] && $_GET["typeUtilisateur"] == $_SESSION['user_info']["data"]["id"]) {
+                echo json_encode(array("data" => $stage->list_par_utilisateur(), "status" => "ok"));
+            } else {
+                echo json_encode(array("message" => "Manque d'information sur l'utilisateur connecté", "status" => "erreur"));
+            }
+
         } else {
             print "L'opération n'est pas autorisé";
             exit;

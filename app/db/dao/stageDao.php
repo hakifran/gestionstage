@@ -21,7 +21,8 @@ class StageDao
         return $connexion->lastInsertId();
     }
 
-    function list() {
+    public function list_par_utilisateur()
+    {
         $bd = new Basededonnee();
         $connexion = $bd->connexion();
 

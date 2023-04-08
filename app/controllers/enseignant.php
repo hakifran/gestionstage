@@ -22,40 +22,46 @@ class Enseignant extends Controller
 
     public function create()
     {
-        if ($_SERVER["REQUEST_METHOD"] == "POST") {
-            header("Content-type: application/json");
-            $utils = new Utils();
-            // vérifier si l'utilisateur est authentifier
-            $utils->verifier_authentification_utilisateur();
+        $password_config = require '../userpassword.php';
+        if ($_SERVER["PHP_AUTH_USER"] == $password_config["USER_NAME"] && $_SERVER["PHP_AUTH_PW"] == $password_config["USER_PASSWORD"]) {
+            if ($_SERVER["REQUEST_METHOD"] == "POST") {
+                header("Content-type: application/json");
+                $utils = new Utils();
 
-            $params = json_decode(file_get_contents('php://input'));
-            // vérifier si tous les paramètres nécessaire ont été fournis
-            $utils->verifier_les_parametres($params, $this->parametre_obligatoire());
+                $params = json_decode(file_get_contents('php://input'));
+                // vérifier si tous les paramètres nécessaire ont été fournis
+                $utils->verifier_les_parametres($params, $this->parametre_obligatoire());
 
-            $personne = $this->model('Personne');
-            $enseignant = $this->model('EnseignantModel');
-            // allouer dles valeur à l'objet personne
-            $personne = $this->get_personne($personne, $params);
-            // créer la personne et retourne son identifiant
-            $personneId = (int) $personne->create();
-            // allouer des valeurs à l'objet enseignant
-            $enseignant = $this->get_enseignant($enseignant, $personneId, $params);
-            $enseignantId = $enseignant->create();
+                $personne = $this->model('Personne');
+                $enseignant = $this->model('EnseignantModel');
+                // allouer dles valeur à l'objet personne
+                $personne = $this->get_personne($personne, $params);
+                // créer la personne et retourne son identifiant
+                $personneId = (int) $personne->create();
+                // allouer des valeurs à l'objet enseignant
+                $enseignant = $this->get_enseignant($enseignant, $personneId, $params);
+                $enseignantId = $enseignant->create();
 
-            if ($enseignantId != null) {
-                $params->id = (int) $enseignantId;
-                echo json_encode(
-                    array("data" => $params, "status" => "ok")
-                );
+                if ($enseignantId != null) {
+                    $params->id = (int) $enseignantId;
+                    echo json_encode(
+                        array("data" => $params, "status" => "ok")
+                    );
+                } else {
+                    echo json_encode(
+                        array("message" => "Une erreur s'est produite", "status" => "erreur")
+                    );
+                }
+
             } else {
                 echo json_encode(
-                    array("message" => "Une erreur s'est produite", "status" => "erreur")
+                    array("message" => "L'operation n'est pas autorise", "status" => "erreur")
                 );
+                exit;
             }
-
         } else {
             echo json_encode(
-                array("message" => "L'operation n'est pas autorise", "status" => "erreur")
+                array("message" => "Veuillez verifier vos identifiants", "status" => "erreur")
             );
             exit;
         }

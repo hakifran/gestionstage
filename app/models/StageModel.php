@@ -111,10 +111,11 @@ class StageModel
     }
 
     // list des periodes
-    function list() {
+    public function list_par_utilisateur()
+    {
         $stageDao = new StageDao();
         $stages = [];
-        foreach ($stageDao->list() as $stage) {
+        foreach ($stageDao->list_par_utilisateur() as $stage) {
             array_push($stages, ["idPeriode" => $periode["idPeriode"], "dateDebut" => $periode["dateDebut"], "dateFin" => $periode["dateFin"], "intitule" => $periode["intitule"], "courant" => $periode["courant"]]);
         }
         return $periodes;

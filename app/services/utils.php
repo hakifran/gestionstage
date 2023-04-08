@@ -10,7 +10,9 @@ class Utils
     {
         foreach ($parametre_obligatoire as $param) {
             if (!isset($params->{$param})) {
-                print "Le parametre " . $param . " n'est pas disponible";
+                echo json_encode(
+                    array("message" => "Le parametre " . $param . " n'est pas disponible", "status" => "erreur")
+                );
                 exit;
             }
         }
