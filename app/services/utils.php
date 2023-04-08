@@ -10,7 +10,9 @@ class Utils
     {
         foreach ($parametre_obligatoire as $param) {
             if (!isset($params->{$param})) {
-                print "Le parametre " . $param . " n'est pas disponible";
+                echo json_encode(
+                    array("message" => "Le parametre " . $param . " n'est pas disponible", "status" => "erreur")
+                );
                 exit;
             }
         }
@@ -24,7 +26,7 @@ class Utils
 
         if (!$jwt_session) {
             echo json_encode(
-                array("message" => "Pas de connexion possible", "status" => "error")
+                array("message" => "Pas de connexion possible", "status" => "erreur")
             );
             exit;
         }
@@ -33,7 +35,7 @@ class Utils
             $jwt = JWT::decode($tousLesHeaders["Authorization"], new Key($secret_key, 'HS256'));
         } catch (Exception $e) {
             echo json_encode(
-                array("message" => $e->getMessage(), "status" => "error")
+                array("message" => $e->getMessage(), "status" => "erreur")
             );
             exit;
         }

@@ -3,17 +3,19 @@ require_once "../app/services/utils.php";
 require "../vendor/autoload.php";
 use \Firebase\JWT\JWT;
 
-if (!isset($_SERVER["PHP_AUTH_USER"])) {
-    header("WWW-Authenticate: Basic realm=\"Private Area\"");
-    header("HTTP/1.0 401 Unauthorized");
-    print "Désolé, vous devez vous authentifier en donnant votre nom d'utilisateur et mot de passe";
-    exit;
-} else {
-    if (($_SERVER["PHP_AUTH_USER"] == 'admin' && $_SERVER["PHP_AUTH_PW"] == "@admin")) {
-        class connexion extends Controller
-        {
-            public function login()
-            {
+class connexion extends Controller
+{
+
+    public function login()
+    {
+        if (!isset($_SERVER["PHP_AUTH_USER"])) {
+            header("WWW-Authenticate: Basic realm=\"Private Area\"");
+            header("HTTP/1.0 401 Unauthorized");
+            print "Désolé, vous devez vous authentifier en donnant votre nom d'utilisateur et mot de passe";
+            exit;
+        } else {
+            $password_config = require '../userpassword.php';
+            if (($_SERVER["PHP_AUTH_USER"] == $password_config["USER_NAME"] && $_SERVER["PHP_AUTH_PW"] == $password_config["USER_PASSWORD"])) {
                 if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     $params = json_decode(file_get_contents('php://input'));
                     $utils = new Utils();
@@ -25,7 +27,7 @@ if (!isset($_SERVER["PHP_AUTH_USER"])) {
                     $id = null;
                     switch ($typeUtilisateur) {
                         case "etudiant":
-                            $etudiant = $this->model('EnseignantModel');
+                            $etudiant = $this->model('EtudiantModel');
                             $utilisateur = $etudiant->recherche_par_email($email);
                             $id = $utilisateur["idEtudiant"];
                             break;
@@ -42,10 +44,11 @@ if (!isset($_SERVER["PHP_AUTH_USER"])) {
                             break;
                     }
                     if ($utilisateur == null || count($utilisateur) < 1) {
-                        echo json_encode(array("status" => "error", "message" => "L'addresse email ou le mot de password n'est pas correcte"));
+                        echo json_encode(array("status" => "erreur", "message" => "L'addresse email ou le mot de password n'est pas correcte"));
                         exit;
                     } else {
                         $emailUtilisateur = $utilisateur["email"];
+
                         $passwordUtilisateur = $utilisateur["password"];
                         $valideUtilisateur = $utilisateur["valide"];
                         $nomUtilisateur = $utilisateur["nom"];
@@ -53,7 +56,7 @@ if (!isset($_SERVER["PHP_AUTH_USER"])) {
                         $idUtilisateur = $id;
                         if (password_verify($password, $passwordUtilisateur)) {
                             if ($valideUtilisateur != 1) {
-                                echo json_encode(array("status" => "error", "message" => "L'utilisateur non encore valide par l'admin"));
+                                echo json_encode(array("status" => "erreur", "message" => "L'utilisateur non encore valide par l'admin"));
                                 exit;
                             }
                             $payload = [
@@ -70,7 +73,6 @@ if (!isset($_SERVER["PHP_AUTH_USER"])) {
                             ];
                             $secret_key = "etude thematique";
                             $jwt = JWT::encode($payload, $secret_key, 'HS256');
-                            session_start();
                             $_SESSION['user_info'] = $payload;
                             echo json_encode([
                                 'statu' => 'ok',
@@ -91,17 +93,86 @@ if (!isset($_SERVER["PHP_AUTH_USER"])) {
                     ]);
                     exit;
                 }
-            }
-
-            function parametre_obligatoire()
-            {
-                return array("email", "password", "typeUtilisateur");
+            } else {
+                header("WWW-Authenticate: Basic realm=\"Private Area\"");
+                header("HTTP/1.0 401 Unauthorized");
+                print "Veuillez verifier vos identifiants";
+                exit;
             }
         }
-    } else {
-        header("WWW-Authenticate: Basic realm=\"Private Area\"");
-        header("HTTP/1.0 401 Unauthorized");
-        print "Veuillez verifier vos identifiants";
-        exit;
+    }
+
+    public function create_admin()
+    {
+        if (!isset($_SERVER["PHP_AUTH_USER"])) {
+            header("WWW-Authenticate: Basic realm=\"Private Area\"");
+            header("HTTP/1.0 401 Unauthorized");
+            print "Désolé, vous devez vous authentifier en donnant votre nom d'utilisateur et mot de passe";
+            exit;
+        } else {
+            $password_config = require '../userpassword.php';
+            if (($_SERVER["PHP_AUTH_USER"] == $password_config["ADMIN_NAME"] && $_SERVER["PHP_AUTH_PW"] == $password_config["ADMIN_PASSWORD"])) {
+                if ($_SERVER["REQUEST_METHOD"] == "POST") {
+                    header("Content-type: application/json");
+                    $utils = new Utils();
+
+                    $params = json_decode(file_get_contents('php://input'));
+                    // vérifier si tous les paramètres nécessaire ont été fournis
+                    $utils->verifier_les_parametres($params, $this->parametre_obligatoire_admin());
+
+                    $personne = $this->model('Personne');
+                    // allouer dles valeur à l'objet personne
+                    $personne = $this->get_personne($personne, $params);
+                    // créer la personne et retourne son identifiant
+                    $personneId = (int) $personne->create_admin();
+
+                    if ($personneId != null) {
+                        $params->id = (int) $personneId;
+                        echo json_encode(
+                            array("data" => $params, "status" => "ok")
+                        );
+                    } else {
+                        echo json_encode(
+                            array("message" => "Une erreur s'est produite", "status" => "erreur")
+                        );
+                    }
+
+                } else {
+                    echo json_encode(
+                        array("message" => "L'operation n'est pas autorise", "status" => "erreur")
+                    );
+                    exit;
+                }
+
+            } else {
+                header("WWW-Authenticate: Basic realm=\"Private Area\"");
+                header("HTTP/1.0 401 Unauthorized");
+                echo json_encode(
+                    array("message" => "Veuillez verifier vos identifiants", "status" => "erreur")
+                );
+                exit;
+            }
+        }
+    }
+
+    public function parametre_obligatoire()
+    {
+        return array("email", "password", "typeUtilisateur");
+    }
+
+    public function parametre_obligatoire_admin()
+    {
+        return array("nom", "prenom", "email", "password", "admin", "valide");
+    }
+
+    private function get_personne($personne, $params)
+    {
+        $personne->setNom($params->nom);
+        $personne->setPrenom($params->prenom);
+        $personne->setEmail($params->email);
+        $personne->setPassword($params->password);
+        $personne->setAdmin($params->admin);
+        $personne->setValide($params->valide);
+        return $personne;
     }
 }

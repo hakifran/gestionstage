@@ -15,7 +15,25 @@ class PersonneDao
             $connexion->prepare($sql)->execute([$personne->getNom(), $personne->getPrenom(), $personne->getEmail(), $passwrd_hash]);
         } catch (Exception $e) {
             echo json_encode(
-                array("message" => $e->getMessage(), "status" => "error")
+                array("message" => $e->getMessage(), "status" => "erreur")
+            );
+            exit;
+        }
+        return $connexion->lastInsertId();
+    }
+
+    public function create_admin($personne)
+    {
+        $bd = new Basededonnee();
+        $connexion = $bd->connexion();
+
+        $sql = "INSERT INTO personne (nom, prenom, email, password, admin, valide) VALUES (?,?,?,?,?,?)";
+        $passwrd_hash = password_hash($personne->getPassword(), PASSWORD_DEFAULT);
+        try {
+            $connexion->prepare($sql)->execute([$personne->getNom(), $personne->getPrenom(), $personne->getEmail(), $passwrd_hash, $personne->getAdmin(), $personne->getValide()]);
+        } catch (Exception $e) {
+            echo json_encode(
+                array("message" => $e->getMessage(), "status" => "erreur")
             );
             exit;
         }
