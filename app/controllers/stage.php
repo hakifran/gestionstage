@@ -11,14 +11,54 @@ class Stage extends Controller
             $utils->verifier_authentification_utilisateur();
             $stage = $this->model('StageModel');
             header("Content-type: application/json");
-            if (isset($_GET["idUtilisateur"]) && isset($_GET["typeUtilisateur"]) && $_SESSION['user_info']["data"]["type"] == $_GET["typeUtilisateur"] && $_GET["typeUtilisateur"] == $_SESSION['user_info']["data"]["id"]) {
-                echo json_encode(array("data" => $stage->list_par_utilisateur(), "status" => "ok"));
-            } else {
-                echo json_encode(array("message" => "Manque d'information sur l'utilisateur connecté", "status" => "erreur"));
+            if (isset($_GET['idUtilisateur'])) {
+                echo json_encode(array("data" => $stage->list($_GET['idUtilisateur'], $_SESSION['user_info']["data"]["type"], $_GET['attribue']), "status" => "ok"));
             }
 
         } else {
-            print "L'opération n'est pas autorisé";
+            echo json_encode(array("message" => "L'opération n'est pas autorisé", "status" => "erreur"));
+            exit;
+        }
+    }
+
+    public function list_sujet_disponible()
+    {
+        if ($_SERVER["REQUEST_METHOD"] == "GET") {
+            $utils = new Utils();
+            // vérifier si l'utilisateur est authentifier
+            $utils->verifier_authentification_utilisateur();
+            $stage = $this->model('StageModel');
+            header("Content-type: application/json");
+            echo json_encode(array("data" => $stage->list_sujet_disponible($_SESSION['user_info']["data"]["type"]), "status" => "ok"));
+
+        } else {
+            echo json_encode(array("message" => "L'opération n'est pas autorisé", "status" => "erreur"));
+            exit;
+        }
+    }
+
+    public function auto_attribue()
+    {
+        if ($_SERVER["REQUEST_METHOD"] == "PATCH") {
+            $params = json_decode(file_get_contents('php://input'));
+            $utils = new Utils();
+            // vérifier si l'utilisateur est authentifier
+            $utils->verifier_authentification_utilisateur();
+            $utils->verifier_les_parametres($params, $this->auto_attribue_paramettre_obligatoire());
+            $stage = $this->model('StageModel');
+            header("Content-type: application/json");
+            $stage = $stage->auto_attribue($params, $_SESSION['user_info']["data"]["type"]);
+            if ($stage == true) {
+                echo json_encode(
+                    array("data" => "Le stage a été attribué", "status" => "ok")
+                );
+            } else {
+                echo json_encode(
+                    array("message" => "Une erreur s'est produite", "status" => "erreur")
+                );
+            }
+        } else {
+            echo json_encode(array("message" => "L'opération n'est pas autorisé", "status" => "erreur"));
             exit;
         }
     }
@@ -130,6 +170,20 @@ class Stage extends Controller
         }
 
         if ($_SESSION['user_info']["data"]["type"] == "etudiant") {
+            array_push($params, "idEtudiant");
+        }
+        return $params;
+    }
+
+    private function auto_attribue_paramettre_obligatoire()
+    {
+        $params = array("idStage");
+
+        if ($_SESSION['user_info']["data"]["type"] == "etudiant") {
+            array_push($params, "idEnseignant");
+        }
+
+        if ($_SESSION['user_info']["data"]["type"] == "enseignant") {
             array_push($params, "idEtudiant");
         }
         return $params;

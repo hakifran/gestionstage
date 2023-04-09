@@ -111,14 +111,73 @@ class StageModel
     }
 
     // list des periodes
-    public function list_par_utilisateur()
+    function list($idUtilisateur, $typeUtilisateur, $attribue) {
+        $stageDao = new StageDao();
+        $stages = [];
+        $type_values = $this->typeUtilisateur($typeUtilisateur, $attribue);
+        foreach ($stageDao->list($idUtilisateur, $type_values) as $stage) {
+            $stag = [
+                "idStage" => $stage["idPeriode"],
+                "intituleProjet" => $stage["intituleProjet"],
+                "nomEntreprise" => $stage["nomEntreprise"],
+                "adresse" => $stage["adresse"],
+            ];
+
+            if ($attribue == true) {
+                $stag["nom" . ucfirst($type_values['autreUtilisateur']) . ""] = $stage["nom"];
+                $stag["prenom" . ucfirst($type_values['autreUtilisateur']) . ""] = $stage["prenom"];
+                $stag["email" . ucfirst($type_values['autreUtilisateur']) . ""] = $stage["email"];
+                if ($typeUtilisateur == "enseignant") {
+                    $stag["numeroEtudiant"] = $stage["numeroEtudiant"];
+                    $stag["numeroNational"] = $stage["numeroNational"];
+                    $stag["parcours"] = $stage["parcours"];
+                } else {
+                    $stag["titre"] = $stage["titre"];
+                    $stag["specialisation"] = $stage["specialisation"];
+                }
+            }
+            array_push(
+                $stages,
+                $stag
+            );
+        }
+        return $stages;
+    }
+
+    public function list_sujet_disponible($typeUtilisateur)
     {
         $stageDao = new StageDao();
         $stages = [];
-        foreach ($stageDao->list_par_utilisateur() as $stage) {
-            array_push($stages, ["idPeriode" => $periode["idPeriode"], "dateDebut" => $periode["dateDebut"], "dateFin" => $periode["dateFin"], "intitule" => $periode["intitule"], "courant" => $periode["courant"]]);
+        $type_values = $this->typeUtilisateur($typeUtilisateur);
+        foreach ($stageDao->list_sujet_disponible($type_values) as $stage) {
+            $stag = [
+                "idStage" => $stage["idPeriode"],
+                "intituleProjet" => $stage["intituleProjet"],
+                "nomEntreprise" => $stage["nomEntreprise"],
+                "adresse" => $stage["adresse"],
+            ];
+            array_push(
+                $stages,
+                $stag
+            );
         }
-        return $periodes;
+        return $stages;
+    }
+
+    public function auto_attribue($params, $typeUtilisateur)
+    {
+        $stageDao = new StageDao();
+        $type_values = $this->typeUtilisateur($typeUtilisateur);
+        return $stageDao->auto_attribue($params, $type_values);
+    }
+
+    private function typeUtilisateur($typeUtilisateur, $attribue = false)
+    {
+        return [
+            "utilisateur" => $typeUtilisateur,
+            "autreUtilisateur" => ($typeUtilisateur == "enseignant" ? "etudiant" : "enseignant"),
+            "attribue" => ($attribue == true ? "IS NOT NULL" : "IS NULL"),
+        ];
     }
 
     // trouver une periode par son identifiant
