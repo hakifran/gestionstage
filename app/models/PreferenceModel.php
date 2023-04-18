@@ -1,11 +1,13 @@
 <?php
-require_once '../app/db/dao/nombreStageDao.php';
-class NombreStageModel
+require_once '../app/db/dao/preferenceDao.php';
+require_once '../app/db/dao/stageDao.php';
+class PreferenceModel
 {
     private $stageIds;
     private $idEnseignant;
     private $dateAjout;
-
+    private $stages;
+    private $periode;
     // Setters
     public function setStageIds($stageIds)
     {
@@ -20,6 +22,16 @@ class NombreStageModel
     public function setDateAjout($dateAjout)
     {
         $this->dateAjout = $dateAjout;
+    }
+
+    public function setStages($stages)
+    {
+        $this->stages = $stages;
+    }
+
+    public function setPeriode($periode)
+    {
+        return $this->periode = $periode;
     }
 
     // Getters
@@ -38,18 +50,42 @@ class NombreStageModel
         return $this->dateAjout;
     }
 
+    public function getStages()
+    {
+        return $this->stages;
+    }
+
+    public function getPeriode()
+    {
+        return $this->periode;
+    }
+
+    public function stageDansLaperiode($stages, $periode)
+    {
+        $stageDao = new StageDao();
+        $stagesIds = [];
+        foreach ($stageDao->stageDansLaperiode(implode(",", $stages), $periode) as $stage) {
+            array_push($stagesIds, $stage["idStage"]);
+        }
+        return $stagesIds;
+    }
+
     public function create()
     {
+        $stages = $this->stageDansLaperiode($this->getStageIds(), $this->getPeriode());
         $preferenceDao = new PreferenceDao();
-        return $preferenceDao->create($this);
+        if (empty($stages)) {
+            return null;
+        }
+        return $preferenceDao->create($this, $stages);
     }
 
     // list des periodes
     function list($idUtilisateur) {
         $preferenceDao = new PreferenceDao();
         $preferences = [];
-        foreach ($preferenceDao->list($idUtilisateur) as $preference) {
-            array_push($nombreStages, ["idNombreStage" => $nombreStage["idNombreStage"], "periode" => $nombreStage["intitule"], "debut" => $nombreStage["dateDebut"], "fin" => $nombreStage["dateFin"], "nombre" => $nombreStage["nombre"]]);
+        foreach ($preferenceDao->list($idUtilisateur) as $preferenceDao) {
+            array_push($preferences, ["id" => $nombreStage["idNombreStage"], "periode" => $nombreStage["intitule"], "debut" => $nombreStage["dateDebut"], "fin" => $nombreStage["dateFin"], "nombre" => $nombreStage["nombre"]]);
         }
         return $nombreStages;
     }

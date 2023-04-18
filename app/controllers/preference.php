@@ -9,7 +9,7 @@ class Preference extends Controller
             $utils = new Utils();
             // vérifier si l'utilisateur est authentifier
             $utils->verifier_authentification_utilisateur();
-            $preference = $this->model('Preference');
+            $preference = $this->model('PreferenceModel');
             header("Content-type: application/json");
             if (!$_GET["idUtilisateur"]) {
                 echo json_encode(array("message" => "L'identifiant de l'utilisateur manque", "status" => "erreur"));
@@ -67,7 +67,7 @@ class Preference extends Controller
                 );
                 exit;
             }
-            $preference = $this->model('Preference');
+            $preference = $this->model('PreferenceModel');
 
             // allouer des valeurs à l'objet stage
             if ($_SESSION['user_info']["data"]["type"] != "enseignant") {
@@ -84,7 +84,7 @@ class Preference extends Controller
                 exit;
             }
 
-            $preference = $this->get_nombre_stage($preference, $params);
+            $preference = $this->get_prefence($preference, $params);
             $preferenceId = $preference->create();
 
             header("Content-type: application/json");
@@ -110,16 +110,15 @@ class Preference extends Controller
 
     private function parametre_obligatoire()
     {
-        return array("stages", "idEnseignant");
+        return array("stages", "idEnseignant", "idPeriode");
     }
 
-    private function get_nombre_stage($nombreStage, $params)
+    private function get_prefence($preference, $params)
     {
-        $nombreStage->setNombre($params->nombre);
-        $nombreStage->setIdEnseignant($params->idEnseignant);
-        $nombreStage->setIdPeriode($params->idPeriode);
-
-        return $nombreStage;
+        $preference->setIdEnseignant($params->idEnseignant);
+        $preference->setStageIds($params->stages);
+        $preference->setPeriode($params->idPeriode);
+        return $preference;
     }
 
 }

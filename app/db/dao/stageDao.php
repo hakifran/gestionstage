@@ -38,6 +38,23 @@ class StageDao
         return $connexion->query($sql);
     }
 
+    public function stageDansLaperiode($stages, $periode)
+    {
+        $bd = new Basededonnee();
+        $connexion = $bd->connexion();
+
+        $sql = "SELECT * FROM `stage`
+        JOIN periode ON(periode.idPeriode=stage.idPeriode)
+        JOIN etudiant
+        ON (stage.idEtudiant=etudiant.idEtudiant)
+        JOIN personne ON(etudiant.idPersonne=personne.idPersonne)
+        WHERE stage.idEnseignant IS NULL
+        AND stage.idStage IN(" . $stages . ")
+        AND stage.idPeriode = " . $periode . "";
+
+        return $connexion->query($sql);
+    }
+
     public function list_sujet_disponible($typeUtilisateur)
     {
         $bd = new Basededonnee();
