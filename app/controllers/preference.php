@@ -36,9 +36,23 @@ class Preference extends Controller
             $utils = new Utils();
             // vérifier si l'utilisateur est authentifier
             $utils->verifier_authentification_utilisateur();
-            if (isset($_GET["id"])) {
-                $preference = $this->model('Preference');
-                echo json_encode(array("data" => $preference->get($_GET["id"]), "status" => "ok"));
+            if (isset($_GET["idUtilisateur"])) {
+                if ($_GET["idUtilisateur"] != $_SESSION['user_info']["data"]["id"]) {
+                    echo json_encode(
+                        array("message" => "Ce n'est pas l'utilisateur connecté", "status" => "erreur")
+                    );
+                    exit;
+
+                }
+                if (!isset($_GET["idPeriode"])) {
+                    echo json_encode(
+                        array("message" => "L'idPeriode doit être fourni", "status" => "erreur")
+                    );
+                    exit;
+                }
+                $preference = $this->model('PreferenceModel');
+                echo json_encode(array("data" => $preference->get($_GET["idUtilisateur"], $_GET["idPeriode"]), "status" => "ok"));
+
             } else {
                 echo json_encode(array("message" => "L'identifiant doit etre fournis", "status" => "erreur"));
                 exit;
@@ -69,7 +83,6 @@ class Preference extends Controller
             }
             $preference = $this->model('PreferenceModel');
 
-            // allouer des valeurs à l'objet stage
             if ($_SESSION['user_info']["data"]["type"] != "enseignant") {
                 echo json_encode(
                     array("message" => "Ce n'est pas un enseignant", "status" => "erreur")

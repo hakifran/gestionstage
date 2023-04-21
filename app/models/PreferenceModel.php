@@ -1,6 +1,8 @@
 <?php
 require_once '../app/db/dao/preferenceDao.php';
 require_once '../app/db/dao/stageDao.php';
+require_once '../app/db/dao/periodeDao.php';
+
 class PreferenceModel
 {
     private $stageIds;
@@ -59,7 +61,7 @@ class PreferenceModel
     {
         return $this->periode;
     }
-
+    // Recuperer les stages dans une période donnée
     public function stageDansLaperiode($stages, $periode)
     {
         $stageDao = new StageDao();
@@ -69,7 +71,7 @@ class PreferenceModel
         }
         return $stagesIds;
     }
-
+    // créer une preference
     public function create()
     {
         $stages = $this->stageDansLaperiode($this->getStageIds(), $this->getPeriode());
@@ -80,27 +82,57 @@ class PreferenceModel
         return $preferenceDao->create($this, $stages);
     }
 
-    // list des periodes
-    function list($idUtilisateur) {
-        $preferenceDao = new PreferenceDao();
-        $preferences = [];
-        foreach ($preferenceDao->list($idUtilisateur) as $preferenceDao) {
-            array_push($preferences, ["id" => $nombreStage["idNombreStage"], "periode" => $nombreStage["intitule"], "debut" => $nombreStage["dateDebut"], "fin" => $nombreStage["dateFin"], "nombre" => $nombreStage["nombre"]]);
+    public function toutesPeriodes()
+    {
+        $periodeDao = new PeriodeDao();
+        $periodes = [];
+        foreach ($periodeDao->list() as $periode) {
+            array_push($periodes, ["idPeriode" => $periode["idPeriode"], "dateDebut" => $periode["dateDebut"], "dateFin" => $periode["dateFin"], "intitule" => $periode["intitule"], "courant" => $periode["courant"]]);
         }
-        return $nombreStages;
+        return $periodes;
+
     }
 
-    // trouver une periode par son identifiant
-    public function get($id)
+    // list des preferences
+    function list($idUtilisateur) {
+        $periodes = $this->toutesPeriodes();
+        $preferenceDao = new PreferenceDao();
+        $preferences = [];
+        foreach ($periodes as $periode) {
+            $preference = $preferenceDao->preferenceParPeriode($idUtilisateur, $periode["idPeriode"]);
+            if ($preference->rowCount() > 0) {
+                $periode["stages"] = [];
+                foreach ($preference as $pref) {
+                    $stage = ["idStage" => $pref["idStage"], "intituleProjet" => $pref["intituleProjet"], "nomEntreprise" => $pref["nomEntreprise"], "adresse" => $pref["adresse"]];
+                    array_push($periode["stages"], $stage);
+                }
+                array_push($preferences, $periode);
+            }
+
+        }
+        return $preferences;
+    }
+
+    // trouver une preference par l'id de l'enseignant et l'id de la periode
+    public function get($idUtilisateur, $idPeriode)
     {
-        $nombreStageDao = new NombreStageDao();
-        $nombreStage = $nombreStageDao->get($id);
-        if ($nombreStage) {
-            return ["idNombreStage" => $nombreStage["idNombreStage"], "periode" => $nombreStage["intitule"], "debut" => $nombreStage["dateDebut"], "fin" => $nombreStage["dateFin"], "nombre" => $nombreStage["nombre"]];
+        $preferenceDao = new PreferenceDao();
+        $periode = array_filter($this->toutesPeriodes(), function ($period) use ($idPeriode) {
+            return $period["idPeriode"] == $idPeriode;
+        })[0];
+
+        if ($periode) {
+            $preference = $preferenceDao->preferenceParPeriode($idUtilisateur, $idPeriode);
+            if ($preference->rowCount() > 0) {
+                $periode["stages"] = [];
+                foreach ($preference as $pref) {
+                    $stage = ["idStage" => $pref["idStage"], "intituleProjet" => $pref["intituleProjet"], "nomEntreprise" => $pref["nomEntreprise"], "adresse" => $pref["adresse"]];
+                    array_push($periode["stages"], $stage);
+                }
+            }
         } else {
             return [];
         }
-
+        return $periode;
     }
-
 }
