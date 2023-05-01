@@ -38,6 +38,52 @@ class StageDao
         return $connexion->query($sql);
     }
 
+    public function get($id)
+    {
+        $bd = new Basededonnee();
+        $connexion = $bd->connexion();
+
+        $sql = "SELECT *, etudiantPersonne.nom as nomEtudiant, etudiantPersonne.prenom as prenomEtudiant, enseignantPersonne.nom as nomEnseignant,
+        enseignantPersonne.prenom as prenomEnseignant, periode.intitule as periodeIntitule FROM `stage` JOIN periode ON(periode.idPeriode=stage.idPeriode)
+        LEFT JOIN enseignant ON(stage.idEnseignant=enseignant.idEnseignant)
+        LEFT JOIN etudiant ON (stage.idEtudiant=etudiant.idEtudiant)
+        LEFT JOIN personne as enseignantPersonne ON(enseignant.idPersonne=enseignantPersonne.idPersonne)
+        LEFT JOIN personne as etudiantPersonne ON(etudiant.idPersonne=etudiantPersonne.idPersonne)
+        WHERE stage.idStage=" . $id . "";
+
+        $stmt = $connexion->prepare($sql);
+        $stmt->execute();
+        return $stmt->fetch();
+    }
+
+    public function stagesDansLaPeriodePourLenseingnant($idPeriode, $idEnseignant)
+    {
+        $bd = new Basededonnee();
+        $connexion = $bd->connexion();
+
+        $sql = "SELECT * FROM `stage`
+        JOIN periode ON(periode.idPeriode=stage.idPeriode)
+        JOIN enseignant
+        ON (stage.idEnseignant=enseignant.idEnseignant)
+        JOIN etudiant
+        ON (stage.idEtudiant=etudiant.idEtudiant)
+        AND periode.idPeriode=" . $idPeriode . " AND enseignant.idEnseignant=" . $idEnseignant . "";
+
+        return $connexion->query($sql);
+
+    }
+
+    public function NombrestagesDansLaPeriodePourLesseingnant($idPeriode, $idEnseignants)
+    {
+        $bd = new Basededonnee();
+        $connexion = $bd->connexion();
+
+        $sql = "SELECT COUNT(*), idEnseignant FROM stage WHERE idEnseignant IN(" . $stages . ") and idPeriode=" . $periode . " GROUP BY idEnseignant";
+        echo $sql;
+        return $connexion->query($sql);
+
+    }
+
     public function stageDansLaperiode($stages, $periode)
     {
         $bd = new Basededonnee();
@@ -67,14 +113,31 @@ class StageDao
         return $connexion->query($sql);
     }
 
+    public function list_stage_non_attribue($idStages, $idPeriode)
+    {
+        $bd = new Basededonnee();
+        $connexion = $bd->connexion();
+
+        $sql = "SELECT * FROM `stage`
+        JOIN periode ON(periode.idPeriode=stage.idPeriode)
+        JOIN etudiant
+        ON (stage.idEtudiant=etudiant.idEtudiant)
+        JOIN personne ON(etudiant.idPersonne=personne.idPersonne)
+        WHERE stage.idEnseignant IS NULL
+        AND stage.idStage IN(" . $idStages . ") AND periode.idPeriode=" . $idPeriode . "";
+
+        return $connexion->query($sql);
+
+    }
+
     public function auto_attribue($params, $type_values)
     {
         $bd = new Basededonnee();
         $connexion = $bd->connexion();
-        $sql = "UPDATE stage SET id" . ucfirst($type_values["autreUtilisateur"]) . "=? where idStage=?";
+        $sql = "UPDATE stage SET stage.id" . ucfirst($type_values["autreUtilisateur"]) . "=?, stage.attribue=? where stage.idStage=?";
 
         try {
-            $connexion->prepare($sql)->execute([$params->{"id" . ucfirst($type_values["autreUtilisateur"]) . ""}, $params->idStage]);
+            $connexion->prepare($sql)->execute([$params->{"id" . ucfirst($type_values["autreUtilisateur"]) . ""}, '1', $params->idStage]);
         } catch (Exception $e) {
             echo json_encode(
                 array("message" => $e->getMessage(), "status" => "erreur")
@@ -85,13 +148,4 @@ class StageDao
         return true;
     }
 
-    public function get($id)
-    {
-        $bd = new Basededonnee();
-        $connexion = $bd->connexion();
-
-        $stmt = $connexion->prepare("SELECT * FROM periode where idPeriode=:id");
-        $stmt->execute(['id' => $id]);
-        return $stmt->fetch();
-    }
 }

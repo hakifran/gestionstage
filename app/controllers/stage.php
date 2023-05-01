@@ -41,12 +41,42 @@ class Stage extends Controller
     {
         if ($_SERVER["REQUEST_METHOD"] == "PATCH") {
             $params = json_decode(file_get_contents('php://input'));
+            $params = $this->add_params($params);
+
             $utils = new Utils();
             // vérifier si l'utilisateur est authentifier
             $utils->verifier_authentification_utilisateur();
             $utils->verifier_les_parametres($params, $this->auto_attribue_paramettre_obligatoire());
             $stage = $this->model('StageModel');
+            $stageDispo = $stage->get($params->idStage);
+            if (!$stageDispo) {
+                echo json_encode(
+                    array("message" => "Le stage n'existe pas", "status" => "erreur")
+                );
+                exit;
+
+            }
+
             header("Content-type: application/json");
+            if (!in_array($_SESSION['user_info']["data"]["type"], ["etudiant", "enseignant"])) {
+                echo json_encode(
+                    array("message" => "L'utilisateur doit être soit un étudiant ou un enseignant", "status" => "erreur")
+                );
+                exit;
+            }
+
+            $stagesDansLaPeriode = $stage->stagesDansLaPeriodePourLenseingnant($stageDispo["idPeriode"], $params->idEnseignant);
+            $nombreStage = $this->model('NombreStageModel');
+
+            $nombreLimite = $nombreStage->nombreStageParEnseignantParPeriode($stageDispo["idPeriode"], $params->idEnseignant);
+
+            if ((int) $nombreLimite["nombre"] > 0 && count($stagesDansLaPeriode) >= (int) $nombreLimite["nombre"]) {
+                echo json_encode(
+                    array("message" => "L'enseignant a déjà atteint sa limite pour cette periode", "status" => "erreur")
+                );
+                exit;
+            }
+
             $stage = $stage->auto_attribue($params, $_SESSION['user_info']["data"]["type"]);
             if ($stage == true) {
                 echo json_encode(
@@ -123,6 +153,108 @@ class Stage extends Controller
 
     }
 
+    public function attribue()
+    {
+        if ($_SERVER["REQUEST_METHOD"] == "PATCH") {
+            $params = json_decode(file_get_contents('php://input'));
+
+            $utils = new Utils();
+            // vérifier si l'utilisateur est authentifier
+            $utils->verifier_authentification_utilisateur();
+            header("Content-type: application/json");
+            if ($_SESSION['user_info']["data"]["type"] != "admin") {
+                echo json_encode(
+                    array("message" => "L'utilisateur doit être un admin", "status" => "erreur")
+                );
+                exit;
+            }
+
+            $utils->verifier_les_parametres($params, $this->attribue_paramettre_obligatoire());
+            $stage = $this->model('StageModel');
+            if (gettype($params->idStages) != 'array') {
+                echo json_encode(
+                    array("message" => "Le paramètre idStage doit être un tableau contenant la liste des identifiants des stages", "status" => "erreur")
+                );
+                exit;
+            }
+            $stageNonAttribue = $stage->list_stage_non_attribue($params->idStages, $params->idPeriode);
+
+            if (!$stageNonAttribue) {
+                echo json_encode(
+                    array("message" => "Aucun stage non attribué", "status" => "erreur")
+                );
+                exit;
+            }
+            $preference = $this->model('PreferenceModel');
+
+            $preferences = $preference->list_des_preferences_lie_au_stages(implode(",", array_map(
+                fn($stage) => $stage["idStage"],
+                $stageNonAttribue
+            )), $params->idPeriode
+            );
+            $preference_existant = $this->preferencesExistant($preferences);
+            $preference_nom_existant = $this->preferencesNonExistant($preferences);
+
+            $stagesDansLaPeriode = $stage->NombrestagesDansLaPeriodePourLesseingnant($params->idPeriode,
+                array_map(
+                    fn($pref) => $pref["preferenceIdEnseignant"],
+                    $preference_existant
+                ));
+            $nombreStage = $this->model('NombreStageModel');
+
+            // $nombreLimite = $nombreStage->nombreStageParEnseignantParPeriode($stageDispo["idPeriode"], $params->idEnseignant);
+
+            // if ((int) $nombreLimite["nombre"] > 0 && count($stagesDansLaPeriode) >= (int) $nombreLimite["nombre"]) {
+            //     echo json_encode(
+            //         array("message" => "L'enseignant a déjà atteint sa limite pour cette periode", "status" => "erreur")
+            //     );
+            //     exit;
+            // }
+
+            // $stage = $stage->auto_attribue($params, $_SESSION['user_info']["data"]["type"]);
+            if ($stage == true) {
+                echo json_encode(
+                    array("data" => "Le stage a été attribué", "status" => "ok")
+                );
+            } else {
+                echo json_encode(
+                    array("message" => "Une erreur s'est produite", "status" => "erreur")
+                );
+            }
+        } else {
+            echo json_encode(array("message" => "L'opération n'est pas autorisé", "status" => "erreur"));
+            exit;
+        }
+
+    }
+
+    public function preferencesExistant($preferences)
+    {
+        return array_filter(
+            $preferences,
+            function ($preference) {
+                return $preference["date_ajout"] != null;
+            }
+        );
+
+    }
+
+    public function preferencesNonExistant($preferences)
+    {
+        return array_filter(
+            $preferences,
+            function ($preference) {
+                return $preference["date_ajout"] == null;
+            }
+        );
+
+    }
+
+    public function attributions($preferences)
+    {
+
+    }
+
     public function add_params($params)
     {
         if ($_SESSION['user_info']["data"]["type"] == "enseignant" && !isset($params->idEnseignant)) {
@@ -186,6 +318,12 @@ class Stage extends Controller
         if ($_SESSION['user_info']["data"]["type"] == "enseignant") {
             array_push($params, "idEtudiant");
         }
+        return $params;
+    }
+
+    private function attribue_paramettre_obligatoire()
+    {
+        $params = array("idStages", "idPeriode");
         return $params;
     }
 

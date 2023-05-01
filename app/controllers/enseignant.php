@@ -10,6 +10,11 @@ class Enseignant extends Controller
             $utils = new Utils();
             // vérifier si l'utilisateur est authentifier
             $utils->verifier_authentification_utilisateur();
+            if ($_SESSION['user_info']["data"]["type"] != "admin") {
+                echo json_encode(array("message" => "L'utilisateur doit être un administrateur", "status" => "erreur"));
+                exit;
+            }
+
             $enseignant = $this->model('EnseignantModel');
             header("Content-type: application/json");
 
@@ -75,6 +80,12 @@ class Enseignant extends Controller
             $utils = new Utils();
             // vérifier si l'utilisateur est authentifier
             $utils->verifier_authentification_utilisateur();
+
+            if ($_SESSION['user_info']["data"]["type"] != "admin") {
+                echo json_encode(array("message" => "L'utilisateur doit être un administrateur", "status" => "erreur"));
+                exit;
+            }
+
             $utils->verifier_les_parametres($params, $this->parametre_valide());
             $enseignant = $this->model('EnseignantModel');
             $personne = $this->model("Personne");
@@ -99,6 +110,11 @@ class Enseignant extends Controller
             $utils = new Utils();
             // vérifier si l'utilisateur est authentifier
             $utils->verifier_authentification_utilisateur();
+            if ($_SESSION['user_info']["data"]["type"] != "admin" && $_SESSION['user_info']["data"]["type"] != "enseignant") {
+                echo json_encode(array("message" => "L'utilisateur doit être un admin ou étudiant", "status" => "erreur"));
+                exit;
+            }
+
             if (isset($_GET["id"])) {
                 $enseignant = $this->model('EnseignantModel');
                 echo json_encode(array("data" => $enseignant->get($_GET["id"]), "status" => "ok"));

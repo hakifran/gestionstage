@@ -46,4 +46,20 @@ class NombreStageDao
         $stmt->execute(['id' => $id]);
         return $stmt->fetch();
     }
+
+    public function nombreStageParEnseignantParPeriode($idPeriode, $idEnseignant)
+    {
+        $bd = new Basededonnee();
+        $connexion = $bd->connexion();
+
+        $sql = "SELECT * FROM nombreStage JOIN periode ON(nombreStage.idPeriode=periode.idPeriode)
+        JOIN enseignant ON(nombreStage.idEnseignant=enseignant.idEnseignant)
+        JOIN personne ON(enseignant.idPersonne=personne.idPersonne)
+        where enseignant.idEnseignant=" . $idEnseignant . " AND periode.idPeriode=" . $idPeriode . "";
+
+        $stmt = $connexion->prepare($sql);
+        $stmt->execute();
+        return $stmt->fetch();
+
+    }
 }

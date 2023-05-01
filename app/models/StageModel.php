@@ -144,6 +144,26 @@ class StageModel
         return $stages;
     }
 
+    public function list_stage_non_attribue($idStages, $idPeriode)
+    {
+        $stageDao = new StageDao();
+        $stages = [];
+
+        foreach ($stageDao->list_stage_non_attribue(implode(",", $idStages), $idPeriode) as $stage) {
+            $stag = [
+                "idStage" => $stage["idStage"],
+                "intituleProjet" => $stage["intituleProjet"],
+                "nomEntreprise" => $stage["nomEntreprise"],
+                "adresse" => $stage["adresse"],
+            ];
+            array_push(
+                $stages,
+                $stag
+            );
+        }
+        return $stages;
+    }
+
     public function list_sujet_disponible($typeUtilisateur)
     {
         $stageDao = new StageDao();
@@ -175,22 +195,64 @@ class StageModel
     {
         return [
             "utilisateur" => $typeUtilisateur,
-            "autreUtilisateur" => ($typeUtilisateur == "enseignant" ? "etudiant" : "enseignant"),
+            "autreUtilisateur" => ($typeUtilisateur == "enseignant" ? "enseignant" : "etudiant"),
             "attribue" => ($attribue == true ? "IS NOT NULL" : "IS NULL"),
         ];
     }
 
-    // trouver une periode par son identifiant
+    // trouver un stage par son identifiant
     public function get($id)
     {
-        $periodeDao = new PeriodeDao();
-        $periode = $periodeDao->get($id);
-        if ($periode) {
-            return ["idPeriode" => $periode["idPeriode"], "dateDebut" => $periode["dateDebut"], "dateFin" => $periode["dateFin"], "intitule" => $periode["intitule"], "courant" => $periode["courant"]];
+        $stageDao = new StageDao();
+        $stage = $stageDao->get($id);
+        if ($stage) {
+            return ["idStage" => $stage["idStage"], "intituleProjet" => $stage["intituleProjet"], "nomEntreprise" => $stage["nomEntreprise"], "adresse" => $stage["adresse"], "attribue" => $stage["attribue"],
+                "valide" => $stage["valide"], "idEtudiant" => $stage["idEtudiant"], "nomEtudiant" => $stage["nomEtudiant"], "prenomEtudiant" => $stage["prenomEtudiant"],
+                "idEnseignant" => $stage["idEnseignant"], "nomEnseignant" => $stage["nomEnseignant"], "prenomEnseignant" => $stage["prenomEnseignant"], "idPeriode" => $stage["idPeriode"], "periodeIntitule" => $stage["periodeIntitule"]];
         } else {
             return [];
         }
 
+    }
+
+    public function stagesDansLaPeriodePourLenseingnant($idPeriode, $idEnseignant)
+    {
+        $stageDao = new StageDao();
+        $stages = [];
+        foreach ($stageDao->stagesDansLaPeriodePourLenseingnant($idPeriode, $idEnseignant) as $stage) {
+            $stag = [
+                "idStage" => $stage["idPeriode"],
+                "intituleProjet" => $stage["intituleProjet"],
+                "nomEntreprise" => $stage["nomEntreprise"],
+                "adresse" => $stage["adresse"],
+            ];
+            array_push(
+                $stages,
+                $stag
+            );
+        }
+        return $stages;
+    }
+
+    public function NombrestagesDansLaPeriodePourLesseingnant($idPeriode, $idEnseignants)
+    {
+        $stageDao = new StageDao();
+        $stages = [];
+        foreach ($stageDao->NombrestagesDansLaPeriodePourLesseingnant($idPeriode, implode(",", $idEnseignants)) as $stage) {
+            var_dump($stage);
+            exit;
+            $stag = [
+                "idStage" => $stage["idPeriode"],
+                "intituleProjet" => $stage["intituleProjet"],
+                "nomEntreprise" => $stage["nomEntreprise"],
+                "adresse" => $stage["adresse"],
+            ];
+            array_push(
+                $stages,
+                $stag
+            );
+        }
+        return $stages;
     }
 
 }

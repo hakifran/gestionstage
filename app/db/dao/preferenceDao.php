@@ -35,4 +35,18 @@ class PreferenceDao
 
         return $connexion->query($sql);
     }
+
+    public function list_des_preferences_lie_au_stages($idStages, $idPeriode)
+    {
+        $bd = new Basededonnee();
+        $connexion = $bd->connexion();
+        $sql = "SELECT *, preference.idEnseignant as preferenceIdEnseignant FROM stage JOIN periode ON(stage.idPeriode=periode.idPeriode)
+        LEFT JOIN preference ON(preference.idStage=stage.idStage)
+        LEFT JOIN enseignant ON(enseignant.idEnseignant=preference.idEnseignant)
+        LEFT JOIN nombreStage ON(enseignant.idEnseignant=nombreStage.idEnseignant)
+        WHERE stage.idStage IN(" . $idStages . ") AND periode.idPeriode=" . $idPeriode . "
+        ORDER BY date_ajout";
+
+        return $connexion->query($sql);
+    }
 }

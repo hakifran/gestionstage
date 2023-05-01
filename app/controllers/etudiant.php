@@ -10,6 +10,10 @@ class Etudiant extends Controller
             $utils = new Utils();
             // vérifier si l'utilisateur est authentifier
             $utils->verifier_authentification_utilisateur();
+            if ($_SESSION['user_info']["data"]["type"] != "admin") {
+                echo json_encode(array("message" => "L'utilisateur doit être un administrateur", "status" => "erreur"));
+                exit;
+            }
             $etudiant = $this->model('EtudiantModel');
             header("Content-type: application/json");
             echo json_encode(array("data" => $etudiant->list(), "status" => "ok"));
@@ -26,6 +30,11 @@ class Etudiant extends Controller
             $utils = new Utils();
             // vérifier si l'utilisateur est authentifier
             $utils->verifier_authentification_utilisateur();
+            if ($_SESSION['user_info']["data"]["type"] != "admin" && $_SESSION['user_info']["data"]["type"] != "etudiant") {
+                echo json_encode(array("message" => "L'utilisateur doit être un admin ou étudiant", "status" => "erreur"));
+                exit;
+            }
+
             if (isset($_GET["id"])) {
                 $etudiant = $this->model('EtudiantModel');
                 echo json_encode(array("data" => $etudiant->get($_GET["id"]), "status" => "ok"));
@@ -97,10 +106,15 @@ class Etudiant extends Controller
             // vérifier si l'utilisateur est authentifier
             $utils->verifier_authentification_utilisateur();
 
+            if ($_SESSION['user_info']["data"]["type"] != "admin") {
+                echo json_encode(array("message" => "L'utilisateur doit être un administrateur", "status" => "erreur"));
+                exit;
+            }
             $utils->verifier_les_parametres($params, $this->parametre_valide());
             $etudiant = $this->model('EtudiantModel');
             $personne = $this->model("Personne");
             $etudian = $etudiant->get($params->id);
+
             header("Content-type: application/json");
             if (count($etudian) > 0 && (int) $etudian["idPersonne"] > 0) {
                 $count = $personne->valider($etudian["idPersonne"], $this->boolean_valide($params->valide));

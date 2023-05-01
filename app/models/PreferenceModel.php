@@ -82,6 +82,16 @@ class PreferenceModel
         return $preferenceDao->create($this, $stages);
     }
 
+    public function list_des_preferences_lie_au_stages($idStages, $idPeriode)
+    {
+        $preferenceDao = new PreferenceDao();
+        $preferences = [];
+        foreach ($preferenceDao->list_des_preferences_lie_au_stages($idStages, $idPeriode) as $preference) {
+            array_push($preferences, ["idStage" => $preference["idStage"], "preferenceIdEnseignant" => $preference["preferenceIdEnseignant"], "idPeriode" => $preference["idPeriode"], "date_ajout" => $preference["date_ajout"], "nombreStage" => $preference["nombre"]]);
+        }
+        return $preferences;
+    }
+
     public function toutesPeriodes()
     {
         $periodeDao = new PeriodeDao();

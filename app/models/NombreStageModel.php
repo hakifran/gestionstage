@@ -67,4 +67,16 @@ class NombreStageModel
 
     }
 
+    public function nombreStageParEnseignantParPeriode($idPeriode, $idEnseignant)
+    {
+        $nombreStageDao = new NombreStageDao();
+        $nombreStage = $nombreStageDao->nombreStageParEnseignantParPeriode($idPeriode, $idEnseignant);
+        if ($nombreStage) {
+            return ["idNombreStage" => $nombreStage["idNombreStage"], "periode" => $nombreStage["intitule"], "debut" => $nombreStage["dateDebut"], "fin" => $nombreStage["dateFin"], "nombre" => $nombreStage["nombre"]];
+        } else {
+            return [];
+        }
+
+    }
+
 }
