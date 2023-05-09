@@ -31,6 +31,7 @@ class Enseignant extends Controller
         if ($_SERVER["PHP_AUTH_USER"] == $password_config["USER_NAME"] && $_SERVER["PHP_AUTH_PW"] == $password_config["USER_PASSWORD"]) {
             if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 header("Content-type: application/json");
+                // header("Access-Control-Allow-Origin: http://localhost/gestionstage/frontend/inscriptionutilisateur.html");
                 $utils = new Utils();
 
                 $params = json_decode(file_get_contents('php://input'));

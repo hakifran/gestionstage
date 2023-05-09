@@ -29,17 +29,43 @@ class connexion extends Controller
                         case "etudiant":
                             $etudiant = $this->model('EtudiantModel');
                             $utilisateur = $etudiant->recherche_par_email($email);
+                            if (!isset($utilisateur["idEtudiant"])) {
+                                echo json_encode([
+                                    'status' => 'error',
+                                    'message' => "L'utilisateur n'existe pas",
+                                ]);
+                                exit;
+
+                            }
                             $id = $utilisateur["idEtudiant"];
                             break;
                         case "enseignant":
                             $enseignant = $this->model('EnseignantModel');
                             $utilisateur = $enseignant->recherche_par_email($email);
+                            if (!isset($utilisateur["idEnseignant"])) {
+                                echo json_encode([
+                                    'status' => 'error',
+                                    'message' => "L'utilisateur n'existe pas",
+                                ]);
+                                exit;
+
+                            }
                             $id = $utilisateur["idEnseignant"];
+
                             break;
                         case "admin":
                             $personne = $this->model('Personne');
                             $admin = true;
                             $utilisateur = $personne->recherche_admin($email);
+                            if (!isset($utilisateur["idPersonne"])) {
+                                echo json_encode([
+                                    'status' => 'error',
+                                    'message' => "L'utilisateur n'existe pas",
+                                ]);
+                                exit;
+
+                            }
+
                             $id = $utilisateur["idPersonne"];
                             break;
                     }
@@ -75,22 +101,23 @@ class connexion extends Controller
                             $jwt = JWT::encode($payload, $secret_key, 'HS256');
                             $_SESSION['user_info'] = $payload;
                             echo json_encode([
-                                'statu' => 'ok',
+                                'status' => 'ok',
                                 'jwt' => $jwt,
                                 'message' => 'connexion reussi',
                             ]);
                         } else {
                             echo json_encode([
-                                'statu' => 'error',
+                                'status' => 'error',
                                 'message' => "L'email ou le mot de pass invalide",
                             ]);
+                            exit;
                         }
                     }
                 } else {
-                    echo array([
-                        'statu' => 'error',
+                    echo json_encode(array([
+                        'status' => 'error',
                         'message' => "L'opération n'est pas possible",
-                    ]);
+                    ]));
                     exit;
                 }
             } else {
