@@ -51,33 +51,34 @@ Cette application web a pour but de gérer l'attribution des tuteurs pour la sui
 ### Lancer l'application
 - Ouvrir le navigateur
 - Mettre l'addresse suivant dans la barre d'addresse du navigateur: `http://localhost/gestionstage`
-
-├── app
-│   ├── controllers # Dossier les controllers
-│   │   ├── tous les controllers.php
-│   ├── core # Dossier de configuration de l'architecture MVC
-│   │   ├── App.php
-│   │   └── Controller.php
-│   ├── db # Dossier pour la gestion de la Base de Données
-│   │   ├── basededonnee.php # connection à la Base de Données
-│   │   └── dao # Gestion des requêtes SQL pour interagir avec la Base de Données
-│   │    └── tous les fichiers DAO
-│   ├── init.php
-│   ├── models # Dossier contenant les objets représentant les entités de la Base de Données
-│   │ └── tous les fichiers Models
-│   ├── services # Dossier contenant les objets services
-│   │   └── utils.php
-│   └── views
-│       └── home
-├── composer.json
-├── composer.lock
-├── migrations # tous les fichiers de migrations pour Doctrine
-│   ├── Version20230129082637.php
-├── migrations-db.php # Connecter Doctrine à la Base de Données
-├── migrations.php # Fichier de configuration de Doctrine
-├── phpunit.xml
-├── public # Partie public de l'application
-│   └── index.php
-├── userpassword.php # Le fichier contient les identifiants pour se connecter au service web de l'application
-
+```bash
+├── Gestionstage
+  ├── app
+  │   ├── controllers # Dossier les controllers
+  │   │   ├── tous les controllers.php
+  │   ├── core # Dossier de configuration de l'architecture MVC
+  │   │   ├── App.php
+  │   │   └── Controller.php
+  │   ├── db # Dossier pour la gestion de la Base de Données
+  │   │   ├── basededonnee.php # connection à la Base de Données
+  │   │   └── dao # Gestion des requêtes SQL pour interagir avec la Base de Données
+  │   │    └── tous les fichiers DAO
+  │   ├── init.php
+  │   ├── models # Dossier contenant les objets représentant les entités de la Base de Données
+  │   │ └── tous les fichiers Models
+  │   ├── services # Dossier contenant les objets services
+  │   │   └── utils.php
+  │   └── views
+  │       └── home
+  ├── composer.json
+  ├── composer.lock
+  ├── migrations # tous les fichiers de migrations pour Doctrine
+  │   ├── Version20230129082637.php
+  ├── migrations-db.php # Connecter Doctrine à la Base de Données
+  ├── migrations.php # Fichier de configuration de Doctrine
+  ├── phpunit.xml
+  ├── public # Partie public de l'application
+  │   └── index.php
+  ├── userpassword.php # Le fichier contient les identifiants pour se connecter au service web de l'application
+```
 
