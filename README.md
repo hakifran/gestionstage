@@ -83,17 +83,17 @@ Cette application web a pour but de gérer l'attribution des tuteurs pour la sui
 ```
 ``` bash
 ├── frontend
-│   ├── css
+│   ├── css # Contient les fichiers CSS de BootStrap
 │   │   ├── bootstrap.css
-│   ├── csspersonnalise
+│   ├── csspersonnalise # Contient les fichiers css personnalisés
 │   │   ├── inscription.css
-│   ├── footer.php
-│   ├── index.php
-│   ├── inscriptionutilisateur.php
-│   ├── jquery-3.6.4.js
-│   ├── js
+│   ├── footer.php # Les fichiers HTML
+│   ├── index.php # Les fichiers HTML
+│   ├── inscriptionutilisateur.php # Les fichiers HTML
+│   ├── jquery-3.6.4.js # Le fichier Jquery
+│   ├── js # Contient les fichiers javaScript de BootStrap
 │   │   ├── bootstrap.js
-│   ├── template.php
-│   └── text_accueil.php
+│   ├── template.php # Les fichiers HTML
+│   └── text_accueil.php # Les fichiers HTML
 ```
 
