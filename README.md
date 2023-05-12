@@ -81,4 +81,19 @@ Cette application web a pour but de gérer l'attribution des tuteurs pour la sui
   │   └── index.php
   ├── userpassword.php # Le fichier contient les identifiants pour se connecter au service web de l'application
 ```
+``` bash
+├── frontend
+│   ├── css
+│   │   ├── bootstrap.css
+│   ├── csspersonnalise
+│   │   ├── inscription.css
+│   ├── footer.php
+│   ├── index.php
+│   ├── inscriptionutilisateur.php
+│   ├── jquery-3.6.4.js
+│   ├── js
+│   │   ├── bootstrap.js
+│   ├── template.php
+│   └── text_accueil.php
+```
 
