@@ -43,3 +43,11 @@
 .menutext {
   margin-left: 100px;
 }
+
+.donnee-utilisateur {
+  margin-top: 360px;
+  text-align: center;
+  font-weight: bold;
+  font-style: italic;
+  font-family: Inter;
+}

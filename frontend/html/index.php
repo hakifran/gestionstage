@@ -84,6 +84,16 @@
     <script src="../jquery-3.6.4.js"></script>
 </body>
 <script>
+function parseJwt(token) {
+    var base64Url = token.split('.')[1];
+    var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    var jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function(c) {
+        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+    }).join(''));
+
+    return JSON.parse(jsonPayload);
+}
+
 function login() {
     let payload = {}
     let type_utilisateur = $('.type-utilisateur').val();
@@ -101,6 +111,9 @@ function login() {
         body: JSON.stringify(payload)
     }).then((resultat) => resultat.json()).then((response) => {
         console.log(response)
+        sessionStorage.setItem("jwt", response["jwt"]);
+        donnee_utilisateur = parseJwt(response["jwt"])
+        sessionStorage.setItem("donnee_utilisateur", JSON.stringify(donnee_utilisateur["data"]));
         let text_alert = "";
         // Faire apparaitre l'alert pour afficher un message de succes ou d'erreur
         $(".alert").removeAttr("hidden");
@@ -110,6 +123,7 @@ function login() {
         //affiche le message de reussite ou d'echeck
         if (response["status"] === "ok") {
             $(".alert").addClass("alert-success");
+            window.location.href = 'template.php';
             text_alert = response["message"];
             //  reinitialiser les champs si c'est un succès
             $("input").val("");
