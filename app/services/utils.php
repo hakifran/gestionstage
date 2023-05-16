@@ -32,8 +32,29 @@ class Utils
         }
 
         try {
-            $jwt = JWT::decode($tousLesHeaders["Authorization"], new Key($secret_key, 'HS256'));
+            $autorization = $tousLesHeaders["Authorization"];
+            if (strpos($autorization, "Bearer") !== false) {
+                $autorization = explode(" ", $autorization)[1];
+            } else {
+                $autorization = $tousLesHeaders["Authorization"];
+            }
+            echo json_encode(
+                array("message" => $autorization, "status" => "erreur")
+            );
+            exit;
+
+            $jwt = JWT::decode($autorization, new Key($secret_key, 'HS256'));
+            echo json_encode(
+                array("message" => "fdfdfd", "status" => "erreur")
+            );
+            exit;
+
         } catch (Exception $e) {
+            echo json_encode(
+                array("message" => "weya twoo", "status" => "erreur")
+            );
+            exit;
+
             echo json_encode(
                 array("message" => $e->getMessage(), "status" => "erreur")
             );

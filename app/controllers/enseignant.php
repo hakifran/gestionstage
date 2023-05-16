@@ -9,7 +9,9 @@ class Enseignant extends Controller
         if ($_SERVER["REQUEST_METHOD"] == "GET") {
             $utils = new Utils();
             // vérifier si l'utilisateur est authentifier
+
             $utils->verifier_authentification_utilisateur();
+
             if ($_SESSION['user_info']["data"]["type"] != "admin") {
                 echo json_encode(array("message" => "L'utilisateur doit être un administrateur", "status" => "erreur"));
                 exit;

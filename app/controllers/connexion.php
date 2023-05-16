@@ -25,6 +25,7 @@ class connexion extends Controller
                     $typeUtilisateur = $params->typeUtilisateur;
                     $utilisateur = null;
                     $id = null;
+                    $pages = [];
                     switch ($typeUtilisateur) {
                         case "etudiant":
                             $etudiant = $this->model('EtudiantModel');
@@ -38,6 +39,12 @@ class connexion extends Controller
 
                             }
                             $id = $utilisateur["idEtudiant"];
+                            $pages = ["", ""];
+                            $pages = [
+                                ["page" => "mes_stages", "titre" => "Mes stages", "page_accueil" => true, "icon" => "fa fa-list"],
+                                ["page" => "sujets_disponible", "titre" => "Sujets disponibles", "icon" => "fa fa-th-list"],
+                            ];
+
                             break;
                         case "enseignant":
                             $enseignant = $this->model('EnseignantModel');
@@ -51,6 +58,12 @@ class connexion extends Controller
 
                             }
                             $id = $utilisateur["idEnseignant"];
+                            $pages = [
+                                ["page" => "sujet_a_suivre", "titre" => "Sujets à suivre", "page_accueil" => true, "icon" => "fa fa-list"],
+                                ["page" => "sujets_disponible", "titre" => "Sujets disponibles", "icon" => "fa fa-th-list"],
+                                ["page" => "nombre_limite_stages", "titre" => "Nombre limites de stages", "icon" => "fa fa-sort-numeric-desc"],
+                                ["page" => "preferences", "titre" => "Sujets préférés", "icon" => "fa fa-sort-alpha-desc"],
+                            ];
 
                             break;
                         case "admin":
@@ -67,6 +80,12 @@ class connexion extends Controller
                             }
 
                             $id = $utilisateur["idPersonne"];
+                            $pages = [
+                                ["page" => "utilisateurs", "titre" => "Utilisateurs", "page_accueil" => true, "icon" => "fa fa-users"],
+                                ["page" => "affectation_stages", "titre" => "Affectation des stages", "icon" => "fa fa-link"],
+                                ["page" => "validation_affectations", "titre" => "Validations des affectations", "icon" => "fa fa-check"],
+                            ];
+
                             break;
                     }
                     if ($utilisateur == null || count($utilisateur) < 1) {
@@ -95,6 +114,7 @@ class connexion extends Controller
                                     'prenom' => $prenomUtilisateur,
                                     'email' => $emailUtilisateur,
                                     'type' => $typeUtilisateur,
+                                    'pages' => $pages,
                                 ],
                             ];
                             $secret_key = "etude thematique";

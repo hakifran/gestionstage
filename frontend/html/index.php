@@ -84,6 +84,7 @@
     <script src="../jquery-3.6.4.js"></script>
 </body>
 <script>
+// Fonction pour décoder la clé token
 function parseJwt(token) {
     var base64Url = token.split('.')[1];
     var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
@@ -110,9 +111,11 @@ function login() {
         },
         body: JSON.stringify(payload)
     }).then((resultat) => resultat.json()).then((response) => {
-        console.log(response)
+        // Stocker la clé token dans la session
         sessionStorage.setItem("jwt", response["jwt"]);
+        // Décoder la clé token pour récuperer les informations de l'utilisateur connecté
         donnee_utilisateur = parseJwt(response["jwt"])
+        // Stocker les informations de l'utilisateur dans la sessions
         sessionStorage.setItem("donnee_utilisateur", JSON.stringify(donnee_utilisateur["data"]));
         let text_alert = "";
         // Faire apparaitre l'alert pour afficher un message de succes ou d'erreur
@@ -123,7 +126,11 @@ function login() {
         //affiche le message de reussite ou d'echeck
         if (response["status"] === "ok") {
             $(".alert").addClass("alert-success");
-            window.location.href = 'template.php';
+            // recuperer les
+            let page_accueil = donnee_utilisateur["data"]["pages"].filter(function(page) {
+                return page["page_accueil"] === true;
+            })[0];
+            window.location.href = page_accueil["page"] + '.php';
             text_alert = response["message"];
             //  reinitialiser les champs si c'est un succès
             $("input").val("");
