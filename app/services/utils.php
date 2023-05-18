@@ -38,23 +38,9 @@ class Utils
             } else {
                 $autorization = $tousLesHeaders["Authorization"];
             }
-            echo json_encode(
-                array("message" => $autorization, "status" => "erreur")
-            );
-            exit;
-
             $jwt = JWT::decode($autorization, new Key($secret_key, 'HS256'));
-            echo json_encode(
-                array("message" => "fdfdfd", "status" => "erreur")
-            );
-            exit;
 
         } catch (Exception $e) {
-            echo json_encode(
-                array("message" => "weya twoo", "status" => "erreur")
-            );
-            exit;
-
             echo json_encode(
                 array("message" => $e->getMessage(), "status" => "erreur")
             );
@@ -66,10 +52,19 @@ class Utils
 
     public function verifier_parametres_authentification($jwt, $jwt_session)
     {
+
         $jwt_data = (array) $jwt->data;
+        unset($jwt_data["pages"]);
+
         $jwt_data_session = $jwt_session["data"];
+        unset($jwt_data_session["pages"]);
+
         if ($jwt_data != $jwt_data_session) {
-            print "hello";
+            echo json_encode(
+                array("message" => "Les données de la session ne sont pas identique à celle provenant de l'application client", "status" => "erreur")
+            );
+            exit;
+
         }
     }
 }

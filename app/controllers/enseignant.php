@@ -101,7 +101,7 @@ class Enseignant extends Controller
                 echo json_encode(array("message" => "Paramètre incorrectes", "status" => "erreur"));
             }
         } else {
-            print "L'opération n'est pas autorisé";
+            echo json_encode(array("message" => "L'opération n'est pas autorisé", "status" => "erreur"));
             exit;
         }
     }

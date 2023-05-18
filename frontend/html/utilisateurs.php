@@ -11,7 +11,7 @@
     <link rel="stylesheet" type="text/css" href="../csspersonnalise/templatestyle.css" />
     <!-- <script src="https://kit.fontawesome.com/dabf916254.js" crossorigin="anonymous"></script> -->
     <title>
-        Enregistrement d'un utilisateur
+        Liste des utilisateurs
     </title>
     <style>
 
@@ -43,30 +43,16 @@
                             <thead class="thead-dark">
                                 <tr>
                                     <th scope="col">#</th>
-                                    <th scope="col">First</th>
-                                    <th scope="col">Last</th>
-                                    <th scope="col">Handle</th>
+                                    <th scope="col">Nom</th>
+                                    <th scope="col">Prenom</th>
+                                    <th scope="col">Email</th>
+                                    <th scope="col">Type</th>
+                                    <th scope="col">Valide</th>
+                                    <th scope="col">Edit</th>
                                 </tr>
                             </thead>
-                            <tbody>
-                                <tr>
-                                    <th scope="row">1</th>
-                                    <td>Mark</td>
-                                    <td>Otto</td>
-                                    <td>@mdo</td>
-                                </tr>
-                                <tr>
-                                    <th scope="row">2</th>
-                                    <td>Jacob</td>
-                                    <td>Thornton</td>
-                                    <td>@fat</td>
-                                </tr>
-                                <tr>
-                                    <th scope="row">3</th>
-                                    <td>Larry</td>
-                                    <td>the Bird</td>
-                                    <td>@twitter</td>
-                                </tr>
+                            <tbody class="utilisateur-list">
+
                             </tbody>
                         </table>
                     </div>
@@ -85,16 +71,60 @@
 </body>
 <script>
 $(document).ready(function() {
-    console.log(sessionStorage.getItem("jwt"));
+    // recuperer tous les enseignants
+    let count = 1
     fetch("http://localhost/gestionstage/public/enseignant/list", {
         method: "GET",
         headers: {
             'Authorization': 'Bearer ' + sessionStorage.getItem("jwt")
         }
     }).then((resultat) => resultat.json()).then((response) => {
-        console.log(response);
+        let hey = "hello";
+        response["data"].forEach((value) => {
+            let typeUtilisateur = "enseignant";
+            $(".utilisateur-list").append(
+                "<tr class='" + (estPaire(count) == 0 ? "table-primary" : "") +
+                "'><th scope='row'>" + count +
+                "</th><td>" + value["nom"] + "</td><td>" + value["prenom"] +
+                "</td><td>" + value["email"] +
+                "</td><td>Enseignant</td><td><input class='form - check - input' type='checkbox' " +
+                (value["valide"] == 1 ? "checked" : "") +
+                " disabled></td><td><a href='valide_utilisateur.php?typeUtilisateur=enseignant&idUtilisateur=" +
+                value["idEnseignant"] + "' class='retrouver-utilisateur'>Edit</a></td></tr>"
+            );
+            // <i class='fa fa-pencil'></i>
+            count++;
+        });
+    });
+    // recuperer tous les étudiants
+    fetch("http://localhost/gestionstage/public/etudiant/list", {
+        method: "GET",
+        headers: {
+            'Authorization': 'Bearer ' + sessionStorage.getItem("jwt")
+        }
+    }).then((resultat) => resultat.json()).then((response) => {
+        let typeUtilisateur = "etudiant";
+
+        response["data"].forEach((value) => {
+            $(".utilisateur-list").append(
+                "<tr class='" + (estPaire(count) == 0 ? "table-primary" : "") +
+                "'><th scope='row'>" + count +
+                "</th><td>" + value["nom"] + "</td><td>" + value["prenom"] +
+                "</td><td>" + value["email"] +
+                "</td><td>Etudiant</td><td><input class='form - check - input' type='checkbox' " +
+                (value["valide"] == 1 ? "checked" : "") +
+                " disabled></td><td><a href='valide_utilisateur.php?typeUtilisateur=etudiant&idUtilisateur=" +
+                value["idEtudiant"] + "' class='retrouver-utilisateur'>Edit</a></td></tr>"
+            );
+            count++;
+        });
+        // <i class='fa fa-pencil'></i>
     });
 });
+
+function estPaire(nombre) {
+    return nombre % 2;
+}
 </script>
 
 </html>

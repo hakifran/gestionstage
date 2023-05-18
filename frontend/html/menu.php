@@ -6,7 +6,7 @@
     <ul class="nav nav-pills flex-column mt-5 menu-list">
     </ul>
     <div class="donnee-utilisateur">
-        <i class="fa fa-user" aria-hidden="true"></i>
+        <!-- <i class="fa fa-user" aria-hidden="true"></i> -->
         <br>
         <span id="nom_prenom"></span>
         <br>
