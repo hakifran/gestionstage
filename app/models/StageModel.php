@@ -111,16 +111,21 @@ class StageModel
     }
 
     // list des periodes
-    function list($idUtilisateur, $typeUtilisateur, $attribue) {
+    function list($idUtilisateur, $typeUtilisateur, $attribue, $all) {
         $stageDao = new StageDao();
         $stages = [];
-        $type_values = $this->typeUtilisateur($typeUtilisateur, $attribue);
+
+        $type_values = $this->typeUtilisateur($typeUtilisateur, $attribue, $all);
+
         foreach ($stageDao->list($idUtilisateur, $type_values) as $stage) {
+
             $stag = [
                 "idStage" => $stage["idPeriode"],
                 "intituleProjet" => $stage["intituleProjet"],
                 "nomEntreprise" => $stage["nomEntreprise"],
                 "adresse" => $stage["adresse"],
+                "periode" => $stage["intitule"],
+                "stage_valide" => $stage["stage_valide"],
             ];
 
             if ($attribue == true) {
@@ -141,6 +146,7 @@ class StageModel
                 $stag
             );
         }
+
         return $stages;
     }
 
@@ -191,13 +197,18 @@ class StageModel
         return $stageDao->auto_attribue($params, $type_values);
     }
 
-    private function typeUtilisateur($typeUtilisateur, $attribue = false)
+    private function typeUtilisateur($typeUtilisateur, $attribue = false, $all = true)
     {
-        return [
+        $params = [
             "utilisateur" => $typeUtilisateur,
-            "autreUtilisateur" => ($typeUtilisateur == "enseignant" ? "enseignant" : "etudiant"),
-            "attribue" => ($attribue == true ? "IS NOT NULL" : "IS NULL"),
+            "autreUtilisateur" => ($typeUtilisateur === "enseignant" ? "etudiant" : "enseignant"),
+
         ];
+        if (!$all) {
+            $params["attribue"] = ($attribue == true ? "IS NOT NULL" : "IS NULL");
+        }
+
+        return $params;
     }
 
     // trouver un stage par son identifiant

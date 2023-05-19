@@ -11,8 +11,11 @@ class Stage extends Controller
             $utils->verifier_authentification_utilisateur();
             $stage = $this->model('StageModel');
             header("Content-type: application/json");
+
             if (isset($_GET['idUtilisateur'])) {
-                echo json_encode(array("data" => $stage->list($_GET['idUtilisateur'], $_SESSION['user_info']["data"]["type"], $_GET['attribue']), "status" => "ok"));
+
+                echo json_encode(array("data" => $stage->list($_GET['idUtilisateur'], $_SESSION['user_info']["data"]["type"], $_GET['attribue'], $_GET["all"]), "status" => "ok"));
+                exit;
             }
 
         } else {
@@ -117,7 +120,6 @@ class Stage extends Controller
     public function create()
     {
         if ($_SERVER["REQUEST_METHOD"] == "POST") {
-            header("Content-type: application/json");
             // Les données provenant de la requette
             $params = json_decode(file_get_contents('php://input'));
             $params = $this->add_params($params);
@@ -138,10 +140,12 @@ class Stage extends Controller
                 echo json_encode(
                     array("data" => $params, "status" => "ok")
                 );
+                exit;
             } else {
                 echo json_encode(
                     array("message" => "Une erreur s'est produite", "status" => "erreur")
                 );
+                exit;
             }
 
         } else {

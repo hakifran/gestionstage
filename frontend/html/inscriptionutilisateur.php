@@ -43,78 +43,81 @@
                 <!--Fin afficher une ligne-->
 
                 <!--Debut des champs du formulaire-->
-                <div class="row">
-                    <label class="label col-md-3 control-label">Nom</label>
-                    <div class="col-md-9">
-                        <input type="text" class="form-control nom" name="Nom" placeholder="Nom">
+                <form action="#">
+                    <div class="row">
+                        <label class="label col-md-3 control-label">Nom</label>
+                        <div class="col-md-9">
+                            <input type="text" required class="form-control nom" name="Nom" placeholder="Nom">
+                        </div>
                     </div>
-                </div>
-                <div class="row">
-                    <label class="label col-md-3 control-label">Prenom</label>
-                    <div class="col-md-9">
-                        <input type="text" class="form-control prenom" name="Prenom" placeholder="Prenom">
+                    <div class="row">
+                        <label class="label col-md-3 control-label">Prenom</label>
+                        <div class="col-md-9">
+                            <input type="text" required class="form-control prenom" name="Prenom" placeholder="Prenom">
+                        </div>
                     </div>
-                </div>
-                <div class="row">
-                    <label class="label col-md-3 control-label">E-mail</label>
-                    <div class="col-md-9">
-                        <input type="Email" class="form-control email" name="Email" placeholder="Email">
+                    <div class="row">
+                        <label class="label col-md-3 control-label">E-mail</label>
+                        <div class="col-md-9">
+                            <input type="Email" required class="form-control email" name="Email" placeholder="Email">
+                        </div>
                     </div>
-                </div>
-                <div class="row">
-                    <label class="label col-md-3 control-label">Password</label>
-                    <div class="col-md-9">
-                        <input type="password" class="form-control password" name="Password" placeholder="Password">
+                    <div class="row">
+                        <label class="label col-md-3 control-label">Password</label>
+                        <div class="col-md-9">
+                            <input type="password" required class="form-control password" name="Password"
+                                placeholder="Password">
+                        </div>
                     </div>
-                </div>
-                <div class="row">
-                    <label class="label col-md-3 control-label">Type utilisateur</label>
-                    <div class="col-md-9">
-                        <select class="form-control type-utilisateur">
-                            <option value="enseignant">Enseignant</option>
-                            <option value="etudiant">Étudiant</option>
-                        </select>
+                    <div class="row">
+                        <label class="label col-md-3 control-label">Type utilisateur</label>
+                        <div class="col-md-9">
+                            <select required class="form-control type-utilisateur">
+                                <option value="enseignant">Enseignant</option>
+                                <option value="etudiant">Étudiant</option>
+                            </select>
+                        </div>
                     </div>
-                </div>
-                <div class="row enseignant">
-                    <label class="label col-md-3 control-label">Titre</label>
-                    <div class="col-md-9">
-                        <input type="text" class="form-control titre" name="Titre" placeholder="Titre">
+                    <div class="row enseignant">
+                        <label class="label col-md-3 control-label">Titre</label>
+                        <div class="col-md-9">
+                            <input type="text" required class="form-control titre" name="Titre" placeholder="Titre">
+                        </div>
                     </div>
-                </div>
-                <div class="row enseignant">
-                    <label class="label col-md-3 control-label">Spécialisation</label>
-                    <div class="col-md-9">
-                        <input type="text" class="form-control specialisation" name="Specialisation"
-                            placeholder="Specialisation">
+                    <div class="row enseignant">
+                        <label class="label col-md-3 control-label">Spécialisation</label>
+                        <div class="col-md-9">
+                            <input type="text" required class="form-control specialisation" name="Specialisation"
+                                placeholder="Specialisation">
+                        </div>
                     </div>
-                </div>
-                <div class="row etudiant">
-                    <label class="label col-md-3 control-label">Numero étudiant</label>
-                    <div class="col-md-9">
-                        <input type="text" class="form-control numeroEtudiant" name="NumeroEtudiant"
-                            placeholder="Numero étudiant">
+                    <div class="row etudiant">
+                        <label class="label col-md-3 control-label">Numero étudiant</label>
+                        <div class="col-md-9">
+                            <input type="text" required class="form-control numeroEtudiant" name="NumeroEtudiant"
+                                placeholder="Numero étudiant">
+                        </div>
                     </div>
-                </div>
-                <div class="row etudiant">
-                    <label class="label col-md-3 control-label">Numero national</label>
-                    <div class="col-md-9">
-                        <input type="text" class="form-control numeroNational" name="NumeroNational"
-                            placeholder="Numero national">
+                    <div class="row etudiant">
+                        <label class="label col-md-3 control-label">Numero national</label>
+                        <div class="col-md-9">
+                            <input type="text" required class="form-control numeroNational" name="NumeroNational"
+                                placeholder="Numero national">
+                        </div>
                     </div>
-                </div>
-                <div class="row etudiant">
-                    <label class="label col-md-3 control-label">Parcours</label>
-                    <div class="col-md-9">
-                        <select class="form-control parcours">
-                            <option>Parcours 1</option>
-                            <option>Parcours 2</option>
-                            <option>Parcours 3</option>
-                            <option>Parcours 4</option>
-                        </select>
+                    <div class="row etudiant">
+                        <label class="label col-md-3 control-label">Parcours</label>
+                        <div class="col-md-9">
+                            <select required class="form-control parcours">
+                                <option>Parcours 1</option>
+                                <option>Parcours 2</option>
+                                <option>Parcours 3</option>
+                                <option>Parcours 4</option>
+                            </select>
+                        </div>
                     </div>
-                </div>
-                <button onclick="creer_utilisateur()" class="btn btn-info">Enregistre</button>
+                    <button onclick="creer_utilisateur()" class="btn btn-info">Enregistre</button>
+                </form>
                 <!--Fin des champs du formulaire-->
             </div>
         </div>

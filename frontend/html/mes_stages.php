@@ -11,7 +11,7 @@
     <link rel="stylesheet" type="text/css" href="../csspersonnalise/templatestyle.css" />
     <!-- <script src="https://kit.fontawesome.com/dabf916254.js" crossorigin="anonymous"></script> -->
     <title>
-        Liste des utilisateurs
+        Liste des stages
     </title>
     <style>
 
@@ -43,8 +43,15 @@
                         <div class="alert" hidden role="alert">
                         </div>
                         <!--Fin alert pour afficher le message de succès ou d'échec-->
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h3 class="text-left">Liste des stages</h3>
+                            </div>
+                            <div class="col-md-6 float-left">
+                                <a href="ajouter_stage.php">Ajouter</a>
+                            </div>
+                        </div>
 
-                        <h3 class="text-left">Liste des utilisateurs</h3>
 
                         <!--Debut afficher une ligne-->
                         <hr>
@@ -53,12 +60,13 @@
                             <thead class="thead-dark">
                                 <tr>
                                     <th scope="col">#</th>
-                                    <th scope="col">Nom</th>
-                                    <th scope="col">Prenom</th>
-                                    <th scope="col">Email</th>
-                                    <th scope="col">Type</th>
-                                    <th scope="col">Valide</th>
-                                    <th scope="col">Edit</th>
+                                    <th scope="col">Projet</th>
+                                    <th scope="col">Entreprise</th>
+                                    <th scope="col">Adresse</th>
+                                    <th scope="col">Tuteur</th>
+                                    <th scope="col">Periode</th>
+                                    <th scope="col">valide</th>
+                                    <th scope="col">Action</th>
                                 </tr>
                             </thead>
                             <tbody class="utilisateur-list">
@@ -93,54 +101,46 @@ $(document).ready(function() {
     }
     // recuperer tous les enseignants
     let count = 1
-    fetch("http://localhost/gestionstage/public/enseignant/list", {
+    fetch("http://localhost/gestionstage/public/stage/list?idUtilisateur=19&attribue=false&all=true", {
         method: "GET",
         headers: {
             'Authorization': 'Bearer ' + sessionStorage.getItem("jwt")
         }
     }).then((resultat) => resultat.json()).then((response) => {
-        let hey = "hello";
-        response["data"].forEach((value) => {
-            let typeUtilisateur = "enseignant";
-            $(".utilisateur-list").append(
-                "<tr class='" + (estPaire(count) == 0 ? "table-primary" : "") +
-                "'><th scope='row'>" + count +
-                "</th><td>" + value["nom"] + "</td><td>" + value["prenom"] +
-                "</td><td>" + value["email"] +
-                "</td><td>Enseignant</td><td><input class='form - check - input' type='checkbox' " +
-                (value["valide"] == 1 ? "checked" : "") +
-                " disabled></td><td><a href='valide_utilisateur.php?typeUtilisateur=enseignant&idUtilisateur=" +
-                value["idEnseignant"] + "' class='retrouver-utilisateur'>Edit</a></td></tr>"
-            );
-            // <i class='fa fa-pencil'></i>
-            count++;
-        });
-    });
-    // recuperer tous les étudiants
-    fetch("http://localhost/gestionstage/public/etudiant/list", {
-        method: "GET",
-        headers: {
-            'Authorization': 'Bearer ' + sessionStorage.getItem("jwt")
+        if (response["data"].length > 0) {
+            response["data"].forEach((value) => {
+                let typeUtilisateur = "enseignant";
+                $(".utilisateur-list").append(
+                    "<tr class='" + (estPaire(count) == 0 ? "table-primary" : "") +
+                    "'><th scope='row'>" + count +
+                    "</th><td>" + value["intituleProjet"] + "</td><td>" + value[
+                        "nomEntreprise"] +
+                    "</td><td>" + value["adresse"] +
+                    "</td><td>" + (value["nomEnseignant"] == null ? "-" : value[
+                        "nomEnseignant"]) +
+                    "</td><td>" + value["periode"] +
+                    "</td><td><input class='form - check - input' type='checkbox' " +
+                    (value["stage_valide"] == 1 ? "checked" : "") +
+                    " disabled></td><td><a href='valide_utilisateur.php?typeUtilisateur=enseignant&idUtilisateur=" +
+                    value["idEnseignant"] +
+                    "' class='retrouver-utilisateur'>Edit</a></td></tr>"
+                );
+                // <i class='fa fa-pencil'></i>
+                count++;
+            });
+        } else {
+            $(".alert").removeAttr("hidden");
+            $(".alert").addClass("alert-info");
+            $(".alert").html("Pas de stage pour cet utilisateur");
         }
-    }).then((resultat) => resultat.json()).then((response) => {
-        let typeUtilisateur = "etudiant";
 
-        response["data"].forEach((value) => {
-            $(".utilisateur-list").append(
-                "<tr class='" + (estPaire(count) == 0 ? "table-primary" : "") +
-                "'><th scope='row'>" + count +
-                "</th><td>" + value["nom"] + "</td><td>" + value["prenom"] +
-                "</td><td>" + value["email"] +
-                "</td><td>Etudiant</td><td><input class='form - check - input' type='checkbox' " +
-                (value["valide"] == 1 ? "checked" : "") +
-                " disabled></td><td><a href='valide_utilisateur.php?typeUtilisateur=etudiant&idUtilisateur=" +
-                value["idEtudiant"] + "' class='retrouver-utilisateur'>Edit</a></td></tr>"
-            );
-            count++;
-        });
-        // <i class='fa fa-pencil'></i>
     });
+
 });
+
+function estPaire(nombre) {
+    return nombre % 2;
+}
 </script>
 
 </html>

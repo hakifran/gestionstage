@@ -25,7 +25,7 @@ class StageDao
         $bd = new Basededonnee();
         $connexion = $bd->connexion();
 
-        $sql = "SELECT * FROM `stage`
+        $sql = "SELECT *, stage.valide as stage_valide FROM `stage`
         JOIN periode ON(periode.idPeriode=stage.idPeriode)
         JOIN " . $typeUtilisateur["utilisateur"] . "
         ON(stage.id" . ucfirst($typeUtilisateur["utilisateur"]) . "=" . $typeUtilisateur["utilisateur"] . ".id" . ucfirst($typeUtilisateur["utilisateur"]) . ")
@@ -33,7 +33,7 @@ class StageDao
         ON(stage.id" . ucfirst($typeUtilisateur["autreUtilisateur"]) . "=" . $typeUtilisateur["autreUtilisateur"] . ".id" . ucfirst($typeUtilisateur["autreUtilisateur"]) . ")
         LEFT JOIN personne ON(" . $typeUtilisateur["autreUtilisateur"] . ".idPersonne=personne.idPersonne)
         WHERE stage.id" . ucfirst($typeUtilisateur["utilisateur"]) . "=" . $idUtilisateur . "
-        AND stage.id" . $typeUtilisateur["autreUtilisateur"] . " " . $typeUtilisateur["attribue"] . "";
+        " . (isset($typeUtilisateur["attribue"]) ? "AND stage.id" . $typeUtilisateur["autreUtilisateur"] . " " . $typeUtilisateur["attribue"] : "");
 
         return $connexion->query($sql);
     }
