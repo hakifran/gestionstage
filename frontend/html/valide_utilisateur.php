@@ -167,9 +167,9 @@ $(document).ready(function() {
         $(".prenom").val(valeurs["prenom"]);
         $(".email").val(valeurs["email"]);
         if (valeurs["valide"] == null || valeurs["valide"] == 0) {
-            $("#flexCheckChecked").removeAttr("checked", "checked");
+            $("#flexCheckChecked").removeAttr("checked");
         } else {
-            $("#flexCheckChecked").attr("checked");
+            $("#flexCheckChecked").attr("checked", "checked");
         }
         if (urlParams.get("typeUtilisateur") === "enseignant") {
             $(".titre").val(valeurs["titre"]);
@@ -188,15 +188,17 @@ function valider_utilisateur() {
     let payload = {}
     let type_utilisateur = $('.type-utilisateur').val();
     // Recuperer les parametres dans le formulaire
-    payload["email"] = $(".email").val() === "" ? null : $(".email").val();
-    payload["password"] = $(".password").val() === "" ? null : $(".password").val();
+    payload["id"] = urlParams.get('idUtilisateur');
+    const estCheck = $("#flexCheckChecked").is(":checked");
+
+    payload["valide"] = estCheck ? "true" : "false";
     payload["typeUtilisateur"] = type_utilisateur;
     // Envoyer les parametres pour être sauver dans le backend via Fetch
     fetch("http://localhost/gestionstage/public/" + urlParams.get("typeUtilisateur") + "/valider", {
         method: "PATCH",
         headers: {
             "Content-Type": "application/json",
-            'Authorization': 'Basic ' + btoa("admin" + ":" + "@admin")
+            'Authorization': 'Bearer ' + sessionStorage.getItem("jwt")
         },
         body: JSON.stringify(payload)
     }).then((resultat) => resultat.json()).then((response) => {
@@ -208,10 +210,8 @@ function valider_utilisateur() {
         $(".alert").removeClass("alert-danger");
         //affiche le message de reussite ou d'echeck
         if (response["status"] === "ok") {
-            $(".alert").addClass("alert-success");
-            text_alert = response["message"];
-            //  reinitialiser les champs si c'est un succès
-            $("input").val("");
+            text_alert = "nombre d'" + urlParams.get("typeUtilisateur") + " validé est " + response["count"];
+            window.location.href = 'utilisateurs.php?alertMessage=' + text_alert;
         } else {
             $(".alert").addClass("alert-danger");
             text_alert = response["message"];
@@ -220,7 +220,6 @@ function valider_utilisateur() {
 
 
     });
-    console.log("hello boroon");
 }
 </script>
 

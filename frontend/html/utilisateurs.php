@@ -39,6 +39,16 @@
                 </div>
                 <div class="row">
                     <div class="col-md-12 content">
+                        <!--Debut alert pour afficher le message de succès ou d'échec-->
+                        <div class="alert" hidden role="alert">
+                        </div>
+                        <!--Fin alert pour afficher le message de succès ou d'échec-->
+
+                        <h3 class="text-left">Liste des utilisateurs</h3>
+
+                        <!--Debut afficher une ligne-->
+                        <hr>
+                        <!--Fin afficher une ligne-->
                         <table class="table">
                             <thead class="thead-dark">
                                 <tr>
@@ -71,6 +81,17 @@
 </body>
 <script>
 $(document).ready(function() {
+    const urlParamsString = window.location.search;
+    const urlParams = new URLSearchParams(urlParamsString);
+    const alertMessage = urlParams.get("alertMessage");
+
+    if (alertMessage != undefined && alertMessage != null) {
+        // Faire apparaitre l'alert pour afficher un message de succes ou d'erreur
+        $(".alert").removeAttr("hidden");
+        // reinitialiser le type d'alert
+        $(".alert").addClass("alert-success");
+        $(".alert").html(alertMessage);
+    }
     // recuperer tous les enseignants
     let count = 1
     fetch("http://localhost/gestionstage/public/enseignant/list", {
