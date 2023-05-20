@@ -25,17 +25,7 @@
             <?php include 'menu.php'?>
             <div class="col-md-10">
                 <div class="row">
-                    <div class="col-md-12 header">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <img src="../img/logo.png" alt="">
-                            </div>
-                            <div class="col-md-6 ">
-                                <h3 class="applicationtitre">Gestion des stages
-                                </h3>
-                            </div>
-                        </div>
-                    </div>
+                    <?php include 'header.php'?>
                 </div>
                 <div class="row">
                     <div class="col-md-12 content">
@@ -48,7 +38,10 @@
                                 <h3 class="text-left">Liste des stages</h3>
                             </div>
                             <div class="col-md-6 float-left">
-                                <a href="ajouter_stage.php">Ajouter</a>
+                                <div class="lien-ajouter">
+                                    <a href="ajouter_stage.php">Ajouter</a>
+                                </div>
+
                             </div>
                         </div>
 
@@ -65,8 +58,9 @@
                                     <th scope="col">Adresse</th>
                                     <th scope="col">Tuteur</th>
                                     <th scope="col">Periode</th>
+                                    <th scope="col">Attribue</th>
                                     <th scope="col">valide</th>
-                                    <th scope="col">Action</th>
+                                    <!-- <th scope="col">Action</th> -->
                                 </tr>
                             </thead>
                             <tbody class="utilisateur-list">
@@ -120,12 +114,14 @@ $(document).ready(function() {
                         "nomEnseignant"]) +
                     "</td><td>" + value["periode"] +
                     "</td><td><input class='form - check - input' type='checkbox' " +
+                    (value["attribue"] == 1 ? "checked" : "") +
+                    " disabled></td><td><input class='form - check - input' type='checkbox' " +
                     (value["stage_valide"] == 1 ? "checked" : "") +
-                    " disabled></td><td><a href='valide_utilisateur.php?typeUtilisateur=enseignant&idUtilisateur=" +
-                    value["idEnseignant"] +
-                    "' class='retrouver-utilisateur'>Edit</a></td></tr>"
+                    " disabled></td></tr>"
                 );
-                // <i class='fa fa-pencil'></i>
+                // <td><a href='edit_stage.php?idStage=" +
+                //     value["idStage"] +
+                //     "' class='retrouver-utilisateur'>Edit</a></td>
                 count++;
             });
         } else {

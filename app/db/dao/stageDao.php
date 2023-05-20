@@ -79,7 +79,7 @@ class StageDao
         $connexion = $bd->connexion();
 
         $sql = "SELECT COUNT(*), idEnseignant FROM stage WHERE idEnseignant IN(" . $stages . ") and idPeriode=" . $periode . " GROUP BY idEnseignant";
-        echo $sql;
+
         return $connexion->query($sql);
 
     }
@@ -103,12 +103,13 @@ class StageDao
 
     public function list_sujet_disponible($typeUtilisateur)
     {
+
         $bd = new Basededonnee();
         $connexion = $bd->connexion();
 
         $sql = "SELECT * FROM `stage`
         JOIN periode ON(periode.idPeriode=stage.idPeriode)
-        WHERE stage.id" . $typeUtilisateur["utilisateur"] . " " . $typeUtilisateur["attribue"] . "";
+        WHERE stage.id" . $typeUtilisateur["utilisateur"] . " IS NULL AND stage.id" . $typeUtilisateur["autreUtilisateur"] . " IS NOT NULL";
 
         return $connexion->query($sql);
     }
@@ -134,10 +135,10 @@ class StageDao
     {
         $bd = new Basededonnee();
         $connexion = $bd->connexion();
-        $sql = "UPDATE stage SET stage.id" . ucfirst($type_values["autreUtilisateur"]) . "=?, stage.attribue=? where stage.idStage=?";
+        $sql = "UPDATE stage SET stage.id" . ucfirst($type_values["utilisateur"]) . "=?, stage.attribue=? where stage.idStage=?";
 
         try {
-            $connexion->prepare($sql)->execute([$params->{"id" . ucfirst($type_values["autreUtilisateur"]) . ""}, '1', $params->idStage]);
+            $connexion->prepare($sql)->execute([$params->{"id" . ucfirst($type_values["utilisateur"]) . ""}->id, '1', $params->idStage]);
         } catch (Exception $e) {
             echo json_encode(
                 array("message" => $e->getMessage(), "status" => "erreur")

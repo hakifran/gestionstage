@@ -120,12 +120,13 @@ class StageModel
         foreach ($stageDao->list($idUtilisateur, $type_values) as $stage) {
 
             $stag = [
-                "idStage" => $stage["idPeriode"],
+                "idStage" => $stage["idStage"],
                 "intituleProjet" => $stage["intituleProjet"],
                 "nomEntreprise" => $stage["nomEntreprise"],
                 "adresse" => $stage["adresse"],
                 "periode" => $stage["intitule"],
                 "stage_valide" => $stage["stage_valide"],
+                "attribue" => $stage["attribue"],
             ];
 
             if ($attribue == true) {
@@ -172,15 +173,18 @@ class StageModel
 
     public function list_sujet_disponible($typeUtilisateur)
     {
+
         $stageDao = new StageDao();
         $stages = [];
         $type_values = $this->typeUtilisateur($typeUtilisateur);
+
         foreach ($stageDao->list_sujet_disponible($type_values) as $stage) {
             $stag = [
-                "idStage" => $stage["idPeriode"],
+                "idStage" => $stage["idStage"],
                 "intituleProjet" => $stage["intituleProjet"],
                 "nomEntreprise" => $stage["nomEntreprise"],
                 "adresse" => $stage["adresse"],
+                "periode" => $stage["intitule"],
             ];
             array_push(
                 $stages,
@@ -194,6 +198,7 @@ class StageModel
     {
         $stageDao = new StageDao();
         $type_values = $this->typeUtilisateur($typeUtilisateur);
+
         return $stageDao->auto_attribue($params, $type_values);
     }
 

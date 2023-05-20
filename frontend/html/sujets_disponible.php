@@ -25,17 +25,7 @@
             <?php include 'menu.php'?>
             <div class="col-md-10">
                 <div class="row">
-                    <div class="col-md-12 header">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <img src="../img/logo.png" alt="">
-                            </div>
-                            <div class="col-md-6 ">
-                                <h3 class="applicationtitre">Gestion des stages
-                                </h3>
-                            </div>
-                        </div>
-                    </div>
+                    <?php include 'header.php'?>
                 </div>
                 <div class="row">
                     <div class="col-md-12 content">
@@ -60,9 +50,7 @@
                                     <th scope="col">Projet</th>
                                     <th scope="col">Entreprise</th>
                                     <th scope="col">Adresse</th>
-                                    <th scope="col">Tuteur</th>
                                     <th scope="col">Periode</th>
-                                    <th scope="col">valide</th>
                                     <th scope="col">Action</th>
                                 </tr>
                             </thead>
@@ -113,22 +101,18 @@ $(document).ready(function() {
                     "</th><td>" + value["intituleProjet"] + "</td><td>" + value[
                         "nomEntreprise"] +
                     "</td><td>" + value["adresse"] +
-                    "</td><td>" + (value["nomEnseignant"] == null ? "-" : value[
-                        "nomEnseignant"]) +
                     "</td><td>" + value["periode"] +
-                    "</td><td><input class='form - check - input' type='checkbox' " +
-                    (value["stage_valide"] == 1 ? "checked" : "") +
-                    " disabled></td><td><a href='valide_utilisateur.php?typeUtilisateur=enseignant&idUtilisateur=" +
-                    value["idEnseignant"] +
-                    "' class='retrouver-utilisateur'>Edit</a></td></tr>"
+                    "</td><td><a href='auto_attribuer.php?idStage=" +
+                    value["idStage"] +
+                    "' >Auto-attribuer</a></td></tr>"
                 );
-                // <i class='fa fa-pencil'></i>
+
                 count++;
             });
         } else {
             $(".alert").removeAttr("hidden");
             $(".alert").addClass("alert-info");
-            $(".alert").html("Pas de stage pour cet utilisateur");
+            $(".alert").html("Pas de stages disponible");
         }
 
     });

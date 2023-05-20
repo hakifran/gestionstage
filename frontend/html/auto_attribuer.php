@@ -12,7 +12,7 @@
     <link rel="stylesheet" type="text/css" href="../csspersonnalise/valide_utilisateur.css" />
     <!-- <script src="https://kit.fontawesome.com/dabf916254.js" crossorigin="anonymous"></script> -->
     <title>
-        Ajouter un stage
+        Auto attribue un stage
     </title>
     <style>
 
@@ -35,7 +35,7 @@
                         </div>
                         <!--Fin alert pour afficher le message de succès ou d'échec-->
 
-                        <h3 class="text-left">Ajouter un stage</h3>
+                        <h3 class="text-left">Auto attribue un stage</h3>
 
                         <!--Debut afficher une ligne-->
                         <hr>
@@ -45,35 +45,41 @@
                         <div class="row">
                             <label class="label col-md-3 control-label">Projet</label>
                             <div class="col-md-9">
-                                <input type="text" required class="form-control projet" name="projet"
-                                    placeholder="Project">
+                                <input disabled type="text" class="form-control projet" name="projet"
+                                    placeholder="Projet">
                             </div>
                         </div>
                         <div class="row">
-                            <label class="label col-md-3 control-label">Nom de l'entreprise</label>
+                            <label class="label col-md-3 control-label">Entreprise</label>
                             <div class="col-md-9">
-                                <input type="text" required class="form-control entreprise" name="entreprise"
-                                    placeholder="Nom de l'entreprise">
+                                <input disabled type="text" class="form-control entreprise" name="entreprise"
+                                    placeholder="Entreprise">
                             </div>
                         </div>
-                        <div class="row">
-                            <label class="label col-md-3 control-label">Addresse de l'entreprise</label>
-                            <div class="col-md-9">
-                                <input type="addresse" required class="form-control addresse" name="addresse"
-                                    placeholder="Addresse de l'entreprise">
-                            </div>
-                        </div>
-
                         <div class="row">
                             <label class="label col-md-3 control-label">Période</label>
                             <div class="col-md-9">
-                                <select class="form-control parcours periodes-list">
-                                    <option value="">---Selectionner la periode---</option>
-                                </select>
+                                <input disabled type="text" class="form-control periode" name="periode"
+                                    placeholder="Période">
+                            </div>
+                        </div>
+                        <div class="row enseignant">
+                            <label class="label col-md-3 control-label">Tuteur</label>
+                            <div class="col-md-9">
+                                <input disabled type="text" class="form-control tuteur" name="tuteur"
+                                    placeholder="tuteur">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <label class="label col-md-3 control-label">Attribuer</label>
+                            <div class="col-md-9">
+                                <input class="form-controlcheckbox form-check-input" type="checkbox" value=""
+                                    id="flexCheckChecked" checked>
                             </div>
                         </div>
 
-                        <button type onclick="creer_un_stage()" class="btn btn-info">Enregistre</button>
+
+                        <button onclick="auto_attribuer()" class="btn btn-info">Enregistre</button>
                         <!--Fin des champs du formulaire-->
                     </div>
                 </div>
@@ -91,51 +97,52 @@
 </body>
 <script>
 $(document).ready(function() {
-    // recuperer les periodes
-    fetch("http://localhost/gestionstage/public/periode/list", {
+    const urlParamsString = window.location.search;
+    const urlParams = new URLSearchParams(urlParamsString);
+    fetch("http://localhost/gestionstage/public/stage/get?id=" + urlParams.get("idStage"), {
         method: "GET",
         headers: {
             'Authorization': 'Bearer ' + sessionStorage.getItem("jwt")
         }
     }).then((resultat) => resultat.json()).then((response) => {
-        periodes = response['data'];
-        $list_periodes = "";
-        periodes.forEach(periode => {
-            $(".periodes-list").append("<option value=" + periode["idPeriode"] + ">" +
-                periode[
-                    "intitule"] + "</option>");
-        });
+        const valeurs = response["data"];
+        console.log(valeurs);
+        $(".projet").val(valeurs["intituleProjet"]);
+        $(".entreprise").val(valeurs["nomEnseignant"]);
+        $(".periode").val(valeurs["periodeIntitule"]);
+        $(".tuteur").val(valeurs["nomEnseignant"] + " " + valeurs["prenomEnseignant"]);
+        if (valeurs["attribue"] == null || valeurs["attribue"] == 0) {
+            $("#flexCheckChecked").removeAttr("checked");
+        } else {
+            $("#flexCheckChecked").attr("checked", "checked");
+        }
 
     });
 });
 
-
-
-function creer_un_stage() {
+function auto_attribuer() {
+    const urlParamsString = window.location.search;
+    const urlParams = new URLSearchParams(urlParamsString);
+    const donnee_utilisateur = JSON.parse(sessionStorage.getItem("donnee_utilisateur"));
     let payload = {}
     // Recuperer les parametres dans le formulaire
-    payload["intituleProjet"] = $(".projet").val() === "" ? null : $(".projet").val();
-    payload["nomEntreprise"] = $(".entreprise").val() === "" ? null : $(".entreprise").val();
-    payload["adresse"] = $(".addresse").val() === "" ? null : $(".addresse").val();
-    const donnee_utilisateur = JSON.parse(sessionStorage.getItem("donnee_utilisateur"));
-    payload["id" + donnee_utilisateur["type"].charAt(0).toUpperCase() + donnee_utilisateur["type"]
-        .slice(1)] = donnee_utilisateur["id"];
-    const idPeriode = $('.periodes-list').find(":selected").val();
-    if (idPeriode !== "") {
-        payload["idPeriode"] = idPeriode;
-    }
+    const estCheck = $("#flexCheckChecked").is(":checked");
+    payload["idStage"] = urlParams.get('idStage');
 
+
+    payload["attribuer"] = estCheck ? "true" : "false";
+    payload["id" + donnee_utilisateur["type"].charAt(0).toUpperCase() + donnee_utilisateur["type"].slice(1)] =
+        donnee_utilisateur;
 
     // Envoyer les parametres pour être sauver dans le backend via Fetch
-    fetch("http://localhost/gestionstage/public/stage/create", {
-        method: "POST",
+    fetch("http://localhost/gestionstage/public/stage/auto_attribue", {
+        method: "PATCH",
         headers: {
             "Content-Type": "application/json",
             'Authorization': 'Bearer ' + sessionStorage.getItem("jwt")
         },
         body: JSON.stringify(payload)
     }).then((resultat) => resultat.json()).then((response) => {
-        console.log(response);
         let text_alert = "";
         // Faire apparaitre l'alert pour afficher un message de succes ou d'erreur
         $(".alert").removeAttr("hidden");
@@ -144,15 +151,14 @@ function creer_un_stage() {
         $(".alert").removeClass("alert-danger");
         //affiche le message de reussite ou d'echeck
         if (response["status"] === "ok") {
-            text_alert = "Le projet de stage intitulé " + response["data"]["intituleProjet"] +
-                " a été sauvé avec succès";
+            text_alert = response["message"];
             window.location.href = 'mes_stages.php?alertMessage=' + text_alert;
-
         } else {
             $(".alert").addClass("alert-danger");
             text_alert = response["message"];
         }
-        $(".alert").html(text_alert)
+        $(".alert").html(text_alert);
+
 
     });
 }

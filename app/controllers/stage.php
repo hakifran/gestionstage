@@ -32,6 +32,7 @@ class Stage extends Controller
             $utils->verifier_authentification_utilisateur();
             $stage = $this->model('StageModel');
             header("Content-type: application/json");
+
             echo json_encode(array("data" => $stage->list_sujet_disponible($_SESSION['user_info']["data"]["type"]), "status" => "ok"));
 
         } else {
@@ -67,23 +68,28 @@ class Stage extends Controller
                 );
                 exit;
             }
+            // echo json_encode(
+            //     array("message" => "Le stage n'existe pas", "status" => "erreur")
+            // );
+            // exit;
 
-            $stagesDansLaPeriode = $stage->stagesDansLaPeriodePourLenseingnant($stageDispo["idPeriode"], $params->idEnseignant);
-            $nombreStage = $this->model('NombreStageModel');
+            // $stagesDansLaPeriode = $stage->stagesDansLaPeriodePourLenseingnant($stageDispo["idPeriode"], $params->idEnseignant);
 
-            $nombreLimite = $nombreStage->nombreStageParEnseignantParPeriode($stageDispo["idPeriode"], $params->idEnseignant);
+            // $nombreStage = $this->model('NombreStageModel');
 
-            if ((int) $nombreLimite["nombre"] > 0 && count($stagesDansLaPeriode) >= (int) $nombreLimite["nombre"]) {
-                echo json_encode(
-                    array("message" => "L'enseignant a déjà atteint sa limite pour cette periode", "status" => "erreur")
-                );
-                exit;
-            }
+            // $nombreLimite = $nombreStage->nombreStageParEnseignantParPeriode($stageDispo["idPeriode"], $params->idEnseignant);
+
+            // if ((int) $nombreLimite["nombre"] > 0 && count($stagesDansLaPeriode) >= (int) $nombreLimite["nombre"]) {
+            //     echo json_encode(
+            //         array("message" => "L'enseignant a déjà atteint sa limite pour cette periode", "status" => "erreur")
+            //     );
+            //     exit;
+            // }
 
             $stage = $stage->auto_attribue($params, $_SESSION['user_info']["data"]["type"]);
             if ($stage == true) {
                 echo json_encode(
-                    array("data" => "Le stage a été attribué", "status" => "ok")
+                    array("message" => "Le stage a été attribué", "status" => "ok")
                 );
             } else {
                 echo json_encode(
@@ -272,31 +278,6 @@ class Stage extends Controller
         return $params;
     }
 
-    // public function valider()
-    // {
-    //     if ($_SERVER["REQUEST_METHOD"] == "PATCH") {
-    //         $params = json_decode(file_get_contents('php://input'));
-    //         $utils = new Utils();
-    //         // vérifier si l'utilisateur est authentifier
-    //         $utils->verifier_authentification_utilisateur();
-
-    //         $utils->verifier_les_parametres($params, $this->parametre_valide());
-    //         $etudiant = $this->model('EtudiantModel');
-    //         $personne = $this->model("Personne");
-    //         $etudian = $etudiant->get($params->id);
-    //         header("Content-type: application/json");
-    //         if (count($etudian) > 0 && (int) $etudian["idPersonne"] > 0) {
-    //             $count = $personne->valider($etudian["idPersonne"], $this->boolean_valide($params->valide));
-    //             echo json_encode(array("count" => $count, "status" => "ok"));
-    //         } else {
-    //             echo json_encode(array("message" => "Paramètre incorrectes", "status" => "erreur"));
-    //         }
-    //     } else {
-    //         print "L'operation n'est pas autorise";
-    //         exit;
-    //     }
-    // }
-
     private function parametre_obligatoire()
     {
         $params = array("intituleProjet", "nomEntreprise", "adresse", "idPeriode");
@@ -316,11 +297,11 @@ class Stage extends Controller
         $params = array("idStage");
 
         if ($_SESSION['user_info']["data"]["type"] == "etudiant") {
-            array_push($params, "idEnseignant");
+            array_push($params, "idEtudiant");
         }
 
         if ($_SESSION['user_info']["data"]["type"] == "enseignant") {
-            array_push($params, "idEtudiant");
+            array_push($params, "idEnseignant");
         }
         return $params;
     }
