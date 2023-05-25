@@ -75,6 +75,7 @@ class PreferenceModel
     public function create()
     {
         $stages = $this->stageDansLaperiode($this->getStageIds(), $this->getPeriode());
+
         $preferenceDao = new PreferenceDao();
         if (empty($stages)) {
             return null;
@@ -112,7 +113,11 @@ class PreferenceModel
             $preference = $preferenceDao->preferenceParPeriode($idUtilisateur, $periode["idPeriode"]);
             if ($preference->rowCount() > 0) {
                 $periode["stages"] = [];
+                $periode["idPreference"] = null;
                 foreach ($preference as $pref) {
+                    if ($periode["idPreference"] == null) {
+                        $periode["idPreference"] = $pref["idPreference"];
+                    }
                     $stage = ["idStage" => $pref["idStage"], "intituleProjet" => $pref["intituleProjet"], "nomEntreprise" => $pref["nomEntreprise"], "adresse" => $pref["adresse"]];
                     array_push($periode["stages"], $stage);
                 }

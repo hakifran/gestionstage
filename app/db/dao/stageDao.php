@@ -38,6 +38,20 @@ class StageDao
         return $connexion->query($sql);
     }
 
+    public function list_par_periode($idPeriode)
+    {
+        $bd = new Basededonnee();
+        $connexion = $bd->connexion();
+
+        $sql = "SELECT *, stage.valide as stage_valide FROM `stage`
+        JOIN periode ON(periode.idPeriode=stage.idPeriode)
+        JOIN etudiant on(stage.idEtudiant=etudiant.idEtudiant)
+        JOIN personne on(etudiant.idPersonne=personne.idPersonne)
+        WHERE periode.idPeriode=" . $idPeriode . "";
+
+        return $connexion->query($sql);
+    }
+
     public function get($id)
     {
         $bd = new Basededonnee();

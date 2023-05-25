@@ -11,7 +11,7 @@
     <link rel="stylesheet" type="text/css" href="../csspersonnalise/templatestyle.css" />
     <!-- <script src="https://kit.fontawesome.com/dabf916254.js" crossorigin="anonymous"></script> -->
     <title>
-        Liste des utilisateurs
+        Préférences
     </title>
     <style>
 
@@ -33,8 +33,18 @@
                         <div class="alert" hidden role="alert">
                         </div>
                         <!--Fin alert pour afficher le message de succès ou d'échec-->
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h3 class="text-left">Les préférences</h3>
+                            </div>
+                            <div class="col-md-6 float-left">
+                                <div class="lien-ajouter">
+                                    <a href="ajouter_preference.php">Ajouter</a>
+                                </div>
 
-                        <h3 class="text-left">Liste des utilisateurs</h3>
+                            </div>
+                        </div>
+
 
                         <!--Debut afficher une ligne-->
                         <hr>
@@ -43,12 +53,10 @@
                             <thead class="thead-dark">
                                 <tr>
                                     <th scope="col">#</th>
-                                    <th scope="col">Nom</th>
-                                    <th scope="col">Prenom</th>
-                                    <th scope="col">Email</th>
-                                    <th scope="col">Type</th>
-                                    <th scope="col">Valide</th>
-                                    <th scope="col">Edit</th>
+                                    <th scope="col">Nombre de sujets</th>
+                                    <th scope="col">Période</th>
+                                    <th scope="col">Actions</th>
+                                    <!-- <th scope="col">Action</th> -->
                                 </tr>
                             </thead>
                             <tbody class="utilisateur-list">
@@ -74,7 +82,7 @@ $(document).ready(function() {
     const urlParamsString = window.location.search;
     const urlParams = new URLSearchParams(urlParamsString);
     const alertMessage = urlParams.get("alertMessage");
-
+    const donnee_utilisateur = JSON.parse(sessionStorage.getItem("donnee_utilisateur"));
     if (alertMessage != undefined && alertMessage != null) {
         // Faire apparaitre l'alert pour afficher un message de succes ou d'erreur
         $(".alert").removeAttr("hidden");
@@ -83,53 +91,35 @@ $(document).ready(function() {
     }
     // recuperer tous les enseignants
     let count = 1
-    fetch("http://localhost/gestionstage/public/enseignant/list", {
+    fetch("http://localhost/gestionstage/public/preference/list?idUtilisateur=" + donnee_utilisateur["id"], {
         method: "GET",
         headers: {
             'Authorization': 'Bearer ' + sessionStorage.getItem("jwt")
         }
     }).then((resultat) => resultat.json()).then((response) => {
-        let hey = "hello";
-        response["data"].forEach((value) => {
-            let typeUtilisateur = "enseignant";
-            $(".utilisateur-list").append(
-                "<tr class='" + (estPaire(count) == 0 ? "table-primary" : "") +
-                "'><th scope='row'>" + count +
-                "</th><td>" + value["nom"] + "</td><td>" + value["prenom"] +
-                "</td><td>" + value["email"] +
-                "</td><td>Enseignant</td><td><input class='form - check - input' type='checkbox' " +
-                (value["valide"] == 1 ? "checked" : "") +
-                " disabled></td><td><a href='valide_utilisateur.php?typeUtilisateur=enseignant&idUtilisateur=" +
-                value["idEnseignant"] + "' class='retrouver-utilisateur'>Edit</a></td></tr>"
-            );
-            // <i class='fa fa-pencil'></i>
-            count++;
-        });
-    });
-    // recuperer tous les étudiants
-    fetch("http://localhost/gestionstage/public/etudiant/list", {
-        method: "GET",
-        headers: {
-            'Authorization': 'Bearer ' + sessionStorage.getItem("jwt")
-        }
-    }).then((resultat) => resultat.json()).then((response) => {
-        let typeUtilisateur = "etudiant";
+        console.log(response)
+        if (response["data"].length > 0) {
+            response["data"].forEach((value) => {
+                $(".utilisateur-list").append(
+                    "<tr class='" + (estPaire(count) == 0 ? "table-primary" : "") +
+                    "'><th scope='row'>" + count +
+                    "</th><td>" + value["stages"].length + " Sujets</td><td>" + value[
+                        "intitule"] +
+                    "</td><td><a href='edit_preference.php?idPreference=" +
+                    value["idPreference"] +
+                    "' >Edit</a></td></tr>"
+                );
 
-        response["data"].forEach((value) => {
-            $(".utilisateur-list").append(
-                "<tr class='" + (estPaire(count) == 0 ? "table-primary" : "") +
-                "'><th scope='row'>" + count +
-                "</th><td>" + value["nom"] + "</td><td>" + value["prenom"] +
-                "</td><td>" + value["email"] +
-                "</td><td>Etudiant</td><td><input class='form - check - input' type='checkbox' " +
-                (value["valide"] == 1 ? "checked" : "") +
-                " disabled></td><td><a href='valide_utilisateur.php?typeUtilisateur=etudiant&idUtilisateur=" +
-                value["idEtudiant"] + "' class='retrouver-utilisateur'>Edit</a></td></tr>"
-            );
-            count++;
-        });
-        // <i class='fa fa-pencil'></i>
+                count++;
+            });
+        } else {
+            $(".alert").removeAttr("hidden");
+            $(".alert").addClass("alert-info");
+            $(".alert").html("Pas de préférences déjà existantes");
+        }
+
     });
+
 });
 
 function estPaire(nombre) {

@@ -64,7 +64,7 @@
                             </div>
                         </div>
                         <div class="row enseignant">
-                            <label class="label col-md-3 control-label">Tuteur</label>
+                            <label class="label col-md-3 control-label type-utilisateur">Tuteur</label>
                             <div class="col-md-9">
                                 <input disabled type="text" class="form-control tuteur" name="tuteur"
                                     placeholder="tuteur">
@@ -99,6 +99,15 @@
 $(document).ready(function() {
     const urlParamsString = window.location.search;
     const urlParams = new URLSearchParams(urlParamsString);
+    const donnee_utilisateur = JSON.parse(sessionStorage.getItem("donnee_utilisateur"));
+    const typeUtilisateur = donnee_utilisateur["type"] === "enseignant" ?
+        "Etudiant" :
+        "Tuteur";
+    const autreTypeUtilisateur = donnee_utilisateur["type"] === "enseignant" ?
+        "Etudiant" :
+        "Enseignant";
+
+    $(".type-utilisateur").text(typeUtilisateur);
     fetch("http://localhost/gestionstage/public/stage/get?id=" + urlParams.get("idStage"), {
         method: "GET",
         headers: {
@@ -108,9 +117,10 @@ $(document).ready(function() {
         const valeurs = response["data"];
         console.log(valeurs);
         $(".projet").val(valeurs["intituleProjet"]);
-        $(".entreprise").val(valeurs["nomEnseignant"]);
+        $(".entreprise").val(valeurs["nomEntreprise"]);
         $(".periode").val(valeurs["periodeIntitule"]);
-        $(".tuteur").val(valeurs["nomEnseignant"] + " " + valeurs["prenomEnseignant"]);
+        $(".tuteur").val(valeurs["nom" + autreTypeUtilisateur] + " " + valeurs["prenom" +
+            autreTypeUtilisateur]);
         if (valeurs["attribue"] == null || valeurs["attribue"] == 0) {
             $("#flexCheckChecked").removeAttr("checked");
         } else {

@@ -24,6 +24,31 @@ class Stage extends Controller
         }
     }
 
+    public function list_par_periode()
+    {
+        if ($_SERVER["REQUEST_METHOD"] == "GET") {
+            $utils = new Utils();
+            // vérifier si l'utilisateur est authentifier
+            $utils->verifier_authentification_utilisateur();
+            $stage = $this->model('StageModel');
+            header("Content-type: application/json");
+
+            if (isset($_GET['idPeriode'])) {
+
+                echo json_encode(array("data" => $stage->list_par_periode($_GET['idPeriode']), "status" => "ok"));
+                exit;
+            } else {
+                echo json_encode(array("message" => "La période doit être fourni", "status" => "erreur"));
+                exit;
+
+            }
+
+        } else {
+            echo json_encode(array("message" => "L'opération n'est pas autorisé", "status" => "erreur"));
+            exit;
+        }
+    }
+
     public function list_sujet_disponible()
     {
         if ($_SERVER["REQUEST_METHOD"] == "GET") {

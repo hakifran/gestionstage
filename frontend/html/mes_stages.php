@@ -56,7 +56,7 @@
                                     <th scope="col">Projet</th>
                                     <th scope="col">Entreprise</th>
                                     <th scope="col">Adresse</th>
-                                    <th scope="col">Tuteur</th>
+                                    <th scope="col" class="type-utilisateur">Tuteur</th>
                                     <th scope="col">Periode</th>
                                     <th scope="col">Attribue</th>
                                     <th scope="col">valide</th>
@@ -86,7 +86,7 @@ $(document).ready(function() {
     const urlParamsString = window.location.search;
     const urlParams = new URLSearchParams(urlParamsString);
     const alertMessage = urlParams.get("alertMessage");
-
+    const donnee_utilisateur = JSON.parse(sessionStorage.getItem("donnee_utilisateur"));
     if (alertMessage != undefined && alertMessage != null) {
         // Faire apparaitre l'alert pour afficher un message de succes ou d'erreur
         $(".alert").removeAttr("hidden");
@@ -95,23 +95,32 @@ $(document).ready(function() {
     }
     // recuperer tous les enseignants
     let count = 1
-    fetch("http://localhost/gestionstage/public/stage/list?idUtilisateur=19&attribue=false&all=true", {
-        method: "GET",
-        headers: {
-            'Authorization': 'Bearer ' + sessionStorage.getItem("jwt")
-        }
-    }).then((resultat) => resultat.json()).then((response) => {
+    fetch("http://localhost/gestionstage/public/stage/list?idUtilisateur=" + donnee_utilisateur["id"] +
+        "&attribue=false&all=true", {
+            method: "GET",
+            headers: {
+                'Authorization': 'Bearer ' + sessionStorage.getItem("jwt")
+            }
+        }).then((resultat) => resultat.json()).then((response) => {
         if (response["data"].length > 0) {
             response["data"].forEach((value) => {
-                let typeUtilisateur = "enseignant";
+                const typeUtilisateur = donnee_utilisateur["type"] === "enseignant" ?
+                    "Etudiant" :
+                    "Tuteur";
+                const autreTypeUtilisateur = donnee_utilisateur["type"] === "enseignant" ?
+                    "Etudiant" :
+                    "Enseignant";
+
+                $(".type-utilisateur").text(typeUtilisateur);
+                "Etudiant";
                 $(".utilisateur-list").append(
                     "<tr class='" + (estPaire(count) == 0 ? "table-primary" : "") +
                     "'><th scope='row'>" + count +
                     "</th><td>" + value["intituleProjet"] + "</td><td>" + value[
                         "nomEntreprise"] +
                     "</td><td>" + value["adresse"] +
-                    "</td><td>" + (value["nomEnseignant"] == null ? "-" : value[
-                        "nomEnseignant"]) +
+                    "</td><td>" + (value["nom" + autreTypeUtilisateur] == null ? "-" :
+                        value["nom" + autreTypeUtilisateur]) +
                     "</td><td>" + value["periode"] +
                     "</td><td><input class='form - check - input' type='checkbox' " +
                     (value["attribue"] == 1 ? "checked" : "") +

@@ -110,7 +110,7 @@ class StageModel
         return $stageDao->create($this);
     }
 
-    // list des periodes
+    // list des stages
     function list($idUtilisateur, $typeUtilisateur, $attribue, $all) {
         $stageDao = new StageDao();
         $stages = [];
@@ -142,6 +142,31 @@ class StageModel
                     $stag["specialisation"] = $stage["specialisation"];
                 }
             }
+            array_push(
+                $stages,
+                $stag
+            );
+        }
+
+        return $stages;
+    }
+
+    public function list_par_periode($idPeriode)
+    {
+        $stageDao = new StageDao();
+        $stages = [];
+
+        foreach ($stageDao->list_par_periode($idPeriode) as $stage) {
+            $stag = [
+                "idStage" => $stage["idStage"],
+                "intituleProjet" => $stage["intituleProjet"],
+                "nomEntreprise" => $stage["nomEntreprise"],
+                "adresse" => $stage["adresse"],
+                "periode" => $stage["intitule"],
+                "stage_valide" => $stage["stage_valide"],
+                "attribue" => $stage["attribue"],
+                "valide" => $stage["valide"],
+            ];
             array_push(
                 $stages,
                 $stag
