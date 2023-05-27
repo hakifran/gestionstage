@@ -40,10 +40,9 @@ class PreferenceDao
     {
         $bd = new Basededonnee();
         $connexion = $bd->connexion();
-        $sql = "SELECT *, preference.idEnseignant as preferenceIdEnseignant FROM stage JOIN periode ON(stage.idPeriode=periode.idPeriode)
-        LEFT JOIN preference ON(preference.idStage=stage.idStage)
-        LEFT JOIN enseignant ON(enseignant.idEnseignant=preference.idEnseignant)
-        LEFT JOIN nombreStage ON(enseignant.idEnseignant=nombreStage.idEnseignant)
+        $sql = "SELECT *, enseignant.idEnseignant as preferenceIdEnseignant FROM stage JOIN periode ON(stage.idPeriode=periode.idPeriode)
+        JOIN preference ON(preference.idStage=stage.idStage)
+        JOIN enseignant ON(enseignant.idEnseignant=preference.idEnseignant)
         WHERE stage.idStage IN(" . $idStages . ") AND periode.idPeriode=" . $idPeriode . "
         ORDER BY date_ajout";
 

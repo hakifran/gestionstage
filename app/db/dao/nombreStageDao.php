@@ -47,19 +47,17 @@ class NombreStageDao
         return $stmt->fetch();
     }
 
-    public function nombreStageParEnseignantParPeriode($idPeriode, $idEnseignant)
+    public function nombreLimitStageParEnseignantParPeriode($idPeriode, $idEnseignants)
     {
         $bd = new Basededonnee();
         $connexion = $bd->connexion();
 
-        $sql = "SELECT * FROM nombreStage JOIN periode ON(nombreStage.idPeriode=periode.idPeriode)
+        $sql = "SELECT *, enseignant.idEnseignant as enseignantId FROM nombreStage JOIN periode ON(nombreStage.idPeriode=periode.idPeriode)
         JOIN enseignant ON(nombreStage.idEnseignant=enseignant.idEnseignant)
         JOIN personne ON(enseignant.idPersonne=personne.idPersonne)
-        where enseignant.idEnseignant=" . $idEnseignant . " AND periode.idPeriode=" . $idPeriode . "";
+        where enseignant.idEnseignant IN(" . $idEnseignants . ") AND periode.idPeriode=" . $idPeriode . "";
 
-        $stmt = $connexion->prepare($sql);
-        $stmt->execute();
-        return $stmt->fetch();
+        return $connexion->query($sql);
 
     }
 }

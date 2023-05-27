@@ -278,22 +278,18 @@ class StageModel
     public function NombrestagesDansLaPeriodePourLesseingnant($idPeriode, $idEnseignants)
     {
         $stageDao = new StageDao();
-        $stages = [];
-        foreach ($stageDao->NombrestagesDansLaPeriodePourLesseingnant($idPeriode, implode(",", $idEnseignants)) as $stage) {
-            var_dump($stage);
-            exit;
-            $stag = [
-                "idStage" => $stage["idPeriode"],
-                "intituleProjet" => $stage["intituleProjet"],
-                "nomEntreprise" => $stage["nomEntreprise"],
-                "adresse" => $stage["adresse"],
-            ];
-            array_push(
-                $stages,
-                $stag
-            );
+        $Nombrestages = [];
+        foreach ($stageDao->NombrestagesDansLaPeriodePourLesseingnant($idPeriode, $idEnseignants) as $nombre) {
+            $Nombrestages[$nombre["idEnseignant"]] = $nombre["nombre"];
         }
-        return $stages;
+        return $Nombrestages;
+    }
+
+    public function attribue($idStage, $idEnseignant)
+    {
+        $stageDao = new StageDao();
+
+        return $stageDao->attribue($idStage, $idEnseignant);
     }
 
 }

@@ -67,16 +67,16 @@ class NombreStageModel
 
     }
 
-    public function nombreStageParEnseignantParPeriode($idPeriode, $idEnseignant)
+    public function nombreLimitStageParEnseignantParPeriode($idPeriode, $idEnseignants)
     {
         $nombreStageDao = new NombreStageDao();
-        $nombreStage = $nombreStageDao->nombreStageParEnseignantParPeriode($idPeriode, $idEnseignant);
-        if ($nombreStage) {
-            return ["idNombreStage" => $nombreStage["idNombreStage"], "periode" => $nombreStage["intitule"], "debut" => $nombreStage["dateDebut"], "fin" => $nombreStage["dateFin"], "nombre" => $nombreStage["nombre"]];
-        } else {
-            return [];
-        }
+        $nombreLimites = [];
+        foreach ($nombreStageDao->nombreLimitStageParEnseignantParPeriode($idPeriode, implode(",", $idEnseignants)) as $nombre) {
 
+            $nombreLimites[$nombre["enseignantId"]] = $nombre["nombre"];
+            // array_push($nombreLimites, $nombreLimite);
+        }
+        return $nombreLimites;
     }
 
 }

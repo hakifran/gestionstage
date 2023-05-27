@@ -92,7 +92,7 @@ class StageDao
         $bd = new Basededonnee();
         $connexion = $bd->connexion();
 
-        $sql = "SELECT COUNT(*), idEnseignant FROM stage WHERE idEnseignant IN(" . $stages . ") and idPeriode=" . $periode . " GROUP BY idEnseignant";
+        $sql = "SELECT COUNT(*) nombre, idEnseignant FROM stage WHERE idEnseignant IN(" . $idEnseignants . ") and idPeriode=" . $idPeriode . " GROUP BY idEnseignant";
 
         return $connexion->query($sql);
 
@@ -153,6 +153,24 @@ class StageDao
 
         try {
             $connexion->prepare($sql)->execute([$params->{"id" . ucfirst($type_values["utilisateur"]) . ""}->id, '1', $params->idStage]);
+        } catch (Exception $e) {
+            echo json_encode(
+                array("message" => $e->getMessage(), "status" => "erreur")
+            );
+            exit;
+        }
+
+        return true;
+    }
+
+    public function attribue($idStage, $idEnseignant)
+    {
+        $bd = new Basededonnee();
+        $connexion = $bd->connexion();
+        $sql = "UPDATE stage SET stage.idEnseignant=?, stage.attribue=? where stage.idStage=?";
+
+        try {
+            $connexion->prepare($sql)->execute([$idEnseignant, '1', $idStage]);
         } catch (Exception $e) {
             echo json_encode(
                 array("message" => $e->getMessage(), "status" => "erreur")

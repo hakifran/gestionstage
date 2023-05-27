@@ -102,7 +102,7 @@ class Stage extends Controller
 
             // $nombreStage = $this->model('NombreStageModel');
 
-            // $nombreLimite = $nombreStage->nombreStageParEnseignantParPeriode($stageDispo["idPeriode"], $params->idEnseignant);
+            // $nombreLimite = $nombreStage->nombreLimitStageParEnseignantParPeriode($stageDispo["idPeriode"], $params->idEnseignant);
 
             // if ((int) $nombreLimite["nombre"] > 0 && count($stagesDansLaPeriode) >= (int) $nombreLimite["nombre"]) {
             //     echo json_encode(
@@ -213,6 +213,7 @@ class Stage extends Controller
                 exit;
             }
             $stageNonAttribue = $stage->list_stage_non_attribue($params->idStages, $params->idPeriode);
+            $stageNonAttribueIds = array_map(array($this, "map_id_stages"), $stageNonAttribue);
 
             if (!$stageNonAttribue) {
                 echo json_encode(
@@ -227,26 +228,80 @@ class Stage extends Controller
                 $stageNonAttribue
             )), $params->idPeriode
             );
-            $preference_existant = $this->preferencesExistant($preferences);
-            $preference_nom_existant = $this->preferencesNonExistant($preferences);
 
-            $stagesDansLaPeriode = $stage->NombrestagesDansLaPeriodePourLesseingnant($params->idPeriode,
-                array_map(
-                    fn($pref) => $pref["preferenceIdEnseignant"],
-                    $preference_existant
-                ));
+            // $preference_existant = $this->preferencesExistant($preferences);
+            // $preference_nom_existant = $this->preferencesNonExistant($preferences);
+            $enseignant = $this->model('EnseignantModel');
+            $tousLesEnseignants = $enseignant->list();
+            $idEnseignants = array_map(array($this, "map_id_enseignants"), $tousLesEnseignants);
+
+            $NombreStagesDansLaPeriode = $stage->NombrestagesDansLaPeriodePourLesseingnant($params->idPeriode, implode(",", $idEnseignants));
+
             $nombreStage = $this->model('NombreStageModel');
 
-            // $nombreLimite = $nombreStage->nombreStageParEnseignantParPeriode($stageDispo["idPeriode"], $params->idEnseignant);
+            $nombreLimites = $nombreStage->nombreLimitStageParEnseignantParPeriode($params->idPeriode, $idEnseignants);
+            $stageAttribues = [];
+            $preferencesAttribues = $preferences;
+            if (count($preferencesAttribues) > 0) {
+                foreach ($preferencesAttribues as $preference) {
+                    $idStagePreference = array_keys($preference)[0];
+                    if (in_array($idStagePreference, $stageNonAttribueIds)) {
+                        $idEnseignant = $preference[$idStagePreference];
+                        if (!isset($NombreStagesDansLaPeriode[$idEnseignant])) {
+                            $NombreStagesDansLaPeriode[$idEnseignant] = 0;
+                        }
+                        if (!isset($nombreLimites[$idEnseignant])) {
+                            $nombreLimites[$idEnseignant] = 0;
+                        }
 
-            // if ((int) $nombreLimite["nombre"] > 0 && count($stagesDansLaPeriode) >= (int) $nombreLimite["nombre"]) {
-            //     echo json_encode(
-            //         array("message" => "L'enseignant a déjà atteint sa limite pour cette periode", "status" => "erreur")
-            //     );
-            //     exit;
-            // }
+                        if (($NombreStagesDansLaPeriode[$idEnseignant] < $nombreLimites[$idEnseignant]) || $nombreLimites[$idEnseignant] == 0) {
+                            $stage->attribue($idStagePreference, $idEnseignant);
+                            $NombreStagesDansLaPeriode[$idEnseignant]++;
 
-            // $stage = $stage->auto_attribue($params, $_SESSION['user_info']["data"]["type"]);
+                            if (($keyIdStage = array_search($idStagePreference, $stageNonAttribueIds)) !== false) {
+                                unset($stageNonAttribueIds[$keyIdStage]);
+                            }
+
+                        } else {
+                            if (($keyIdEnseignant = array_search($idEnseignant, $idEnseignants)) !== false) {
+                                unset($idEnseignants[$keyIdEnseignant]);
+                            }
+
+                        }
+                    }
+
+                }
+
+            }
+
+            while (count($stageNonAttribueIds) > 0 && count($idEnseignants) > 0) {
+                $idEnseignantIndex = 0;
+                shuffle($idEnseignants);
+                foreach ($stageNonAttribueIds as $idStage) {
+                    if (isset($idEnseignants[$idEnseignantIndex])) {
+                        $idIndexEnseignant = $idEnseignants[$idEnseignantIndex];
+                        if (!isset($NombreStagesDansLaPeriode[$idIndexEnseignant])) {
+                            $NombreStagesDansLaPeriode[$idIndexEnseignant] = 0;
+                        }
+                        if (!isset($nombreLimites[$idIndexEnseignant])) {
+                            $nombreLimites[$idIndexEnseignant] = 0;
+                        }
+                        if (($NombreStagesDansLaPeriode[$idIndexEnseignant] < $nombreLimites[$idIndexEnseignant]) || $nombreLimites[$idIndexEnseignant] == 0) {
+                            $stage->attribue($idStage, $idIndexEnseignant);
+                            $NombreStagesDansLaPeriode[$idIndexEnseignant]++;
+                            if (($keyIdStage = array_search($idStage, $stageNonAttribueIds)) !== false) {
+                                unset($stageNonAttribueIds[$keyIdStage]);
+                            }
+
+                        }
+                        $idEnseignantIndex++;
+                    } else {
+                        $idEnseignantIndex = 0;
+                    }
+
+                }
+            }
+
             if ($stage == true) {
                 echo json_encode(
                     array("data" => "Le stage a été attribué", "status" => "ok")
@@ -261,6 +316,16 @@ class Stage extends Controller
             exit;
         }
 
+    }
+
+    public function map_id_enseignants($enseignant)
+    {
+        return $enseignant["idEnseignant"];
+    }
+
+    public function map_id_stages($stage)
+    {
+        return $stage["idStage"];
     }
 
     public function preferencesExistant($preferences)
@@ -355,15 +420,4 @@ class Stage extends Controller
         }
         return $stage;
     }
-
-    // private function boolean_valide($boolean)
-    // {
-    //     if ($boolean == "false") {
-    //         return 0;
-    //     }
-    //     if ($boolean == "true") {
-    //         return 1;
-    //     }
-    // }
-
 }
