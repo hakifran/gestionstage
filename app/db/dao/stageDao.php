@@ -145,6 +145,23 @@ class StageDao
 
     }
 
+    public function list_stage_non_valider($idStages, $idPeriode)
+    {
+        $bd = new Basededonnee();
+        $connexion = $bd->connexion();
+
+        $sql = "SELECT * FROM `stage`
+        JOIN periode ON(periode.idPeriode=stage.idPeriode)
+        JOIN etudiant ON (stage.idEtudiant=etudiant.idEtudiant)
+        JOIN enseignant ON(stage.idEnseignant=enseignant.idEnseignant)
+        JOIN personne ON(etudiant.idPersonne=personne.idPersonne)
+        WHERE stage.idEnseignant IS NOT NULL
+        AND stage.valide IS NULL
+        AND stage.idStage IN(" . $idStages . ") AND periode.idPeriode=" . $idPeriode . "";
+
+        return $connexion->query($sql);
+
+    }
     public function auto_attribue($params, $type_values)
     {
         $bd = new Basededonnee();
@@ -179,6 +196,71 @@ class StageDao
         }
 
         return true;
+    }
+
+    public function valider($valeursAvalider)
+    {
+        $bd = new Basededonnee();
+        $connexion = $bd->connexion();
+        $sql = "";
+        foreach ($valeursAvalider as $stageAvalider) {
+
+            $sql .= "UPDATE stage SET stage.valide=" . (string) $stageAvalider["valide"] . " where stage.idStage=" . $stageAvalider["idStage"] . ";";
+        }
+
+        try {
+            $connexion->prepare($sql)->execute();
+        } catch (Exception $e) {
+            echo json_encode(
+                array("message" => $e->getMessage(), "status" => "erreur")
+            );
+            exit;
+        }
+
+        return true;
+    }
+
+    public function list_tous_attribue_et_non_attribue_et_par_periode($attribue_no_attribue, $idPeriode)
+    {
+        $bd = new Basededonnee();
+        $connexion = $bd->connexion();
+        $sql = "SELECT *, personneEtudiant.nom as nomEtudiant, personneEtudiant.prenom as prenomEtudiant,
+        personneEnseignant.nom as nomEnseignant, personneEnseignant.prenom as prenomEnseignant,
+        stage.valide as stageValider
+        FROM stage JOIN periode ON(periode.idPeriode=stage.idPeriode)
+        JOIN etudiant ON (etudiant.idEtudiant=stage.idEtudiant) JOIN personne as personneEtudiant
+        ON(personneEtudiant.idPersonne=etudiant.idPersonne)
+        " . ($attribue_no_attribue == '' || $attribue_no_attribue == 'non' ? 'LEFT JOIN' : 'JOIN') . " enseignant
+        ON(enseignant.idEnseignant=stage.idEnseignant) " . ($attribue_no_attribue == '' || $attribue_no_attribue == 'non' ? 'LEFT JOIN' : 'JOIN') . "
+        personne as personneEnseignant ON(personneEnseignant.idPersonne=enseignant.idPersonne)
+        " . ($attribue_no_attribue != '' || $idPeriode != '' ? ' WHERE
+        ' . ($attribue_no_attribue != '' ? '(stage.idEnseignant IS
+        ' . ($attribue_no_attribue == 'non' ? 'NULL AND stage.attribue IS NULL OR stage.attribue=0)' : 'NOT NULL AND stage.attribue IS NOT NULL AND stage.attribue=1)') : '')
+            . '' . ($idPeriode != '' ? ($attribue_no_attribue != '' ? ' AND' : '') . ' stage.idPeriode=' . $idPeriode : '') : '') . "";
+
+        return $connexion->query($sql);
+
+    }
+
+    public function list_tous_valide_et_non_valide_et_par_periode($valider_non_valider, $idPeriode)
+    {
+        $bd = new Basededonnee();
+        $connexion = $bd->connexion();
+        $sql = "SELECT *, personneEtudiant.nom as nomEtudiant, personneEtudiant.prenom as prenomEtudiant,
+        personneEnseignant.nom as nomEnseignant, personneEnseignant.prenom as prenomEnseignant,
+        stage.valide as stageValider
+        FROM stage JOIN periode ON(periode.idPeriode=stage.idPeriode)
+        JOIN etudiant ON (etudiant.idEtudiant=stage.idEtudiant) JOIN personne as personneEtudiant
+        ON(personneEtudiant.idPersonne=etudiant.idPersonne) JOIN enseignant
+        ON (enseignant.idEnseignant=stage.idEnseignant) JOIN personne as personneEnseignant
+        ON(personneEnseignant.idPersonne=enseignant.idPersonne)
+        " . ($valider_non_valider != '' || $idPeriode != '' ? ' WHERE
+        ' . ($valider_non_valider != '' ? '(stage.valide IS
+        ' . ($valider_non_valider == 'non' ? 'NULL OR stage.valide=0)' : 'NOT NULL AND stage.valide IS NOT NULL AND stage.valide=1)') : '')
+            . '' . ($idPeriode != '' ? ($valider_non_valider != '' ? ' AND' : '') . ' stage.idPeriode=' . $idPeriode : '') : '') . "";
+
+        return $connexion->query($sql);
+
     }
 
 }

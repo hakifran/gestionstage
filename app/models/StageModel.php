@@ -196,6 +196,26 @@ class StageModel
         return $stages;
     }
 
+    public function list_stage_non_valider($idStages, $idPeriode)
+    {
+        $stageDao = new StageDao();
+        $stages = [];
+
+        foreach ($stageDao->list_stage_non_valider(implode(",", $idStages), $idPeriode) as $stage) {
+            $stag = [
+                "idStage" => $stage["idStage"],
+                "intituleProjet" => $stage["intituleProjet"],
+                "nomEntreprise" => $stage["nomEntreprise"],
+                "adresse" => $stage["adresse"],
+            ];
+            array_push(
+                $stages,
+                $stag
+            );
+        }
+        return $stages;
+    }
+
     public function list_sujet_disponible($typeUtilisateur)
     {
 
@@ -275,6 +295,60 @@ class StageModel
         return $stages;
     }
 
+    public function list_tous_attribue_et_non_attribue_et_par_periode($attribue_no_attribue, $idPeriode)
+    {
+        $stageDao = new StageDao();
+        $stages = [];
+
+        foreach ($stageDao->list_tous_attribue_et_non_attribue_et_par_periode($attribue_no_attribue, $idPeriode) as $stage) {
+            $stag = [
+                "idStage" => $stage["idStage"],
+                "intituleProjet" => $stage["intituleProjet"],
+                "nomEntreprise" => $stage["nomEntreprise"],
+                "adresse" => $stage["adresse"],
+                "periode" => $stage["intitule"],
+                "stage_valide" => $stage["stageValider"],
+                "attribue" => $stage["attribue"],
+                "etudiant" => $stage["nomEtudiant"] . '' . $stage["prenomEtudiant"],
+                "enseignant" => $stage["nomEnseignant"] . '' . $stage["prenomEnseignant"],
+            ];
+            array_push(
+                $stages,
+                $stag
+            );
+        }
+
+        return $stages;
+
+    }
+
+    public function list_tous_valide_et_non_valide_et_par_periode($valider_non_valider, $idPeriode)
+    {
+        $stageDao = new StageDao();
+        $stages = [];
+
+        foreach ($stageDao->list_tous_valide_et_non_valide_et_par_periode($valider_non_valider, $idPeriode) as $stage) {
+            $stag = [
+                "idStage" => $stage["idStage"],
+                "intituleProjet" => $stage["intituleProjet"],
+                "nomEntreprise" => $stage["nomEntreprise"],
+                "adresse" => $stage["adresse"],
+                "periode" => $stage["intitule"],
+                "stage_valide" => $stage["stageValider"],
+                "attribue" => $stage["attribue"],
+                "etudiant" => $stage["nomEtudiant"] . '' . $stage["prenomEtudiant"],
+                "enseignant" => $stage["nomEnseignant"] . '' . $stage["prenomEnseignant"],
+            ];
+            array_push(
+                $stages,
+                $stag
+            );
+        }
+
+        return $stages;
+
+    }
+
     public function NombrestagesDansLaPeriodePourLesseingnant($idPeriode, $idEnseignants)
     {
         $stageDao = new StageDao();
@@ -290,6 +364,13 @@ class StageModel
         $stageDao = new StageDao();
 
         return $stageDao->attribue($idStage, $idEnseignant);
+    }
+
+    public function valider($valeursAvalider)
+    {
+        $stageDao = new StageDao();
+
+        return $stageDao->valider($valeursAvalider);
     }
 
 }

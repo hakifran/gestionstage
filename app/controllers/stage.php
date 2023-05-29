@@ -24,6 +24,72 @@ class Stage extends Controller
         }
     }
 
+    public function list_tous_attribue_et_non_attribue_et_par_periode()
+    {
+        if ($_SERVER["REQUEST_METHOD"] == "GET") {
+            $utils = new Utils();
+            // vérifier si l'utilisateur est authentifier
+            $utils->verifier_authentification_utilisateur();
+            $stage = $this->model('StageModel');
+            header("Content-type: application/json");
+            if ($_SESSION['user_info']["data"]["type"] != "admin") {
+                echo json_encode(
+                    array("message" => "L'utilisateur doit être un admin", "status" => "erreur")
+                );
+                exit;
+            }
+            $attribue_non_attribue = "";
+            $idPeriode = "";
+            if (isset($_GET["scope"])) {
+                $attribue_non_attribue = $_GET["scope"];
+            }
+
+            if (isset($_GET["idPeriode"])) {
+                $idPeriode = $_GET['idPeriode'];
+            }
+            echo json_encode(array("data" => $stage->list_tous_attribue_et_non_attribue_et_par_periode($attribue_non_attribue, $idPeriode), "status" => "ok"));
+            exit;
+
+        } else {
+            echo json_encode(array("message" => "L'opération n'est pas autorisé", "status" => "erreur"));
+            exit;
+        }
+
+    }
+
+    public function list_tous_valide_et_non_valide_et_par_periode()
+    {
+        if ($_SERVER["REQUEST_METHOD"] == "GET") {
+            $utils = new Utils();
+            // vérifier si l'utilisateur est authentifier
+            $utils->verifier_authentification_utilisateur();
+            $stage = $this->model('StageModel');
+            header("Content-type: application/json");
+            if ($_SESSION['user_info']["data"]["type"] != "admin") {
+                echo json_encode(
+                    array("message" => "L'utilisateur doit être un admin", "status" => "erreur")
+                );
+                exit;
+            }
+            $valider_non_valider = "";
+            $idPeriode = "";
+            if (isset($_GET["scope"])) {
+                $valider_non_valider = $_GET["scope"];
+            }
+
+            if (isset($_GET["idPeriode"])) {
+                $idPeriode = $_GET['idPeriode'];
+            }
+            echo json_encode(array("data" => $stage->list_tous_valide_et_non_valide_et_par_periode($valider_non_valider, $idPeriode), "status" => "ok"));
+            exit;
+
+        } else {
+            echo json_encode(array("message" => "L'opération n'est pas autorisé", "status" => "erreur"));
+            exit;
+        }
+
+    }
+
     public function list_par_periode()
     {
         if ($_SERVER["REQUEST_METHOD"] == "GET") {
@@ -228,9 +294,6 @@ class Stage extends Controller
                 $stageNonAttribue
             )), $params->idPeriode
             );
-
-            // $preference_existant = $this->preferencesExistant($preferences);
-            // $preference_nom_existant = $this->preferencesNonExistant($preferences);
             $enseignant = $this->model('EnseignantModel');
             $tousLesEnseignants = $enseignant->list();
             $idEnseignants = array_map(array($this, "map_id_enseignants"), $tousLesEnseignants);
@@ -242,6 +305,8 @@ class Stage extends Controller
             $nombreLimites = $nombreStage->nombreLimitStageParEnseignantParPeriode($params->idPeriode, $idEnseignants);
             $stageAttribues = [];
             $preferencesAttribues = $preferences;
+            shuffle($preferencesAttribues);
+            // Attribuer des stages qui ont été préférés
             if (count($preferencesAttribues) > 0) {
                 foreach ($preferencesAttribues as $preference) {
                     $idStagePreference = array_keys($preference)[0];
@@ -273,7 +338,7 @@ class Stage extends Controller
                 }
 
             }
-
+            // Attribuer le reste des stages qui n'ont pas de préférences
             while (count($stageNonAttribueIds) > 0 && count($idEnseignants) > 0) {
                 $idEnseignantIndex = 0;
                 shuffle($idEnseignants);
@@ -304,7 +369,65 @@ class Stage extends Controller
 
             if ($stage == true) {
                 echo json_encode(
-                    array("data" => "Le stage a été attribué", "status" => "ok")
+                    array("data" => "Les stages ont été attribués", "status" => "ok")
+                );
+            } else {
+                echo json_encode(
+                    array("message" => "Une erreur s'est produite", "status" => "erreur")
+                );
+            }
+        } else {
+            echo json_encode(array("message" => "L'opération n'est pas autorisé", "status" => "erreur"));
+            exit;
+        }
+
+    }
+
+    public function valider()
+    {
+        if ($_SERVER["REQUEST_METHOD"] == "PATCH") {
+            $params = json_decode(file_get_contents('php://input'));
+
+            $utils = new Utils();
+            // vérifier si l'utilisateur est authentifier
+            $utils->verifier_authentification_utilisateur();
+            header("Content-type: application/json");
+            if ($_SESSION['user_info']["data"]["type"] != "admin") {
+                echo json_encode(
+                    array("message" => "L'utilisateur doit être un admin", "status" => "erreur")
+                );
+                exit;
+            }
+
+            $utils->verifier_les_parametres($params, $this->valider_paramettre_obligatoire());
+            $stage = $this->model('StageModel');
+            if (gettype($params->idStages) != 'array') {
+                echo json_encode(
+                    array("message" => "Le paramètre idStage doit être un tableau contenant la liste des identifiants des stages", "status" => "erreur")
+                );
+                exit;
+            }
+            $stageNonValider = $stage->list_stage_non_valider($params->idStages, $params->idPeriode);
+            $stageNonValiderIds = array_map(array($this, "map_id_stages"), $stageNonValider);
+
+            if (!$stageNonValider) {
+                echo json_encode(
+                    array("message" => "Aucun stage non validé", "status" => "erreur")
+                );
+                exit;
+            }
+            $valeursAvalider = [];
+            foreach ($stageNonValiderIds as $idStageAvalider) {
+                array_push(
+                    $valeursAvalider, ["idStage" => $idStageAvalider, "valide" => 1]
+                );
+            }
+
+            $stage->valider($valeursAvalider);
+
+            if ($stage == true) {
+                echo json_encode(
+                    array("data" => "Les stages ont été validé", "status" => "ok")
                 );
             } else {
                 echo json_encode(
@@ -397,6 +520,12 @@ class Stage extends Controller
     }
 
     private function attribue_paramettre_obligatoire()
+    {
+        $params = array("idStages", "idPeriode");
+        return $params;
+    }
+
+    private function valider_paramettre_obligatoire()
     {
         $params = array("idStages", "idPeriode");
         return $params;
