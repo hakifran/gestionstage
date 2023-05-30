@@ -63,7 +63,7 @@
                                     <!-- <th scope="col">Action</th> -->
                                 </tr>
                             </thead>
-                            <tbody class="utilisateur-list">
+                            <tbody class="stages-list">
 
                             </tbody>
                         </table>
@@ -113,7 +113,7 @@ $(document).ready(function() {
 
                 $(".type-utilisateur").text(typeUtilisateur);
                 "Etudiant";
-                $(".utilisateur-list").append(
+                $(".stages-list").append(
                     "<tr class='" + (estPaire(count) == 0 ? "table-primary" : "") +
                     "'><th scope='row'>" + count +
                     "</th><td>" + value["intituleProjet"] + "</td><td>" + value[

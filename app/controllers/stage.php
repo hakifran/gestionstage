@@ -278,6 +278,14 @@ class Stage extends Controller
                 );
                 exit;
             }
+            if ($params->idPeriode == "") {
+                echo json_encode(
+                    array("message" => "Il faut séléctionner une période", "status" => "erreur")
+                );
+                exit;
+
+            }
+
             $stageNonAttribue = $stage->list_stage_non_attribue($params->idStages, $params->idPeriode);
             $stageNonAttribueIds = array_map(array($this, "map_id_stages"), $stageNonAttribue);
 
@@ -369,7 +377,7 @@ class Stage extends Controller
 
             if ($stage == true) {
                 echo json_encode(
-                    array("data" => "Les stages ont été attribués", "status" => "ok")
+                    array("message" => "Les stages ont été attribués", "status" => "ok")
                 );
             } else {
                 echo json_encode(
@@ -427,7 +435,7 @@ class Stage extends Controller
 
             if ($stage == true) {
                 echo json_encode(
-                    array("data" => "Les stages ont été validé", "status" => "ok")
+                    array("message" => "Les stages ont été validé", "status" => "ok")
                 );
             } else {
                 echo json_encode(

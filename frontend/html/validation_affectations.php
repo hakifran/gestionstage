@@ -11,7 +11,7 @@
     <link rel="stylesheet" type="text/css" href="../csspersonnalise/templatestyle.css" />
     <!-- <script src="https://kit.fontawesome.com/dabf916254.js" crossorigin="anonymous"></script> -->
     <title>
-        Affectation des stages
+        Validation des stages
     </title>
     <style>
 
@@ -35,7 +35,7 @@
                         <!--Fin alert pour afficher le message de succès ou d'échec-->
                         <div class="row">
                             <div class="col-md-6">
-                                <h3 class="text-left">Affectation des stages</h3>
+                                <h3 class="text-left">Validation des stages</h3>
                             </div>
 
                         </div>
@@ -51,8 +51,8 @@
                                     <div class="col-md-9">
                                         <select class="form-control scope">
                                             <option value="">Tous</option>
-                                            <option value="non">Non attribues</option>
-                                            <option value="oui">Attribués</option>
+                                            <option value="non">Non validés</option>
+                                            <option value="oui">Validés</option>
                                         </select>
                                     </div>
                                 </div>
@@ -70,8 +70,7 @@
                                 </div>
                             </div>
                             <div class="col-md-4">
-                                <button type onclick="attribuer()"
-                                    class="btn btn-info attribuer-button">Attribuer</button>
+                                <button type onclick="valider()" class="btn btn-info attribuer-button">Valider</button>
                             </div>
                         </div>
                         <table class="table">
@@ -140,7 +139,7 @@ $(document).ready(function() {
 
     });
 
-    les_attributions("", "");
+    les_validations("", "");
 
 
 });
@@ -153,14 +152,14 @@ $('.scope').on('change', function() {
     scope = this.value;
     idStages = []
     $('.stages-list tr').remove();
-    les_attributions(scope, periode)
+    les_validations(scope, periode)
 });
 
 $('.periodes-list').on('change', function() {
     periode = this.value;
     idStages = [];
     $('.stages-list tr').remove();
-    les_attributions(scope, periode)
+    les_validations(scope, periode)
 });
 
 
@@ -195,14 +194,14 @@ $(document).off('change').on('change', '.selectionner-tous', function() {
 });
 
 
-function attribuer() {
+function valider() {
 
     let payload = {}
 
     payload["idStages"] = idStages;
     payload["idPeriode"] = periode;
     // Envoyer les parametres pour être sauver dans le backend via Fetch
-    fetch("http://localhost/gestionstage/public/stage/attribue", {
+    fetch("http://localhost/gestionstage/public/stage/valider", {
         method: "PATCH",
         headers: {
             "Content-Type": "application/json",
@@ -234,11 +233,11 @@ function attribuer() {
 
 
 
-function les_attributions(attribue_no_attribue, idPeriode) {
+function les_validations(valider_no_valider, idPeriode) {
     let count = 1
-    let url = "http://localhost/gestionstage/public/stage/list_tous_attribue_et_non_attribue_et_par_periode";
-    if (attribue_no_attribue !== "") {
-        url += "?scope=" + attribue_no_attribue;
+    let url = "http://localhost/gestionstage/public/stage/list_tous_valide_et_non_valide_et_par_periode";
+    if (valider_no_valider !== "") {
+        url += "?scope=" + valider_no_valider;
         if (idPeriode !== "") {
             url += "&idPeriode=" + idPeriode;
         }
@@ -272,7 +271,7 @@ function les_attributions(attribue_no_attribue, idPeriode) {
                         "-" : value["enseignant"]) +
                     "</td><td>" + value["periode"] +
                     "</td><td><input class='form-check-input' type='checkbox' " +
-                    (value["attribue"] === "1" ? "checked" : "") +
+                    (value["stage_valide"] === "1" ? "checked" : "") +
                     " disabled></td></tr>"
                 );
                 count++;
@@ -280,7 +279,7 @@ function les_attributions(attribue_no_attribue, idPeriode) {
         } else {
             $(".alert").removeAttr("hidden");
             $(".alert").addClass("alert-info");
-            $(".alert").html("Pas de stage pour ce scope");
+            $(".alert").html("Pas de stages pour ce scope");
         }
 
     });
