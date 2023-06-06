@@ -22,7 +22,9 @@
 <body>
     <div class="container-fluid">
         <div class="row">
-            <?php include 'menu.php'?>
+            <div class="col-md-2 sidebargauche">
+                <?php include 'menu.php'?>
+            </div>
             <div class="col-md-10">
                 <div class="row">
                     <?php include 'header.php'?>
@@ -97,9 +99,10 @@
                 </div>
             </div>
         </div>
-        <!--Le pied de page-->
         <?php include 'footer.php'?>
+
     </div>
+    <!--Le pied de page-->
 
     <!--Charger jquery-->
     <script src="../jquery-3.6.4.js"></script>
@@ -165,24 +168,21 @@ $('.periodes-list').on('change', function() {
 
 
 
-$(document).off('change').on('change', '.idStageCheckBox', function() {
+$(document).on('change', '.idStageCheckBox', function() {
     if ($(this).is(':checked')) {
         idStages.push($(this).attr("idStage"));
     } else {
         const index = idStages.indexOf($(this).attr("idStage"));
         idStages.splice(index, 1);
     }
-    console.log(idStages)
 });
 
-$(document).off('change').on('change', '.selectionner-tous', function() {
+$(document).on('change', '.selectionner-tous', function() {
     if ($(this).is(':checked')) {
         $('.idStageCheckBox').each(function(i, element) {
             $(element).attr('checked', true);
             idStages.push($(element).attr("idStage"));
         });
-
-        //
     } else {
 
         $('.idStageCheckBox').each(function(i, element) {
@@ -191,7 +191,7 @@ $(document).off('change').on('change', '.selectionner-tous', function() {
             idStages.splice(index, 1);
         });
     }
-    // console.log(idStages)
+    console.log(idStages)
 });
 
 

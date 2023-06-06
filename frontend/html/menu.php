@@ -1,21 +1,19 @@
-<div class="col-auto col-md-2 min-vh-100 p-2 d-flex flex-column sidebargauche">
-    <a class="d-flex text-decoration-none mt-5 align-items-center text-dark menutext" href="">
-        <span class="fs-4 d-none d-sm-inline">Menu</span>
-    </a>
-    <hr class="ligne">
-    <ul class="nav nav-pills flex-column mt-5 menu-list">
-    </ul>
-    <div class="donnee-utilisateur">
-        <!-- <i class="fa fa-user" aria-hidden="true"></i> -->
-        <br>
-        <span id="nom_prenom"></span>
-        <br>
-        <span id="email"></span>
-        <br>
-        <span id="type_utilisateur"></span>
-        <br>
-        <a href="#" onclick="logout()">Se deconnecter</a>
-    </div>
+<a class="d-flex text-decoration-none mt-5 align-items-center text-dark menutext" href="">
+    <span class="fs-4 d-none d-sm-inline">Menu</span>
+</a>
+<hr class="ligne">
+<ul class="nav nav-pills flex-column mt-5 menu-list">
+</ul>
+<div class="donnee-utilisateur">
+    <!-- <i class="fa fa-user" aria-hidden="true"></i> -->
+    <br>
+    <span id="nom_prenom"></span>
+    <br>
+    <span id="email"></span>
+    <br>
+    <span id="type_utilisateur"></span>
+    <br>
+    <a href="#" onclick="logout()">Se deconnecter</a>
 </div>
 <script src="../jquery-3.6.4.js"></script>
 <script>

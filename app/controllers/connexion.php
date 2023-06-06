@@ -57,6 +57,7 @@ class connexion extends Controller
                                 exit;
 
                             }
+
                             $id = $utilisateur["idEnseignant"];
                             $pages = [
                                 ["page" => "mes_stages", "titre" => "Sujets à suivre", "page_accueil" => true, "icon" => "fa fa-list"],
