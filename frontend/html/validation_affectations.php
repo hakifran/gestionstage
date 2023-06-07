@@ -21,8 +21,10 @@
 
 <body>
     <div class="container-fluid">
-        <div class="row">
-            <?php include 'menu.php'?>
+        <div class="row sidebar-contenu">
+            <div class="col-md-2 sidebargauche">
+                <?php include 'menu.php'?>
+            </div>
             <div class="col-md-10">
                 <div class="row">
                     <?php include 'header.php'?>
@@ -164,7 +166,7 @@ $('.periodes-list').on('change', function() {
 
 
 
-$(document).off('change').on('change', '.idStageCheckBox', function() {
+$(document).on('change', '.idStageCheckBox', function() {
     if ($(this).is(':checked')) {
         idStages.push($(this).attr("idStage"));
     } else {
@@ -174,7 +176,7 @@ $(document).off('change').on('change', '.idStageCheckBox', function() {
     console.log(idStages)
 });
 
-$(document).off('change').on('change', '.selectionner-tous', function() {
+$(document).on('change', '.selectionner-tous', function() {
     if ($(this).is(':checked')) {
         $('.idStageCheckBox').each(function(i, element) {
             $(element).attr('checked', true);
@@ -219,7 +221,7 @@ function valider() {
         //affiche le message de reussite ou d'echeck
         if (response["status"] === "ok") {
             text_alert = response["message"];
-            window.location.href = 'affectation_stages.php?alertMessage=' + text_alert;
+            window.location.href = 'validation_affectations.php?alertMessage=' + text_alert;
         } else {
             $(".alert").addClass("alert-danger");
             text_alert = response["message"];

@@ -1,11 +1,11 @@
 <a class="d-flex text-decoration-none mt-5 align-items-center text-dark menutext" href="">
-    <span class="fs-4 d-none d-sm-inline">Menu</span>
+    <span class="fs-5 d-none d-sm-inline menu-title">Menu</span>
 </a>
 <hr class="ligne">
 <ul class="nav nav-pills flex-column mt-5 menu-list">
 </ul>
-<div class="donnee-utilisateur">
-    <!-- <i class="fa fa-user" aria-hidden="true"></i> -->
+<!-- <i class="fa fa-user" aria-hidden="true"></i> -->
+<center class="donnee-utilisateur">
     <br>
     <span id="nom_prenom"></span>
     <br>
@@ -14,7 +14,7 @@
     <span id="type_utilisateur"></span>
     <br>
     <a href="#" onclick="logout()">Se deconnecter</a>
-</div>
+</center>
 <script src="../jquery-3.6.4.js"></script>
 <script>
 $(document).ready(function() {
@@ -30,7 +30,7 @@ $(document).ready(function() {
             html_code +=
                 "<li class='nav-item'><a href='" + page['page'] +
                 ".php' class='nav-link text-dark'><i class='fs-5 " + page["icon"] +
-                "'></i><span class='fs-5 d-none ms-3 d-sm-inline'>" + page["titre"] +
+                "'></i><span class='fs-6 d-none ms-3 d-sm-inline menu-text'>" + page["titre"] +
                 "</span></a></li><hr>";
         });
         $(".menu-list").html(html_code);

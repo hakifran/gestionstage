@@ -21,7 +21,7 @@
 
 <body>
     <div class="container-fluid">
-        <div class="row">
+        <div class="row sidebar-contenu">
             <div class="col-md-2 sidebargauche">
                 <?php include 'menu.php'?>
             </div>

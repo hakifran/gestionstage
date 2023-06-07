@@ -21,8 +21,10 @@
 
 <body>
     <div class="container-fluid">
-        <div class="row">
-            <?php include 'menu.php'?>
+        <div class="row sidebar-contenu">
+            <div class="col-md-2 sidebargauche">
+                <?php include 'menu.php'?>
+            </div>
             <div class="col-md-10">
                 <div class="row">
                     <?php include 'header.php'?>

@@ -22,8 +22,10 @@
 
 <body>
     <div class="container-fluid">
-        <div class="row">
-            <?php include 'menu.php'?>
+        <div class="row sidebar-contenu">
+            <div class="col-md-2 sidebargauche">
+                <?php include 'menu.php'?>
+            </div>
             <div class="col-md-10">
                 <div class="row">
                     <?php include 'header.php'?>
@@ -52,7 +54,7 @@
                         <div class="row">
                             <label class="label col-md-3 control-label">Période</label>
                             <div class="col-md-9">
-                                <select class="form-control parcours periodes-list">
+                                <select class="form-control periodes-list">
                                     <option value="">---Selectionner la periode---</option>
                                 </select>
                             </div>
