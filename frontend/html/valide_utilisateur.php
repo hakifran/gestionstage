@@ -7,6 +7,8 @@
     <link rel="stylesheet" type="text/css" href="../css/bootstrap.css" />
     <!--JavaScript du bootstrap-->
     <script src="../js/bootstrap.js"></script>
+    <link rel="stylesheet" type="text/css" href="../fontawesome/css/all.min.css" />
+    <link rel="stylesheet" type="text/css" href="../fontawesome/css/fontawesome.min.css" />
     <!--CSS personnalisé du formulaire d'inscription-->
     <link rel="stylesheet" type="text/css" href="../csspersonnalise/templatestyle.css" />
     <link rel="stylesheet" type="text/css" href="../csspersonnalise/valide_utilisateur.css" />

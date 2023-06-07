@@ -7,6 +7,8 @@
     <link rel="stylesheet" type="text/css" href="../css/bootstrap.css" />
     <!--JavaScript du bootstrap-->
     <script src="../js/bootstrap.js"></script>
+    <link rel="stylesheet" type="text/css" href="../fontawesome/css/all.min.css" />
+    <link rel="stylesheet" type="text/css" href="../fontawesome/css/fontawesome.min.css" />
     <!--CSS personnalisé du formulaire d'inscription-->
     <link rel="stylesheet" type="text/css" href="../csspersonnalise/templatestyle.css" />
     <!-- <script src="https://kit.fontawesome.com/dabf916254.js" crossorigin="anonymous"></script> -->
@@ -50,7 +52,7 @@
                                     <th scope="col">Email</th>
                                     <th scope="col">Type</th>
                                     <th scope="col">Valide</th>
-                                    <th scope="col">Edit</th>
+                                    <th scope="col">Action</th>
                                 </tr>
                             </thead>
                             <tbody class="utilisateur-list">
@@ -102,7 +104,8 @@ $(document).ready(function() {
                 "</td><td>Enseignant</td><td><input class='form - check - input' type='checkbox' " +
                 (value["valide"] == 1 ? "checked" : "") +
                 " disabled></td><td><a href='valide_utilisateur.php?typeUtilisateur=enseignant&idUtilisateur=" +
-                value["idEnseignant"] + "' class='retrouver-utilisateur'>Edit</a></td></tr>"
+                value["idEnseignant"] +
+                "' class='retrouver-utilisateur'><i class='fa-solid fa-check'></i></a></td></tr>"
             );
             // <i class='fa fa-pencil'></i>
             count++;
@@ -126,7 +129,8 @@ $(document).ready(function() {
                 "</td><td>Etudiant</td><td><input class='form - check - input' type='checkbox' " +
                 (value["valide"] == 1 ? "checked" : "") +
                 " disabled></td><td><a href='valide_utilisateur.php?typeUtilisateur=etudiant&idUtilisateur=" +
-                value["idEtudiant"] + "' class='retrouver-utilisateur'>Edit</a></td></tr>"
+                value["idEtudiant"] +
+                "' class='retrouver-utilisateur'><i class='fa-solid fa-check'></i></a></td></tr>"
             );
             count++;
         });

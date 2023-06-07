@@ -85,7 +85,7 @@ class connexion extends Controller
                                 ["page" => "utilisateurs", "titre" => "Utilisateurs", "page_accueil" => true, "icon" => "fa fa-users"],
                                 ["page" => "affectation_stages", "titre" => "Affectation des stages", "icon" => "fa fa-link"],
                                 ["page" => "validation_affectations", "titre" => "Validations des affectations", "icon" => "fa fa-check"],
-                                ["page" => "periodes", "titre" => "Periodes", "icon" => "fa fa-check"],
+                                ["page" => "periodes", "titre" => "Periodes", "icon" => "fa fa-calendar-days"],
                             ];
 
                             break;

@@ -7,6 +7,8 @@
     <link rel="stylesheet" type="text/css" href="../css/bootstrap.css" />
     <!--JavaScript du bootstrap-->
     <script src="../js/bootstrap.js"></script>
+    <link rel="stylesheet" type="text/css" href="../fontawesome/css/all.min.css" />
+    <link rel="stylesheet" type="text/css" href="../fontawesome/css/fontawesome.min.css" />
     <!--CSS personnalisé du formulaire d'inscription-->
     <link rel="stylesheet" type="text/css" href="../csspersonnalise/templatestyle.css" />
     <!-- <script src="https://kit.fontawesome.com/dabf916254.js" crossorigin="anonymous"></script> -->
@@ -106,7 +108,7 @@ $(document).ready(function() {
                     "</td><td>" + value["periode"] +
                     "</td><td><a href='auto_attribuer.php?idStage=" +
                     value["idStage"] +
-                    "' >Auto-attribuer</a></td></tr>"
+                    "' ><i class='fa-solid fa-link'></i></a></td></tr>"
                 );
 
                 count++;

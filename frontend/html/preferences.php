@@ -7,6 +7,8 @@
     <link rel="stylesheet" type="text/css" href="../css/bootstrap.css" />
     <!--JavaScript du bootstrap-->
     <script src="../js/bootstrap.js"></script>
+    <link rel="stylesheet" type="text/css" href="../fontawesome/css/all.min.css" />
+    <link rel="stylesheet" type="text/css" href="../fontawesome/css/fontawesome.min.css" />
     <!--CSS personnalisé du formulaire d'inscription-->
     <link rel="stylesheet" type="text/css" href="../csspersonnalise/templatestyle.css" />
     <!-- <script src="https://kit.fontawesome.com/dabf916254.js" crossorigin="anonymous"></script> -->
@@ -41,7 +43,7 @@
                             </div>
                             <div class="col-md-6 float-left">
                                 <div class="lien-ajouter">
-                                    <a href="ajouter_preference.php">Ajouter</a>
+                                    <a href="ajouter_preference.php"><i class="fa-solid fa-circle-plus fa-3x"></i></a>
                                 </div>
 
                             </div>
@@ -109,7 +111,7 @@ $(document).ready(function() {
                         "intitule"] +
                     "</td><td><a href='edit_preference.php?idPreference=" +
                     value["idPreference"] +
-                    "' >Edit</a></td></tr>"
+                    "' ><i class='fa-solid fa-pencil'></i></a></td></tr>"
                 );
 
                 count++;

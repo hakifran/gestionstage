@@ -5,7 +5,9 @@
 <ul class="nav nav-pills flex-column mt-5 menu-list">
 </ul>
 <!-- <i class="fa fa-user" aria-hidden="true"></i> -->
-<center class="donnee-utilisateur">
+<div class="donnee-utilisateur">
+
+    <span><i class="fa-solid fa-user"></i></span>
     <br>
     <span id="nom_prenom"></span>
     <br>
@@ -14,7 +16,7 @@
     <span id="type_utilisateur"></span>
     <br>
     <a href="#" onclick="logout()">Se deconnecter</a>
-</center>
+</div>
 <script src="../jquery-3.6.4.js"></script>
 <script>
 $(document).ready(function() {
