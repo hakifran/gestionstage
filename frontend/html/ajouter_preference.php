@@ -63,13 +63,15 @@
                                     aria-label="multiple select example">
                                 </select>
                             </div>
-                            <div class="col-md-2">
+                            <div class="col-md-2 flesh-gauche-droite">
                                 <div class="row">
                                     <div class="col-md-6">
-                                        <a href="#" class="deplace-droite">Left</a>
+                                        <a href="#" class="deplace-droite"><i
+                                                class="fa-solid fa-angles-right fa-2x"></i></a>
                                     </div>
                                     <div class="col-md-6">
-                                        <a href="#" class="deplace-gauche">Right</a>
+                                        <a href="#" class="deplace-gauche"><i
+                                                class="fa-solid fa-angles-left fa-2x"></i></a>
                                     </div>
                                 </div>
                             </div>
