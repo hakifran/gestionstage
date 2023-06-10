@@ -132,7 +132,7 @@ class Stage extends Controller
         }
     }
 
-    public function auto_attribue()
+    public function update()
     {
         if ($_SERVER["REQUEST_METHOD"] == "PATCH") {
             $params = json_decode(file_get_contents('php://input'));
@@ -159,23 +159,52 @@ class Stage extends Controller
                 );
                 exit;
             }
-            // echo json_encode(
-            //     array("message" => "Le stage n'existe pas", "status" => "erreur")
-            // );
-            // exit;
 
-            // $stagesDansLaPeriode = $stage->stagesDansLaPeriodePourLenseingnant($stageDispo["idPeriode"], $params->idEnseignant);
+            $stage = $stage->update($params, $_SESSION['user_info']["data"]["type"]);
+            if ($stage == true) {
+                echo json_encode(
+                    array("message" => "Le stage a été modifié", "status" => "ok")
+                );
+            } else {
+                echo json_encode(
+                    array("message" => "Une erreur s'est produite", "status" => "erreur")
+                );
+            }
+        } else {
+            echo json_encode(array("message" => "L'opération n'est pas autorisé", "status" => "erreur"));
+            exit;
+        }
 
-            // $nombreStage = $this->model('NombreStageModel');
+    }
 
-            // $nombreLimite = $nombreStage->nombreLimitStageParEnseignantParPeriode($stageDispo["idPeriode"], $params->idEnseignant);
+    public function auto_attribue()
+    {
+        if ($_SERVER["REQUEST_METHOD"] == "PATCH") {
+            $params = json_decode(file_get_contents('php://input'));
+            $params = $this->add_params($params);
 
-            // if ((int) $nombreLimite["nombre"] > 0 && count($stagesDansLaPeriode) >= (int) $nombreLimite["nombre"]) {
-            //     echo json_encode(
-            //         array("message" => "L'enseignant a déjà atteint sa limite pour cette periode", "status" => "erreur")
-            //     );
-            //     exit;
-            // }
+            $utils = new Utils();
+            // vérifier si l'utilisateur est authentifier
+            $utils->verifier_authentification_utilisateur();
+            $utils->verifier_les_parametres($params, $this->auto_attribue_paramettre_obligatoire());
+            $stage = $this->model('StageModel');
+            $stageDispo = $stage->get($params->idStage);
+
+            if (!$stageDispo) {
+                echo json_encode(
+                    array("message" => "Le stage n'existe pas", "status" => "erreur")
+                );
+                exit;
+
+            }
+
+            header("Content-type: application/json");
+            if (!in_array($_SESSION['user_info']["data"]["type"], ["etudiant", "enseignant"])) {
+                echo json_encode(
+                    array("message" => "L'utilisateur doit être soit un étudiant ou un enseignant", "status" => "erreur")
+                );
+                exit;
+            }
 
             $stage = $stage->auto_attribue($params, $_SESSION['user_info']["data"]["type"]);
             if ($stage == true) {
@@ -545,6 +574,7 @@ class Stage extends Controller
         $stage->setNomEntreprise($params->nomEntreprise);
         $stage->setAdresse($params->adresse);
         $stage->setIdPeriode($params->idPeriode);
+        $stage->setCreerPar($_SESSION['user_info']["data"]["type"]);
         if (isset($params->idEtudiant)) {
             $stage->setIdEtudiant($params->idEtudiant);
         }

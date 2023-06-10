@@ -10,8 +10,7 @@ class StageModel
     private $idEnseignant;
     private $attribue;
     private $valide;
-    private $acommence;
-
+    private $creer_par;
     // Setters
     public function setIntituleProjet($intituleProjet)
     {
@@ -53,9 +52,9 @@ class StageModel
         $this->valide = $valide;
     }
 
-    public function setAcommence($acommence)
+    public function setCreerPar($creer_par)
     {
-        $this->acommence = $acommence;
+        $this->creer_par = $creer_par;
     }
 
     // Getters
@@ -99,9 +98,9 @@ class StageModel
         return $this->valide;
     }
 
-    public function getAcommence()
+    public function getCreerPar()
     {
-        return $this->acommence;
+        return $this->creer_par;
     }
 
     public function create()
@@ -247,6 +246,14 @@ class StageModel
         return $stageDao->auto_attribue($params, $type_values);
     }
 
+    public function update($params, $typeUtilisateur)
+    {
+        $stageDao = new StageDao();
+        $type_values = $this->typeUtilisateur($typeUtilisateur);
+
+        return $stageDao->update($params, $type_values);
+    }
+
     private function typeUtilisateur($typeUtilisateur, $attribue = false, $all = true)
     {
         $params = [
@@ -267,9 +274,13 @@ class StageModel
         $stageDao = new StageDao();
         $stage = $stageDao->get($id);
         if ($stage) {
-            return ["idStage" => $stage["idStage"], "intituleProjet" => $stage["intituleProjet"], "nomEntreprise" => $stage["nomEntreprise"], "adresse" => $stage["adresse"], "attribue" => $stage["attribue"],
-                "valide" => $stage["valide"], "idEtudiant" => $stage["idEtudiant"], "nomEtudiant" => $stage["nomEtudiant"], "prenomEtudiant" => $stage["prenomEtudiant"],
-                "idEnseignant" => $stage["idEnseignant"], "nomEnseignant" => $stage["nomEnseignant"], "prenomEnseignant" => $stage["prenomEnseignant"], "idPeriode" => $stage["idPeriode"], "periodeIntitule" => $stage["periodeIntitule"]];
+            return ["idStage" => $stage["idStage"], "intituleProjet" => $stage["intituleProjet"],
+                "nomEntreprise" => $stage["nomEntreprise"], "adresse" => $stage["adresse"], "attribue" => $stage["attribue"],
+                "valide" => $stage["valide"], "idEtudiant" => $stage["idEtudiant"], "nomEtudiant" => $stage["nomEtudiant"],
+                "prenomEtudiant" => $stage["prenomEtudiant"],
+                "idEnseignant" => $stage["idEnseignant"], "nomEnseignant" => $stage["nomEnseignant"],
+                "prenomEnseignant" => $stage["prenomEnseignant"], "idPeriode" => $stage["idPeriode"],
+                "periodeIntitule" => $stage["periodeIntitule"], "creer_par" => $stage["creer_par"]];
         } else {
             return [];
         }

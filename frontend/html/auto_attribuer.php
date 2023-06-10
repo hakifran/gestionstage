@@ -39,7 +39,7 @@
                         </div>
                         <!--Fin alert pour afficher le message de succès ou d'échec-->
 
-                        <h3 class="text-left">Auto attribue un stage</h3>
+                        <h3 class="text-left titre">Auto attribue un stage</h3>
 
                         <!--Debut afficher une ligne-->
                         <hr>
@@ -49,33 +49,41 @@
                         <div class="row">
                             <label class="label col-md-3 control-label">Projet</label>
                             <div class="col-md-9">
-                                <input disabled type="text" class="form-control projet" name="projet"
+                                <input type="text" class="form-control projet a_modifier" name="projet"
                                     placeholder="Projet">
                             </div>
                         </div>
                         <div class="row">
                             <label class="label col-md-3 control-label">Entreprise</label>
                             <div class="col-md-9">
-                                <input disabled type="text" class="form-control entreprise" name="entreprise"
+                                <input type="text" class="form-control entreprise a_modifier" name="entreprise"
                                     placeholder="Entreprise">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <label class="label col-md-3 control-label">Addresse de l'entreprise</label>
+                            <div class="col-md-9">
+                                <input type="addresse" required class="form-control addresse a_modifier" name="addresse"
+                                    placeholder="Addresse de l'entreprise">
                             </div>
                         </div>
                         <div class="row">
                             <label class="label col-md-3 control-label">Période</label>
                             <div class="col-md-9">
-                                <input disabled type="text" class="form-control periode" name="periode"
-                                    placeholder="Période">
+                                <select class="form-control parcours periodes-list">
+                                    <option value="">---Selectionner la periode---</option>
+                                </select>
                             </div>
                         </div>
-                        <div class="row enseignant">
-                            <label class="label col-md-3 control-label type-utilisateur">Tuteur</label>
+                        <div class="row enseignant a_ne_pas_modifier"">
+                            <label class=" label col-md-3 control-label type-utilisateur a_modifier">Tuteur</label>
                             <div class="col-md-9">
                                 <input disabled type="text" class="form-control tuteur" name="tuteur"
                                     placeholder="tuteur">
                             </div>
                         </div>
-                        <div class="row">
-                            <label class="label col-md-3 control-label">Attribuer</label>
+                        <div class="row a_ne_pas_modifier">
+                            <label class=" label col-md-3 control-label">Attribuer</label>
                             <div class="col-md-9">
                                 <input class="form-controlcheckbox form-check-input" type="checkbox" value=""
                                     id="flexCheckChecked" checked>
@@ -100,7 +108,24 @@
 
 </body>
 <script>
+let modifier = false;
 $(document).ready(function() {
+    // recuperer les periodes
+    fetch("http://localhost/gestionstage/public/periode/list", {
+        method: "GET",
+        headers: {
+            'Authorization': 'Bearer ' + sessionStorage.getItem("jwt")
+        }
+    }).then((resultat) => resultat.json()).then((response) => {
+        periodes = response['data'];
+        $list_periodes = "";
+        periodes.forEach(periode => {
+            $(".periodes-list").append("<option value=" + periode["idPeriode"] + ">" +
+                periode[
+                    "intitule"] + "</option>");
+        });
+
+    });
     const urlParamsString = window.location.search;
     const urlParams = new URLSearchParams(urlParamsString);
     const donnee_utilisateur = JSON.parse(sessionStorage.getItem("donnee_utilisateur"));
@@ -119,12 +144,21 @@ $(document).ready(function() {
         }
     }).then((resultat) => resultat.json()).then((response) => {
         const valeurs = response["data"];
-        console.log(valeurs);
         $(".projet").val(valeurs["intituleProjet"]);
         $(".entreprise").val(valeurs["nomEntreprise"]);
-        $(".periode").val(valeurs["periodeIntitule"]);
+        $('.periodes-list option[value=' + valeurs["idPeriode"] + ']').prop('selected', true)
+        $(".addresse").val(valeurs["adresse"]);
         $(".tuteur").val(valeurs["nom" + autreTypeUtilisateur] + " " + valeurs["prenom" +
             autreTypeUtilisateur]);
+        if (valeurs["creer_par"] === donnee_utilisateur["type"]) {
+            $(".a_ne_pas_modifier").hide();
+            $(".titre").text("Modifier le stage");
+            $("title").text("Modifier le stage");
+            $("button").text("Modifier");
+            modifier = true;
+        } else {
+            $(".a_modifier").attr("disabled", "true");
+        }
         if (valeurs["attribue"] == null || valeurs["attribue"] == 0) {
             $("#flexCheckChecked").removeAttr("checked");
         } else {
@@ -142,14 +176,18 @@ function auto_attribuer() {
     // Recuperer les parametres dans le formulaire
     const estCheck = $("#flexCheckChecked").is(":checked");
     payload["idStage"] = urlParams.get('idStage');
-
-
+    payload["intituleProjet"] = $(".projet").val() === "" ? null : $(".projet").val();
+    payload["nomEntreprise"] = $(".entreprise").val() === "" ? null : $(".entreprise").val();
+    payload["adresse"] = $(".addresse").val() === "" ? null : $(".addresse").val();
+    const idPeriode = $('.periodes-list').find(":selected").val();
+    if (idPeriode !== "") {
+        payload["idPeriode"] = idPeriode;
+    }
     payload["attribuer"] = estCheck ? "true" : "false";
     payload["id" + donnee_utilisateur["type"].charAt(0).toUpperCase() + donnee_utilisateur["type"].slice(1)] =
         donnee_utilisateur;
-
     // Envoyer les parametres pour être sauver dans le backend via Fetch
-    fetch("http://localhost/gestionstage/public/stage/auto_attribue", {
+    fetch("http://localhost/gestionstage/public/stage/" + (modifier == true ? "update" : "auto_attribue"), {
         method: "PATCH",
         headers: {
             "Content-Type": "application/json",

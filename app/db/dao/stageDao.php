@@ -8,9 +8,9 @@ class StageDao
     {
         $bd = new Basededonnee();
         $connexion = $bd->connexion();
-        $sql = "INSERT INTO stage (intituleProjet, nomEntreprise, adresse, attribue, valide, idEtudiant, idEnseignant, idPeriode) VALUES (?,?,?,?,?,?,?,?)";
+        $sql = "INSERT INTO stage (intituleProjet, nomEntreprise, adresse, attribue, valide, idEtudiant, idEnseignant, idPeriode, creer_par) VALUES (?,?,?,?,?,?,?,?,?)";
         try {
-            $connexion->prepare($sql)->execute([$stage->getIntituleProjet(), $stage->getNomEntreprise(), $stage->getAdresse(), $stage->getAttribue(), $stage->getValide(), $stage->getIdEtudiant(), $stage->getIdEnseignant(), $stage->getIdPeriode()]);
+            $connexion->prepare($sql)->execute([$stage->getIntituleProjet(), $stage->getNomEntreprise(), $stage->getAdresse(), $stage->getAttribue(), $stage->getValide(), $stage->getIdEtudiant(), $stage->getIdEnseignant(), $stage->getIdPeriode(), $stage->getCreerPar()]);
         } catch (Exception $e) {
             echo json_encode(
                 array("message" => $e->getMessage(), "status" => "erreur")
@@ -166,10 +166,28 @@ class StageDao
     {
         $bd = new Basededonnee();
         $connexion = $bd->connexion();
-        $sql = "UPDATE stage SET stage.id" . ucfirst($type_values["utilisateur"]) . "=?, stage.attribue=? where stage.idStage=?";
+        $sql = "UPDATE stage SET stage.id" . ucfirst($type_values["utilisateur"]) . "=?, stage.attribue=? " . ($params->attribuer == 'false' ? ", valide=0" : "") . " where stage.idStage=?";
 
         try {
-            $connexion->prepare($sql)->execute([$params->{"id" . ucfirst($type_values["utilisateur"]) . ""}->id, '1', $params->idStage]);
+            $connexion->prepare($sql)->execute([($params->attribuer == 'false' ? null : $params->{"id" . ucfirst($type_values["utilisateur"]) . ""}->id), $params->attribuer == 'false' ? '0' : '1', $params->idStage]);
+        } catch (Exception $e) {
+            echo json_encode(
+                array("message" => $e->getMessage(), "status" => "erreur")
+            );
+            exit;
+        }
+
+        return true;
+    }
+
+    public function update($params, $type_values)
+    {
+        $bd = new Basededonnee();
+        $connexion = $bd->connexion();
+        $sql = "UPDATE stage SET stage.intituleProjet=?, stage.nomEntreprise=?, stage.adresse=? " . (isset($params->idPeriode) ? ",stage.idPeriode=" . $params->idPeriode : "") . " where stage.idStage=?";
+
+        try {
+            $connexion->prepare($sql)->execute([$params->intituleProjet, $params->nomEntreprise, $params->adresse, $params->idStage]);
         } catch (Exception $e) {
             echo json_encode(
                 array("message" => $e->getMessage(), "status" => "erreur")

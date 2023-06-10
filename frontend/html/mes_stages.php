@@ -64,7 +64,7 @@
                                     <th scope="col">Periode</th>
                                     <th scope="col">Attribue</th>
                                     <th scope="col">valide</th>
-                                    <!-- <th scope="col">Action</th> -->
+                                    <th scope="col">Action</th>
                                 </tr>
                             </thead>
                             <tbody class="stages-list">
@@ -130,7 +130,9 @@ $(document).ready(function() {
                     (value["attribue"] == 1 ? "checked" : "") +
                     " disabled></td><td><input class='form - check - input' type='checkbox' " +
                     (value["stage_valide"] == 1 ? "checked" : "") +
-                    " disabled></td></tr>"
+                    " disabled></td><td><a href='auto_attribuer.php?idStage=" +
+                    value["idStage"] +
+                    "' ><i class='fa-solid fa-gear'></i></a></td></tr>"
                 );
                 // <td><a href='edit_stage.php?idStage=" +
                 //     value["idStage"] +
