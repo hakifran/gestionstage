@@ -101,7 +101,6 @@ $(document).ready(function() {
             'Authorization': 'Bearer ' + sessionStorage.getItem("jwt")
         }
     }).then((resultat) => resultat.json()).then((response) => {
-        console.log(response)
         if (response["data"].length > 0) {
             response["data"].forEach((value) => {
                 $(".utilisateur-list").append(
@@ -110,7 +109,7 @@ $(document).ready(function() {
                     "</th><td>" + value["intitule"] + "</td><td>" + value[
                         "dateDebut"] +
                     "</td><td>" + value["dateFin"] +
-                    "</td><<td><a href='edit_periode.php?idPeriode=" +
+                    "</td><<td><a href='ajouter_periode.php?idPeriode=" +
                     value["idPeriode"] +
                     "' ><i class='fa-solid fa-pencil'></i></a></td></tr>"
                 );

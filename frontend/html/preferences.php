@@ -101,7 +101,6 @@ $(document).ready(function() {
             'Authorization': 'Bearer ' + sessionStorage.getItem("jwt")
         }
     }).then((resultat) => resultat.json()).then((response) => {
-        console.log(response)
         if (response["data"].length > 0) {
             response["data"].forEach((value) => {
                 $(".utilisateur-list").append(
@@ -109,8 +108,9 @@ $(document).ready(function() {
                     "'><th scope='row'>" + count +
                     "</th><td>" + value["stages"].length + " Sujets</td><td>" + value[
                         "intitule"] +
-                    "</td><td><a href='edit_preference.php?idPreference=" +
-                    value["idPreference"] +
+                    "</td><td><a href='ajouter_preference.php?idUtilisateur=" +
+                    donnee_utilisateur["id"] + "&idPeriode=" + value[
+                        "idPeriode"] +
                     "' ><i class='fa-solid fa-pencil'></i></a></td></tr>"
                 );
 

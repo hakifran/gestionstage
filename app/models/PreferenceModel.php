@@ -83,6 +83,16 @@ class PreferenceModel
         return $preferenceDao->create($this, $stages);
     }
 
+    // modifier une preference
+    public function update()
+    {
+
+        $preferenceDao = new PreferenceDao();
+
+        $preferenceDao->enleverLesStages($this);
+        return $preferenceDao->update($this);
+    }
+
     public function list_des_preferences_lie_au_stages($idStages, $idPeriode)
     {
         $preferenceDao = new PreferenceDao();

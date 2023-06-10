@@ -39,7 +39,7 @@
                         </div>
                         <!--Fin alert pour afficher le message de succès ou d'échec-->
 
-                        <h3 class="text-left">Ajouter préférences</h3>
+                        <h3 class="text-left titre">Ajouter préférences</h3>
 
                         <!--Debut afficher une ligne-->
                         <hr>
@@ -100,7 +100,14 @@
 
 </body>
 <script>
+let selectionGauche = [];
+let selectionDroite = [];
+let stageSelectionne = [];
+let modifier = false;
+const urlParamsString = window.location.search;
+const urlParams = new URLSearchParams(urlParamsString);
 $(document).ready(function() {
+
     // recuperer les periodes
     fetch("http://localhost/gestionstage/public/periode/list", {
         method: "GET",
@@ -113,15 +120,44 @@ $(document).ready(function() {
         periodes.forEach(periode => {
 
             $(".periodes-list").append("<option value=" + periode["idPeriode"] + ">" +
-                periode[
-                    "intitule"] + "</option>");
+                periode["intitule"] + "</option>");
         });
 
     });
+
+
+
+    if (urlParams.get("idUtilisateur") && urlParams.get("idPeriode")) {
+        modifier = true;
+        fetch("http://localhost/gestionstage/public/preference/get?idUtilisateur=" + urlParams.get(
+            "idUtilisateur") + "&idPeriode=" + urlParams.get(
+            "idPeriode"), {
+            method: "GET",
+            headers: {
+                'Authorization': 'Bearer ' + sessionStorage.getItem("jwt")
+            }
+        }).then((resultat) => resultat.json()).then((response) => {
+
+            let valeurs = response['data'];
+            const stages = valeurs["stages"]
+            let tailleSelectionDroite = selectionDroite.length;
+            stages.forEach(stage => {
+                tailleSelectionDroite++;
+                stageSelectionne.push(stage["idStage"]);
+
+                selectionDroite.push('<option value=' + stage["idStage"] + '>' +
+                    tailleSelectionDroite + '. ' + stage["intituleProjet"] + '</option>');
+            });
+            $(".right-stages-list").append(selectionDroite);
+            $(".periodes-list option[value=" + valeurs["idPeriode"] + "]").prop('selected', true);
+            $(".titre").text("Modifier la préférence");
+            $("title").text("Modifier la préférence");
+            $("button").text("Modifier");
+
+        });
+    }
 });
-let selectionGauche = [];
-let selectionDroite = [];
-let stageSelectionne = [];
+
 $('.periodes-list').on('change', function() {
     fetch("http://localhost/gestionstage/public/stage/list_par_periode?idPeriode=" + this.value + "", {
         method: "GET",
@@ -194,8 +230,10 @@ function creer_preference() {
     console.log(payload);
 
     // Envoyer les parametres pour être sauver dans le backend via Fetch
-    fetch("http://localhost/gestionstage/public/preference/create", {
-        method: "POST",
+    fetch("http://localhost/gestionstage/public/preference/" + (modifier === true ? "update?" + urlParams.get(
+        "idUtilisateur") + "&idPeriode=" + urlParams.get(
+        "idPeriode") : "create"), {
+        method: modifier === true ? "PATCH" : "POST",
         headers: {
             "Content-Type": "application/json",
             'Authorization': 'Bearer ' + sessionStorage.getItem("jwt")

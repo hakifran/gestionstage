@@ -14,6 +14,18 @@ class PeriodeDao
         return $connexion->lastInsertId();
     }
 
+    public function update($periode, $idPeriode)
+    {
+        $bd = new Basededonnee();
+        $connexion = $bd->connexion();
+
+        $sql = "UPDATE periode SET dateDebut=?, dateFin=?, intitule=? WHERE idPeriode=?";
+
+        $connexion->prepare($sql)->execute([$periode->getDateDebut(), $periode->getDateFin(), $periode->getIntitule(), $idPeriode]);
+
+        return $connexion->lastInsertId();
+    }
+
     function list() {
         $bd = new Basededonnee();
         $connexion = $bd->connexion();

@@ -59,11 +59,17 @@ class PeriodeModel
     {
         return $this->courant;
     }
-
+    // Créer une période
     public function create()
     {
         $periodeDao = new PeriodeDao();
         return $periodeDao->create($this);
+    }
+    // Modifier une période
+    public function update($idPeriode)
+    {
+        $periodeDao = new PeriodeDao();
+        return $periodeDao->update($this, $idPeriode);
     }
 
     // list des periodes

@@ -39,7 +39,7 @@
                         </div>
                         <!--Fin alert pour afficher le message de succès ou d'échec-->
 
-                        <h3 class="text-left">Ajouter une période</h3>
+                        <h3 class="text-left titre">Ajouter une période</h3>
 
                         <!--Debut afficher une ligne-->
                         <hr>
@@ -85,6 +85,9 @@
 
 </body>
 <script>
+const urlParamsString = window.location.search;
+const urlParams = new URLSearchParams(urlParamsString);
+let modifier = false;
 $(document).ready(function() {
     // recuperer les periodes
     fetch("http://localhost/gestionstage/public/periode/list", {
@@ -102,6 +105,28 @@ $(document).ready(function() {
         });
 
     });
+
+    const urlParamsString = window.location.search;
+    const urlParams = new URLSearchParams(urlParamsString);
+    if (urlParams.get("idPeriode")) {
+        fetch("http://localhost/gestionstage/public/periode/get?id=" + urlParams.get("idPeriode"), {
+            method: "GET",
+            headers: {
+                'Authorization': 'Bearer ' + sessionStorage.getItem("jwt")
+            }
+        }).then((resultat) => resultat.json()).then((response) => {
+            const valeurs = response["data"];
+            modifier = true;
+            $(".titre").text("Modifier le nombre de stage");
+            $("title").text("Modifier le nombre de stage");
+            $("button").text("Modifier");
+            $(".intitule").val(valeurs["intitule"]);
+            $(".dateDebut").val(valeurs["dateDebut"]);
+            $(".dateFin").val(valeurs["dateFin"]);
+            // $(".periodes-list option[value=" + valeurs["idPeriode"] + "]").prop('selected', true);
+
+        });
+    }
 });
 
 
@@ -128,8 +153,9 @@ function creer_un_periode() {
 
 
         // Envoyer les parametres pour être sauver dans le backend via Fetch
-        fetch("http://localhost/gestionstage/public/periode/create", {
-            method: "POST",
+        fetch("http://localhost/gestionstage/public/periode/" + (modifier === false ? 'create' : "update?idPeriode=" +
+            urlParams.get("idPeriode")), {
+            method: modifier === false ? "POST" : "PATCH",
             headers: {
                 "Content-Type": "application/json",
                 'Authorization': 'Bearer ' + sessionStorage.getItem("jwt")

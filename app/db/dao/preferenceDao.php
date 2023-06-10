@@ -24,6 +24,52 @@ class PreferenceDao
         }
         return $connexion->lastInsertId();
     }
+
+    // Requette pour modifier un preference
+    public function update($preference, $stages)
+    {
+        $bd = new Basededonnee();
+        $connexion = $bd->connexion();
+        $sql_params = [];
+        $sql = "INSERT INTO preference (idStage, idEnseignant, date_ajout) VALUES ";
+        foreach ($stages as $stage) {
+            array_push($sql_params, "(" . $stage . "," . $preference->getIdEnseignant() . ",now())");
+        }
+
+        try {
+            $connexion->prepare($sql . implode(",", $sql_params))->execute();
+        } catch (Exception $e) {
+            echo json_encode(
+                array("message" => $e->getMessage(), "status" => "erreur")
+            );
+            exit;
+        }
+        return $connexion->lastInsertId();
+    }
+
+    // enlever les stages de la préférence
+    public function enleverLesStages($preference)
+    {
+        echo json_encode(
+            array("message" => $stages, "status" => "erreur")
+        );
+        exit;
+
+        $bd = new Basededonnee();
+        $connexion = $bd->connexion();
+        $sql_params = [];
+        $sql = "DELETE FROM preference WHERE ";
+
+        try {
+            $connexion->prepare($sql . implode(",", $sql_params))->execute();
+        } catch (Exception $e) {
+            echo json_encode(
+                array("message" => $e->getMessage(), "status" => "erreur")
+            );
+            exit;
+        }
+
+    }
     // recuperer les preferences par periode
     public function preferenceParPeriode($idUtilisateur, $periode)
     {
