@@ -156,7 +156,7 @@ class StageDao
         JOIN enseignant ON(stage.idEnseignant=enseignant.idEnseignant)
         JOIN personne ON(etudiant.idPersonne=personne.idPersonne)
         WHERE stage.idEnseignant IS NOT NULL
-        AND stage.valide IS NULL
+        AND (stage.valide IS NULL OR stage.valide=0)
         AND stage.idStage IN(" . $idStages . ") AND periode.idPeriode=" . $idPeriode . "";
 
         return $connexion->query($sql);
