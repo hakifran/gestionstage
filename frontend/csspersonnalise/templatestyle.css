@@ -96,7 +96,7 @@ body {
 tbody {
   display: block;
   overflow: auto;
-  height: 550px;
+  height: 500px;
   width: 100%;
 }
 
