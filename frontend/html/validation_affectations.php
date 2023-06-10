@@ -89,7 +89,7 @@
                                     <th scope="col">Étudiant</th>
                                     <th scope="col">Tuteur</th>
                                     <th scope="col">Periode</th>
-                                    <th scope="col">Attribue</th>
+                                    <th scope="col">valider</th>
                                 </tr>
                             </thead>
                             <tbody class="stages-list">
