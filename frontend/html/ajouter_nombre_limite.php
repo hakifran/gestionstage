@@ -39,7 +39,7 @@
                         </div>
                         <!--Fin alert pour afficher le message de succès ou d'échec-->
 
-                        <h3 class="text-left">Ajouter nombre limite</h3>
+                        <h3 class="text-left titre">Ajouter nombre limite</h3>
 
                         <!--Debut afficher une ligne-->
                         <hr>
@@ -79,6 +79,7 @@
 
 </body>
 <script>
+let modifier = false;
 $(document).ready(function() {
     // recuperer les periodes
     fetch("http://localhost/gestionstage/public/periode/list", {
@@ -96,14 +97,43 @@ $(document).ready(function() {
         });
 
     });
+
+    const urlParamsString = window.location.search;
+    const urlParams = new URLSearchParams(urlParamsString);
+    if (urlParams.get("idNombreStage")) {
+        fetch("http://localhost/gestionstage/public/nombreStage/get?id=" + urlParams.get("idNombreStage"), {
+            method: "GET",
+            headers: {
+                'Authorization': 'Bearer ' + sessionStorage.getItem("jwt")
+            }
+        }).then((resultat) => resultat.json()).then((response) => {
+            const valeurs = response["data"];
+
+            modifier = true;
+            $(".titre").text("Modifier le nombre de stage");
+            $("title").text("Modifier le nombre de stage");
+            $("button").text("Modifier");
+            $(".nombre-limite").val(valeurs["nombre"]);
+            $(".periodes-list option[value=" + valeurs["idPeriode"] + "]").prop('selected', true);
+
+        });
+    }
+
 });
 
 
 
+
 function creer_nombre_limite() {
+    const urlParamsString = window.location.search;
+    const urlParams = new URLSearchParams(urlParamsString);
     let payload = {}
     // Recuperer les parametres dans le formulaire
     payload["nombre"] = $(".nombre-limite").val() === "" ? null : $(".nombre-limite").val();
+    if (urlParams.get("idNombreStage")) {
+        payload["idNombreStage"] = urlParams.get("idNombreStage");
+    }
+
     const donnee_utilisateur = JSON.parse(sessionStorage.getItem("donnee_utilisateur"));
     payload["id" + donnee_utilisateur["type"].charAt(0).toUpperCase() + donnee_utilisateur["type"]
         .slice(1)] = donnee_utilisateur["id"];
@@ -114,8 +144,9 @@ function creer_nombre_limite() {
 
 
     // Envoyer les parametres pour être sauver dans le backend via Fetch
-    fetch("http://localhost/gestionstage/public/nombreStage/create", {
-        method: "POST",
+
+    fetch("http://localhost/gestionstage/public/nombreStage/" + (modifier === true ? "update" : "create"), {
+        method: modifier === true ? "PATCH" : "POST",
         headers: {
             "Content-Type": "application/json",
             'Authorization': 'Bearer ' + sessionStorage.getItem("jwt")

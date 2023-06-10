@@ -44,6 +44,12 @@ class NombreStageModel
         return $nombreStageDao->create($this);
     }
 
+    public function update($idNombreStage)
+    {
+        $nombreStageDao = new NombreStageDao();
+        return $nombreStageDao->update($this, $idNombreStage);
+    }
+
     // list des periodes
     function list($idUtilisateur) {
         $nombreStageDao = new NombreStageDao();
@@ -60,7 +66,7 @@ class NombreStageModel
         $nombreStageDao = new NombreStageDao();
         $nombreStage = $nombreStageDao->get($id);
         if ($nombreStage) {
-            return ["idNombreStage" => $nombreStage["idNombreStage"], "periode" => $nombreStage["intitule"], "debut" => $nombreStage["dateDebut"], "fin" => $nombreStage["dateFin"], "nombre" => $nombreStage["nombre"]];
+            return ["idNombreStage" => $nombreStage["idNombreStage"], "idPeriode" => $nombreStage["idPeriode"], "periode" => $nombreStage["intitule"], "debut" => $nombreStage["dateDebut"], "fin" => $nombreStage["dateFin"], "nombre" => $nombreStage["nombre"]];
         } else {
             return [];
         }

@@ -102,6 +102,59 @@ class NombreStage extends Controller
 
     }
 
+    public function update()
+    {
+        if ($_SERVER["REQUEST_METHOD"] == "PATCH") {
+            header("Content-type: application/json");
+            // Les données provenant de la requette
+            $params = json_decode(file_get_contents('php://input'));
+            $utils = new Utils();
+            // vérifier si l'utilisateur est authentifier
+            $utils->verifier_authentification_utilisateur();
+            $utils->verifier_les_parametres($params, $this->parametre_obligatoire());
+
+            $nombreStage = $this->model('NombreStageModel');
+
+            if ($_SESSION['user_info']["data"]["type"] != "enseignant") {
+                echo json_encode(
+                    array("ce n'est pas un enseignant" => $params, "status" => "erreur")
+                );
+                exit;
+            }
+
+            if ($params->idEnseignant != $_SESSION['user_info']["data"]["id"]) {
+                echo json_encode(
+                    array("ce n'est pas l'utilisateur connecté" => $params, "status" => "erreur")
+                );
+                exit;
+            }
+
+            $nombreStage = $this->get_nombre_stage($nombreStage, $params);
+            $nombreStageId = $nombreStage->update($params->idNombreStage);
+
+            header("Content-type: application/json");
+            if ($nombreStageId != null) {
+                $params->id = (int) $nombreStageId;
+                echo json_encode(
+                    array("data" => $params, "status" => "ok")
+                );
+                exit;
+            } else {
+                echo json_encode(
+                    array("message" => "Une erreur s'est produite", "status" => "erreur")
+                );
+                exit;
+            }
+
+        } else {
+            echo json_encode(
+                array("message" => "L'operation n'est pas autorise", "status" => "erreur")
+            );
+            exit;
+        }
+
+    }
+
     private function parametre_obligatoire()
     {
         return array("nombre", "idEnseignant", "idPeriode");

@@ -21,6 +21,24 @@ class NombreStageDao
         return $connexion->lastInsertId();
     }
 
+    public function update($stage, $idNombreStage)
+    {
+        $bd = new Basededonnee();
+        $connexion = $bd->connexion();
+        $sql = "UPDATE nombreStage SET nombre=?, idPeriode=? WHERE idNombreStage=?";
+
+        try {
+            $connexion->prepare($sql)->execute([$stage->getNombre(), $stage->getIdPeriode(), $idNombreStage]);
+        } catch (Exception $e) {
+            echo json_encode(
+                array("message" => $e->getMessage(), "status" => "erreur")
+            );
+            exit;
+        }
+
+        return $connexion->lastInsertId();
+    }
+
     function list($idUtilisateur) {
         $bd = new Basededonnee();
         $connexion = $bd->connexion();

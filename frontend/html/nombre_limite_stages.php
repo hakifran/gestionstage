@@ -109,7 +109,7 @@ $(document).ready(function() {
                     "'><th scope='row'>" + count +
                     "</th><td>" + value["nombre"] + "</td><td>" + value[
                         "periode"] +
-                    "</td><td><a href='edit_nombre_limite.php?idNombreStage=" +
+                    "</td><td><a href='ajouter_nombre_limite.php?idNombreStage=" +
                     value["idNombreStage"] +
                     "' ><i class='fa-solid fa-pencil'></i></a></td></tr>"
                 );
