@@ -3,6 +3,9 @@ require_once "../app/services/utils.php";
 require "../vendor/autoload.php";
 use \Firebase\JWT\JWT;
 
+$dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . "/../..");
+$dotenv->load();
+
 class connexion extends Controller
 {
 
@@ -14,8 +17,7 @@ class connexion extends Controller
             print "Désolé, vous devez vous authentifier en donnant votre nom d'utilisateur et mot de passe";
             exit;
         } else {
-            $password_config = require '../userpassword.php';
-            if (($_SERVER["PHP_AUTH_USER"] == $password_config["USER_NAME"] && $_SERVER["PHP_AUTH_PW"] == $password_config["USER_PASSWORD"])) {
+            if (($_SERVER["PHP_AUTH_USER"] == $_ENV["USER_NAME"] && $_SERVER["PHP_AUTH_PW"] == $_ENV["USER_PASSWORD"])) {
                 if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     $params = json_decode(file_get_contents('php://input'));
                     $utils = new Utils();
@@ -159,8 +161,7 @@ class connexion extends Controller
             print "Désolé, vous devez vous authentifier en donnant votre nom d'utilisateur et mot de passe";
             exit;
         } else {
-            $password_config = require '../userpassword.php';
-            if (($_SERVER["PHP_AUTH_USER"] == $password_config["ADMIN_NAME"] && $_SERVER["PHP_AUTH_PW"] == $password_config["ADMIN_PASSWORD"])) {
+            if (($_SERVER["PHP_AUTH_USER"] == $_ENV["ADMIN_NAME"] && $_SERVER["PHP_AUTH_PW"] == $_ENV["ADMIN_PASSWORD"])) {
                 if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     header("Content-type: application/json");
                     $utils = new Utils();

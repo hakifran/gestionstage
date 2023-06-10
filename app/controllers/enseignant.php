@@ -1,6 +1,8 @@
 <?php
 require_once "../app/services/utils.php";
 require "../vendor/autoload.php";
+$dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . "/../..");
+$dotenv->load();
 
 class Enseignant extends Controller
 {
@@ -29,8 +31,7 @@ class Enseignant extends Controller
 
     public function create()
     {
-        $password_config = require '../userpassword.php';
-        if ($_SERVER["PHP_AUTH_USER"] == $password_config["USER_NAME"] && $_SERVER["PHP_AUTH_PW"] == $password_config["USER_PASSWORD"]) {
+        if ($_SERVER["PHP_AUTH_USER"] == $_ENV["USER_NAME"] && $_SERVER["PHP_AUTH_PW"] == $_ENV["USER_PASSWORD"]) {
             if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 header("Content-type: application/json");
                 // header("Access-Control-Allow-Origin: http://localhost/gestionstage/frontend/inscriptionutilisateur.html");

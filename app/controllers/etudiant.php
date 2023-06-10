@@ -1,6 +1,8 @@
 <?php
 require_once "../app/services/utils.php";
 require "../vendor/autoload.php";
+$dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . "/../..");
+$dotenv->load();
 
 class Etudiant extends Controller
 {
@@ -51,8 +53,8 @@ class Etudiant extends Controller
 
     public function create()
     {
-        $password_config = require '../userpassword.php';
-        if ($_SERVER["PHP_AUTH_USER"] == $password_config["USER_NAME"] && $_SERVER["PHP_AUTH_PW"] == $password_config["USER_PASSWORD"]) {
+
+        if ($_SERVER["PHP_AUTH_USER"] == $_ENV["USER_NAME"] && $_SERVER["PHP_AUTH_PW"] == $_ENV["USER_PASSWORD"]) {
             if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 header("Content-type: application/json");
                 // Les données provenant de la requette
@@ -128,17 +130,17 @@ class Etudiant extends Controller
         }
     }
 
-    private function parametre_obligatoire()
+    public function parametre_obligatoire()
     {
         return array("nom", "prenom", "email", "password", "numeroEtudiant", "numeroNational", "parcours");
     }
 
-    private function parametre_valide()
+    public function parametre_valide()
     {
         return array("id", "valide");
     }
 
-    private function get_personne($personne, $params)
+    public function get_personne($personne, $params)
     {
         $personne->setNom($params->nom);
         $personne->setPrenom($params->prenom);
@@ -147,7 +149,7 @@ class Etudiant extends Controller
         return $personne;
     }
 
-    private function get_etudiant($etudiant, $personneId, $params)
+    public function get_etudiant($etudiant, $personneId, $params)
     {
         $etudiant->setIdPersonne($personneId);
         $etudiant->setNumeroEtudiant($params->numeroEtudiant);
@@ -156,7 +158,7 @@ class Etudiant extends Controller
         return $etudiant;
     }
 
-    private function boolean_valide($boolean)
+    public function boolean_valide($boolean)
     {
         if ($boolean == "false") {
             return 0;

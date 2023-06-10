@@ -42,10 +42,15 @@ class ComposerStaticInit07d4e885a7edf4145f675c8d3206348b
             'Psr\\Cache\\' => 10,
             'ProxyManager\\' => 13,
             'PhpParser\\' => 10,
+            'PhpOption\\' => 10,
         ),
         'L' => 
         array (
             'Laminas\\Code\\' => 13,
+        ),
+        'G' => 
+        array (
+            'GrahamCampbell\\ResultType\\' => 26,
         ),
         'F' => 
         array (
@@ -53,6 +58,7 @@ class ComposerStaticInit07d4e885a7edf4145f675c8d3206348b
         ),
         'D' => 
         array (
+            'Dotenv\\' => 7,
             'Doctrine\\Migrations\\' => 20,
             'Doctrine\\Instantiator\\' => 22,
             'Doctrine\\Deprecations\\' => 22,
@@ -128,13 +134,25 @@ class ComposerStaticInit07d4e885a7edf4145f675c8d3206348b
         array (
             0 => __DIR__ . '/..' . '/nikic/php-parser/lib/PhpParser',
         ),
+        'PhpOption\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/phpoption/phpoption/src/PhpOption',
+        ),
         'Laminas\\Code\\' => 
         array (
             0 => __DIR__ . '/..' . '/laminas/laminas-code/src',
         ),
+        'GrahamCampbell\\ResultType\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/graham-campbell/result-type/src',
+        ),
         'Firebase\\JWT\\' => 
         array (
             0 => __DIR__ . '/..' . '/firebase/php-jwt/src',
+        ),
+        'Dotenv\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/vlucas/phpdotenv/src',
         ),
         'Doctrine\\Migrations\\' => 
         array (
