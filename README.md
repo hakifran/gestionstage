@@ -1,7 +1,7 @@
 # Contexte
 Affecter les tuteurs aux suivies des stages pour les étudiants
 # Architecture
-![hakizimana franck (2)](https://github.com/hakifran/gestionstage/assets/19631540/da30d372-a85f-47f8-a4c0-2c336105d628)
+![output-onlinepngtools (1)](https://github.com/hakifran/gestionstage/assets/19631540/3313d710-ee39-4b45-9626-31ce0074ece3)
 ### Backend
 ```
   PHP + Doctrine-Migration + SGBD Mysql
