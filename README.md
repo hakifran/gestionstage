@@ -1,15 +1,64 @@
 # Contexte
 Affecter les tuteurs aux suivies des stages pour les étudiants
 # Architecture
+![hakizimana franck (2)](https://github.com/hakifran/gestionstage/assets/19631540/da30d372-a85f-47f8-a4c0-2c336105d628)
 ### Backend
 ```
   PHP + Doctrine-Migration + SGBD Mysql
   Base de donnée <-> DAO(Data Access Object) <-> Model <-> Controlleur <-> API(format JSON)
 ```
+```bash
+├── Gestionstage
+  ├── app
+  │   ├── controllers # Dossier les controllers
+  │   │   ├── tous les controllers.php
+  │   ├── core # Dossier de configuration de l'architecture MVC
+  │   │   ├── App.php
+  │   │   └── Controller.php
+  │   ├── db # Dossier pour la gestion de la Base de Données
+  │   │   ├── basededonnee.php # connection à la Base de Données
+  │   │   └── dao # Gestion des requêtes SQL pour interagir avec la Base de Données
+  │   │    └── tous les fichiers DAO
+  │   ├── init.php
+  │   ├── models # Dossier contenant les objets représentant les entités de la Base de Données
+  │   │ └── tous les fichiers Models
+  │   ├── services # Dossier contenant les objets services
+  │   │   └── utils.php
+  │   └── views
+  │       └── home
+  ├── composer.json
+  ├── composer.lock
+  ├── migrations # tous les fichiers de migrations pour Doctrine
+  │   ├── Version20230129082637.php
+  ├── migrations-db.php # Connecter Doctrine à la Base de Données
+  ├── migrations.php # Fichier de configuration de Doctrine
+  ├── phpunit.xml
+  ├── public # Partie public de l'application
+  │   └── index.php
+  ├── .env # Le fichier contient les identifiants pour se connecter au service web de l'application
+```
 ### Frontend
 ```
   HTML5 + Javascript
   Navigateur <-> API(backend)
+```
+``` bash
+├── frontend
+│   ├── css # Fichier css de bootstrap
+│   │   ├── bootstrap.css
+│   ├── csspersonnalise # Fichier css de personnalisation
+│   │   ├── inscription.css
+│   │   ├── login.css
+│   │   └── template.css
+│   ├── html # Fichier html pour écrire le contenu
+│   │   ├── footer.php
+│   │   ├── index.php
+│   │   ├── inscriptionutilisateur.php
+│   │   ├── template.php
+│   │   └── text_accueil.php
+│   ├── jquery-3.6.4.js # Le fichier de la librairie jquery
+│   └── js # Les fichier js de bootstrap
+│       ├── bootstrap.js
 ```
 ## Description
 Cette application web a pour but de gérer l'attribution des tuteurs pour la suivie des stages, elle a comme fonctionnalités:
@@ -51,53 +100,5 @@ Cette application web a pour but de gérer l'attribution des tuteurs pour la sui
 ### Lancer l'application
 - Ouvrir le navigateur
 - Mettre l'addresse suivant dans la barre d'addresse du navigateur: `http://localhost/gestionstage`
-```bash
-├── Gestionstage
-  ├── app
-  │   ├── controllers # Dossier les controllers
-  │   │   ├── tous les controllers.php
-  │   ├── core # Dossier de configuration de l'architecture MVC
-  │   │   ├── App.php
-  │   │   └── Controller.php
-  │   ├── db # Dossier pour la gestion de la Base de Données
-  │   │   ├── basededonnee.php # connection à la Base de Données
-  │   │   └── dao # Gestion des requêtes SQL pour interagir avec la Base de Données
-  │   │    └── tous les fichiers DAO
-  │   ├── init.php
-  │   ├── models # Dossier contenant les objets représentant les entités de la Base de Données
-  │   │ └── tous les fichiers Models
-  │   ├── services # Dossier contenant les objets services
-  │   │   └── utils.php
-  │   └── views
-  │       └── home
-  ├── composer.json
-  ├── composer.lock
-  ├── migrations # tous les fichiers de migrations pour Doctrine
-  │   ├── Version20230129082637.php
-  ├── migrations-db.php # Connecter Doctrine à la Base de Données
-  ├── migrations.php # Fichier de configuration de Doctrine
-  ├── phpunit.xml
-  ├── public # Partie public de l'application
-  │   └── index.php
-  ├── userpassword.php # Le fichier contient les identifiants pour se connecter au service web de l'application
-```
-``` bash
-├── frontend
-│   ├── css # Fichier css de bootstrap
-│   │   ├── bootstrap.css
-│   ├── csspersonnalise # Fichier css de personnalisation
-│   │   ├── inscription.css
-│   │   ├── login.css
-│   │   └── template.css
-│   ├── html # Fichier html pour écrire le contenu
-│   │   ├── footer.php
-│   │   ├── index.php
-│   │   ├── inscriptionutilisateur.php
-│   │   ├── template.php
-│   │   └── text_accueil.php
-│   ├── jquery-3.6.4.js # Le fichier de la librairie jquery
-│   └── js # Les fichier js de bootstrap
-│       ├── bootstrap.js
 
-```
 
