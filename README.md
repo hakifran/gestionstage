@@ -91,8 +91,8 @@ Cette application web a pour but de gérer l'attribution des tuteurs pour la sui
 - Créer une base de donnée dans mysql: `CREATE DATABASE nom_de_la_base_de_donnee`
 - change le nom du fichier `.env.exemple` en `.env` et change les valeurs des paramètres que contient le fichier 
     ```
-    USER_NAME=nomUtilisateur pour l'inscriptio et la connexion
-    USER_PASSWORD=mot de pass pour l'inscriptio et la connexion
+    USER_NAME=nomUtilisateur pour l'inscription et la connexion d'un utilisateur
+    USER_PASSWORD=mot de pass pour l'inscription et la connexion d'un utilisateur
     ADMIN_NAME=nomUtilisateur pour enregistre un nouveau administrateur via l'API
     ADMIN_PASSWORD=mot de pass pour enregistre un nouveau administrateur via l'API
     NOM_BASE_DE_DONNEE=nom de la base de données
