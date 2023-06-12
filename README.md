@@ -7,6 +7,7 @@ Affecter les tuteurs aux suivies des stages pour les étudiants
   PHP + Doctrine-Migration + SGBD Mysql
   Base de donnée <-> DAO(Data Access Object) <-> Model <-> Controlleur <-> API(format JSON)
 ```
+#### Arborescence du code backend
 ```bash
 ├── Gestionstage
   ├── app
@@ -35,13 +36,14 @@ Affecter les tuteurs aux suivies des stages pour les étudiants
   ├── phpunit.xml
   ├── public # Partie public de l'application
   │   └── index.php
-  ├── .env # Le fichier contient les identifiants pour se connecter au service web de l'application
+  ├── .env.exemple # Le fichier contient les identifiants pour se connecter au service web de l'application
 ```
 ### Frontend
 ```
   HTML5 + Javascript
   Navigateur <-> API(backend)
 ```
+#### Arborescence du code frontend
 ``` bash
 ├── frontend
 │   ├── css # Fichier css de bootstrap
@@ -83,22 +85,34 @@ Cette application web a pour but de gérer l'attribution des tuteurs pour la sui
 
 ### Installation de l'application dans le dossier web
 - Se déplacer dans le dossier web(du serveur web) sur la machine
-- Cloner le projet avec git(version control system): `git clone https://github.com/hakifran/gestionstage.git`
+- Récuperer le dossier contenant le code du projet: 
+    - Soit clone le projet à partir de github :`git clone https://github.com/hakifran/gestionstage.git`
+    - Ou directement récuperer le dossier
 - Créer une base de donnée dans mysql: `CREATE DATABASE nom_de_la_base_de_donnee`
-- Modifier le fichier `migrations-db.php`
+- change le nom du fichier `.env.exemple` en `.env` et change les valeurs des paramètres que contient le fichier 
     ```
-    return [
-        'dbname' => 'nom_de_la_base_de_donnee',
-        'user' => 'nom_utilisateur',
-        'password' => 'mot_de_pass',
-        'host' => 'adresse_de_la_machine_qui_heberge_la_BD',
-        'driver' => 'pdo_mysql',
-    ];
+    USER_NAME=nomUtilisateur pour l'inscriptio et la connexion
+    USER_PASSWORD=mot de pass pour l'inscriptio et la connexion
+    ADMIN_NAME=nomUtilisateur pour enregistre un nouveau administrateur via l'API
+    ADMIN_PASSWORD=mot de pass pour enregistre un nouveau administrateur via l'API
+    NOM_BASE_DE_DONNEE=nom de la base de données
+    NOM_UTILISATEUR_BD=nom d'utilisateur de la base de données
+    MOT_DE_PASS_UTILISATEUR_BD=mot de pass de l'utilisateur de la base de données 
+    ADDRESSE_MACHINE_HOST_BD=l'addresse de la machine hôte qui heberge la base de données
     ```
 - Lancer les migrations: `./vendor/bin/doctrine-migrations migrate`
 
 ### Lancer l'application
+#### Frontend
 - Ouvrir le navigateur
-- Mettre l'addresse suivant dans la barre d'addresse du navigateur: `http://localhost/gestionstage`
+- Mettre l'addresse suivant dans la barre d'addresse du navigateur: `http://localhost/gestionstage/frontend/html`
+### Backend via l'API
+- Précise la Méthode(POST, GET, PATCH)
+- L'URL de l'API est composé de principalement quatre parties: `http://localhost/gestionstage/public/stage/get?id=45`
+    - L'URL de base: `http://localhost/gestionstage/public/` 
+    - Le nom du controlleur: `stage/`
+    - Le nom de la méthode pour execute de l'API: `get`
+    - Les paramètres à passer: `?id=45`
+  
 
 
