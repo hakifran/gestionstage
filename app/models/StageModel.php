@@ -320,8 +320,8 @@ class StageModel
                 "periode" => $stage["intitule"],
                 "stage_valide" => $stage["stageValider"],
                 "attribue" => $stage["attribue"],
-                "etudiant" => $stage["nomEtudiant"] . '' . $stage["prenomEtudiant"],
-                "enseignant" => $stage["nomEnseignant"] . '' . $stage["prenomEnseignant"],
+                "etudiant" => $stage["nomEtudiant"] . ' ' . $stage["prenomEtudiant"],
+                "enseignant" => $stage["nomEnseignant"] . ' ' . $stage["prenomEnseignant"],
             ];
             array_push(
                 $stages,
@@ -347,8 +347,8 @@ class StageModel
                 "periode" => $stage["intitule"],
                 "stage_valide" => $stage["stageValider"],
                 "attribue" => $stage["attribue"],
-                "etudiant" => $stage["nomEtudiant"] . '' . $stage["prenomEtudiant"],
-                "enseignant" => $stage["nomEnseignant"] . '' . $stage["prenomEnseignant"],
+                "etudiant" => $stage["nomEtudiant"] . ' ' . $stage["prenomEtudiant"],
+                "enseignant" => $stage["nomEnseignant"] . ' ' . $stage["prenomEnseignant"],
             ];
             array_push(
                 $stages,

@@ -75,7 +75,6 @@ class PreferenceModel
     public function create()
     {
         $stages = $this->stageDansLaperiode($this->getStageIds(), $this->getPeriode());
-
         $preferenceDao = new PreferenceDao();
         if (empty($stages)) {
             return null;
@@ -84,15 +83,18 @@ class PreferenceModel
     }
 
     // modifier une preference
-    public function update()
-    {
 
+    public function enleverLesStages($preference, $idUtilisateur)
+    {
         $preferenceDao = new PreferenceDao();
 
-        $preferenceDao->enleverLesStages($this);
-        return $preferenceDao->update($this);
+        $preferenceDao->enleverLesStages(array_map(array($this, "map_id_stages"), $preference["stages"]), $idUtilisateur);
     }
 
+    public function map_id_stages($stage)
+    {
+        return $stage["idStage"];
+    }
     public function list_des_preferences_lie_au_stages($idStages, $idPeriode)
     {
         $preferenceDao = new PreferenceDao();
@@ -144,12 +146,11 @@ class PreferenceModel
     // trouver une preference par l'id de l'enseignant et l'id de la periode
     public function get($idUtilisateur, $idPeriode)
     {
-        $preferenceDao = new PreferenceDao();
-        $periode = array_filter($this->toutesPeriodes(), function ($period) use ($idPeriode) {
-            return $period["idPeriode"] == $idPeriode;
-        })[0];
 
-        if ($periode) {
+        $preferenceDao = new PreferenceDao();
+
+        if ($idPeriode) {
+            $periode["idPeriode"] = $idPeriode;
             $preference = $preferenceDao->preferenceParPeriode($idUtilisateur, $idPeriode);
             if ($preference->rowCount() > 0) {
                 $periode["stages"] = [];

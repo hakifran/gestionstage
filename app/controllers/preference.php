@@ -98,6 +98,7 @@ class Preference extends Controller
             }
 
             $preference = $this->get_prefence($preference, $params);
+
             $preferenceId = $preference->create();
 
             header("Content-type: application/json");
@@ -142,8 +143,8 @@ class Preference extends Controller
                 );
                 exit;
             }
-            $preference = $this->model('PreferenceModel');
 
+            $preference = $this->model('PreferenceModel');
             if ($_SESSION['user_info']["data"]["type"] != "enseignant") {
                 echo json_encode(
                     array("message" => "Ce n'est pas un enseignant", "status" => "erreur")
@@ -151,27 +152,40 @@ class Preference extends Controller
                 exit;
             }
 
-            if ($params->idUtilisateur != $_SESSION['user_info']["data"]["id"]) {
+            if ($params->idEnseignant != $_SESSION['user_info']["data"]["id"]) {
                 echo json_encode(
                     array("message" => "Ce n'est pas l'utilisateur connecté", "status" => "erreur")
                 );
                 exit;
             }
 
-            $preference = $this->get_prefence($preference, $params);
+            if (count($params->stages) > 0) {
+                $ancien_preference = $preference->get($_GET["idUtilisateur"], $_GET["idPeriode"]);
 
-            $preferenceId = $preference->update($params);
+                $preference->enleverLesStages($ancien_preference, $_GET["idUtilisateur"]);
 
-            header("Content-type: application/json");
-            if ($preferenceId != null) {
-                $params->id = (int) $preferenceId;
-                echo json_encode(
-                    array("data" => $params, "status" => "ok")
-                );
+                $preference = $this->get_prefence($preference, $params);
+
+                $preferenceId = $preference->create();
+                header("Content-type: application/json");
+                if ($preferenceId != null) {
+                    $params->id = (int) $preferenceId;
+                    echo json_encode(
+                        array("data" => $params, "status" => "ok")
+                    );
+                    exit;
+                } else {
+                    echo json_encode(
+                        array("message" => "Une erreur s'est produite", "status" => "erreur")
+                    );
+                    exit;
+                }
             } else {
                 echo json_encode(
-                    array("message" => "Une erreur s'est produite", "status" => "erreur")
+                    array("message" => "Pas de stage séléctionnés", "status" => "erreur")
                 );
+                exit;
+
             }
 
         } else {

@@ -444,6 +444,15 @@ class Stage extends Controller
                 );
                 exit;
             }
+
+            if ($params->idPeriode == "") {
+                echo json_encode(
+                    array("message" => "Il faut séléctionner une période", "status" => "erreur")
+                );
+                exit;
+
+            }
+
             $stageNonValider = $stage->list_stage_non_valider($params->idStages, $params->idPeriode);
             $stageNonValiderIds = array_map(array($this, "map_id_stages"), $stageNonValider);
 

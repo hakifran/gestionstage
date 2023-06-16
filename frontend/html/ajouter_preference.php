@@ -137,7 +137,6 @@ $(document).ready(function() {
                 'Authorization': 'Bearer ' + sessionStorage.getItem("jwt")
             }
         }).then((resultat) => resultat.json()).then((response) => {
-
             let valeurs = response['data'];
             const stages = valeurs["stages"]
             let tailleSelectionDroite = selectionDroite.length;
@@ -197,6 +196,7 @@ $(document).on('dblclick', '.right-stages-list option', function() {
     $(".right-stages-list").remove(this);
 });
 $(document).on('click', '.right-stages-list option', function() {
+
     selectionDroite.push(this);
 });
 
@@ -204,6 +204,7 @@ $(".deplace-droite").on("click", function() {
     selectionGauche.forEach(selection => {
         stageSelectionne.push(selection.value);
     });
+
     $(".right-stages-list").append(selectionGauche);
 });
 
@@ -211,8 +212,15 @@ $(".deplace-gauche").on("click", function() {
     selectionDroite.forEach(selection => {
         const index = stageSelectionne.indexOf(selection.value);
         stageSelectionne.splice(index, 1);
+
     });
-    $(".left-stages-list").append(selectionDroite);
+    selectionFiltered = selectionDroite.filter(function(item, pos) {
+        if (typeof(item) === "string") {
+            item = $.parseHTML(item);
+        }
+        return selectionDroite.indexOf(item) == pos;
+    });
+    $(".left-stages-list").append(selectionFiltered);
 });
 
 
@@ -227,12 +235,13 @@ function creer_preference() {
     if (idPeriode !== "") {
         payload["idPeriode"] = idPeriode;
     }
-    console.log(payload);
+
 
     // Envoyer les parametres pour être sauver dans le backend via Fetch
-    fetch("http://localhost/gestionstage/public/preference/" + (modifier === true ? "update?" + urlParams.get(
-        "idUtilisateur") + "&idPeriode=" + urlParams.get(
-        "idPeriode") : "create"), {
+    fetch("http://localhost/gestionstage/public/preference/" + (modifier === true ? "update?idUtilisateur=" + urlParams
+        .get(
+            "idUtilisateur") + "&idPeriode=" + urlParams.get(
+            "idPeriode") : "create"), {
         method: modifier === true ? "PATCH" : "POST",
         headers: {
             "Content-Type": "application/json",

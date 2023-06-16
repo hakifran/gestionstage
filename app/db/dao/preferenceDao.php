@@ -6,28 +6,7 @@ class PreferenceDao
     // Requette pour créer un preference
     public function create($preference, $stages)
     {
-        $bd = new Basededonnee();
-        $connexion = $bd->connexion();
-        $sql_params = [];
-        $sql = "INSERT INTO preference (idStage, idEnseignant, date_ajout) VALUES ";
-        foreach ($stages as $stage) {
-            array_push($sql_params, "(" . $stage . "," . $preference->getIdEnseignant() . ",now())");
-        }
 
-        try {
-            $connexion->prepare($sql . implode(",", $sql_params))->execute();
-        } catch (Exception $e) {
-            echo json_encode(
-                array("message" => $e->getMessage(), "status" => "erreur")
-            );
-            exit;
-        }
-        return $connexion->lastInsertId();
-    }
-
-    // Requette pour modifier un preference
-    public function update($preference, $stages)
-    {
         $bd = new Basededonnee();
         $connexion = $bd->connexion();
         $sql_params = [];
@@ -48,20 +27,14 @@ class PreferenceDao
     }
 
     // enlever les stages de la préférence
-    public function enleverLesStages($preference)
+    public function enleverLesStages($preference, $idUtilisateur)
     {
-        echo json_encode(
-            array("message" => $stages, "status" => "erreur")
-        );
-        exit;
-
         $bd = new Basededonnee();
         $connexion = $bd->connexion();
         $sql_params = [];
-        $sql = "DELETE FROM preference WHERE ";
-
+        $sql = "DELETE FROM preference WHERE idStage IN(" . implode(",", $preference) . ") AND idEnseignant=" . $idUtilisateur . "";
         try {
-            $connexion->prepare($sql . implode(",", $sql_params))->execute();
+            $connexion->prepare($sql)->execute();
         } catch (Exception $e) {
             echo json_encode(
                 array("message" => $e->getMessage(), "status" => "erreur")
@@ -73,6 +46,7 @@ class PreferenceDao
     // recuperer les preferences par periode
     public function preferenceParPeriode($idUtilisateur, $periode)
     {
+
         $bd = new Basededonnee();
         $connexion = $bd->connexion();
         $sql = "SELECT * FROM stage JOIN periode ON(stage.idPeriode=periode.idPeriode) JOIN preference
